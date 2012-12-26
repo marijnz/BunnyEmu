@@ -7,6 +7,7 @@ import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
+import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
 import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
@@ -28,63 +29,7 @@ public class WorldSession {
 	public void sendCharacters(){
    	 	Log.log("sending chars");
 
-	   	int charCount = connection.getClientParent().getCharacters().size();
-	   	
-	   	ServerPacket charList = new ServerPacket(Opcodes.SMSG_CHAR_ENUM, 300 * charCount);
-	   	
-	    charList.put((byte) charCount);
-	   	for (int atChar = 0; atChar < charCount; atChar++) {
-	   		Char currentChar = connection.getClientParent().getCharacters().get(atChar);
-	   	   charList.packet.order(ByteOrder.BIG_ENDIAN);
-	   	   charList.putLong(currentChar.getGUID());		// PlayerGuid;
-	   	   charList.packet.order(ByteOrder.LITTLE_ENDIAN);
-	   	   charList.put(currentChar.getName().getBytes()); // name
-	   	   charList.put((byte) 0);
-	   	   charList.put((byte) currentChar.getCharRace()); // Race;
-	   	   charList.put((byte) currentChar.getCharClass()); // Class;
-	   	   charList.put((byte) 0); // Gender;
-	   	   charList.put((byte) 1); // Skin;
-	   	   charList.put((byte) 4); // Face;
-	   	   charList.put((byte) 5); // Hair Style;
-	   	   charList.put((byte) 0); // Hair Color;
-	   	   charList.put((byte) 0); // Facial Hair;
-	   	   charList.put((byte) 60); // Level;
-	   	   charList.putInt(0); // Zone ID;
-	   	   //charList.putInt(currentChar.getMapID()); // Map ID;
-		   	   
-		   	charList.put((byte) currentChar.getMapID());
-		   	charList.put((byte) 0);
-		   	charList.put((byte) 0);
-		   charList.put((byte) 0);
-	   	   charList.putFloat(currentChar.getX()); // X
-	   	   charList.putFloat(currentChar.getY()); // Y
-	   	   charList.putFloat(currentChar.getZ()); // Z
-	   	   charList.putInt(0); // Guild ID;
-	   	   charList.putInt(0); // Character Flags;
-	   	   charList.putInt(0); // Login Flags;
-	   	   charList.put((byte) 0); // Is Customize Pending?;
-	   	   charList.putInt(0); // Pet DisplayID;
-	   	   charList.putInt(0); // Pet Level;
-	   	   charList.putInt(0); // Pet FamilyID;
-	   	   
-	   	   
-	   	   //int EQUIPMENT_SLOT_END = 18;
-	   	   byte[] data = {1,2,3,4,5,6,7,8,9,10,11,11,12,12,16,13,14,28,19, 0}; // added 0 to make it correct.. why?
-	   	   for (byte ItemSlot = 0; ItemSlot < data.length; ++ItemSlot) {
-	   	       charList.putInt(0); // Item DisplayID;
-	   	       charList.put(data[ItemSlot]); // Item Inventory Type;
-	   	       charList.putInt(1); // Item EnchantID;
-	   	   }
-	   	   for (int c=0; c < 3; c++){ // In 3.3.3 they added 3x new uint32 uint8 uint32  {
-	   	      charList.putInt(0); // bag;
-	   	      charList.put((byte) 18); // slot;
-	   	      charList.putInt(1); // enchant?;
-	   	   }
-	   	}
-	   	
-	   	charList.wrap();
-	   	connection.send(charList);
-	   	
+	   connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
    }
 	
 	public void addCharacter(ClientPacket p){

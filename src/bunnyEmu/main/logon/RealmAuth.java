@@ -85,10 +85,10 @@ public class RealmAuth extends Auth {
             byte[] digest2 = md.digest();
             
             Log.log("authSession " + _client.getName() + " " + new BigNumber(digest1).toHexString() + "  " + new BigNumber(digest2).toHexString());
+            
             if (new BigNumber(digest1).toHexString().equals(new BigNumber(digest2).toHexString())) {
             	connection.getClientParent().initCrypt(connection.getClientParent().getSessionKey()); 
-            	
-                Log.log("Valid account: " + _client.getName());
+            	Log.log("Valid account: " + _client.getName());
                
                 //ServerPacket authResponse = new ServerPacket(0x1EE, 1);
                 //authResponse.put((byte) 0x14);

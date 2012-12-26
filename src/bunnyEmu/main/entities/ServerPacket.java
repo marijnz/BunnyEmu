@@ -34,7 +34,7 @@ public class ServerPacket extends Packet{
     	create(opcode, data.capacity(), data.array());
     }
     
-    private void create(int opcode, int size, byte[] data){
+    protected void create(int opcode, int size, byte[] data){
     	 this.opcode = (short) opcode;
          this.size = (short) size;
          if(data == null)

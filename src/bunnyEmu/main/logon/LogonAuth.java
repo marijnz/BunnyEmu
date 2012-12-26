@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.AuthServerPacket;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.ClientPacket;
-import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.BigNumber;
@@ -53,7 +51,6 @@ import bunnyEmu.main.utils.Log;
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
-            short build;
             byte[]  platform = new byte[4];	// 'x86'
             byte[]  os = new byte[4];		  // 'Win'
             byte[]  country = new byte[4];	 // 'enUS'
@@ -65,7 +62,7 @@ import bunnyEmu.main.utils.Log;
             	midVal = 0;
             version += midVal;
             version += in.get();                  	// version 3
-            build=  in.getShort();                    	 // build
+            in.getShort();                    	 	// build
             in.get(platform);                          	// platform
             in.get(os);                                // os
             in.get(country);                           // country

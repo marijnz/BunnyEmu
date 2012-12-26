@@ -10,8 +10,11 @@ import java.util.ArrayList;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
+import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
-import bunnyEmu.main.utils.crypto.Crypt;
+import bunnyEmu.main.utils.crypto.GenericCrypt;
+import bunnyEmu.main.utils.crypto.vanilla.VanillaCrypt;
+import bunnyEmu.main.utils.crypto.wotlk.WotLKCrypt;
 
 /**
  *
@@ -23,7 +26,7 @@ public class Client {
     private String _password;
     private int _version;
     private byte[] _sessionKey;
-    private Crypt _crypt;
+    private GenericCrypt _crypt;
     
     private LogonConnection _logonConnection;
     private WorldConnection _worldConnection;
@@ -36,8 +39,12 @@ public class Client {
         _name = name.toUpperCase();
         _password = password;
         _version = version;
-        _crypt = new Crypt();
-        Char char1 = new Char("Char1", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
+        if(version <= Constants.VERSION_BC)
+        	_crypt = new VanillaCrypt();
+        else
+        	_crypt = new WotLKCrypt();
+        
+        Char char1 = new Char("Char", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
 	   	addCharacter(char1);
     }
     
@@ -49,7 +56,7 @@ public class Client {
         return _sessionKey;
     }
     
-    public Crypt getCrypt(){
+    public GenericCrypt getCrypt(){
         return _crypt;
     }
     

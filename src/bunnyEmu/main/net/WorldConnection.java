@@ -14,6 +14,7 @@ import bunnyEmu.main.entities.Packet;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.logon.RealmAuth;
+import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -84,8 +85,9 @@ public class WorldConnection extends Connection{
 		header[index++] = (byte)(0xFF & newSize);
 		header[index++] = (byte)(0xFF & opcode);
 		header[index] = (byte)(0xFF & (opcode >> 8));
+		
         if (clientParent != null)
-             header = clientParent.getCrypt().decrypt(header);
+             header = clientParent.getCrypt().encrypt(header);
         return header;
     }
     
@@ -117,22 +119,17 @@ public class WorldConnection extends Connection{
     
     private void decodeHeader(Packet p){
     	if (clientParent != null)
-    		p.header = clientParent.getCrypt().encrypt(p.header);
+    		p.header = clientParent.getCrypt().decrypt(p.header);
         
     	ByteBuffer toHeader = ByteBuffer.allocate(6);
     	toHeader.order(ByteOrder.LITTLE_ENDIAN);
     	toHeader.put(p.header);
     	toHeader.position(0);
 		p.size = (short) (toHeader.get() << 8);
-		//Logger.log(p.size);
 		p.size |= toHeader.get() & 0xFF;
-		//Logger.log(p.size);
 		p.size -= 4;
-		//Logger.log(p.size);
 		p.opcode = (short) toHeader.getInt();
-		//Logger.log(p.opcode);
         p.header = toHeader.array();
-        
     }
     
 }
