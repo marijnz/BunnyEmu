@@ -22,8 +22,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 		
 		for (int atChar = 0; atChar < charCount; atChar++) {
 			Char currentChar = client.getCharacters().get(atChar);
-			//if (client.getVersion() > Constants.VERSION_BC)
-				packet.order(ByteOrder.BIG_ENDIAN);
+			packet.order(ByteOrder.BIG_ENDIAN);
 			putLong(currentChar.getGUID()); // PlayerGuid;
 			packet.order(ByteOrder.LITTLE_ENDIAN);
 			putString(currentChar.getName()); // name
@@ -61,11 +60,11 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			for (int itemSlot = 0; itemSlot < EQUIPMENT_SLOT_END; ++itemSlot) {
 				putInt(0); // Item DisplayID;
 				put((byte) 0); // Item Inventory Type;
-				if (client.getVersion() > Constants.VERSION_BC)
+				if (client.getVersion() >= Constants.VERSION_BC)
 					putInt(1); // Item EnchantID;
 			}
 
-			if (client.getVersion() > Constants.VERSION_BC) {
+			if (client.getVersion() >= Constants.VERSION_WOTLK) {
 				for (int c = 0; c < 3; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32 {
 					putInt(0); // bag;
 					put((byte) 18); // slot;
@@ -75,6 +74,9 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				putInt(0); // first bag display id
 				put((byte) 0); // first bag inventory type
 			}
+			
+			if (client.getVersion() == Constants.VERSION_BC)
+				putInt(0); // enchant?
 
 		}
 

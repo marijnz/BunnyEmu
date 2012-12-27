@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package bunnyEmu.main.utils.crypto.wotlk;
+package bunnyEmu.main.utils.crypto;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class SARC4.
+ * SARC4, used twice (en/decoding) for WotLK
  */
 public class SARC4 {
 	

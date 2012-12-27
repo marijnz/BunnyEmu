@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package bunnyEmu.main.utils.crypto.wotlk;
+package bunnyEmu.main.utils.crypto;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import bunnyEmu.main.utils.crypto.GenericCrypt;
+import bunnyEmu.main.utils.Log;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -28,10 +28,8 @@ import bunnyEmu.main.utils.crypto.GenericCrypt;
 public class WotLKCrypt implements GenericCrypt {
 	
 	/** The Server decryption key. */
-	byte[] ServerDecryptionKey = { (byte) 0xCC,  (byte)0x98,  (byte)0xAE, 0x04,
-			(byte)0xE8,  (byte)0x97, (byte)0xEA,  (byte)0xCA, 0x12,
-			(byte)0xDD,  (byte)0xC0,  (byte)0x93, 0x42,  (byte)0x91, 0x53,
-			0x57 };
+	byte[] ServerDecryptionKey = { (byte) 0xCC,  (byte)0x98,  (byte)0xAE, 0x04, (byte)0xE8,  (byte)0x97, (byte)0xEA,  (byte)0xCA, 0x12, 
+				(byte)0xDD,  (byte)0xC0,  (byte)0x93, 0x42,  (byte)0x91, 0x53, 0x57 };
 	
 	/** The Server encryption key. */
 	byte[] ServerEncryptionKey = { (byte) 0xC2, (byte) 0xB3, 0x72, 0x3C, (byte) 0xC6, (byte) 0xAE, (byte) 0xD9,
@@ -50,6 +48,7 @@ public class WotLKCrypt implements GenericCrypt {
 	 * Instantiates a new crypt.
 	 */
 	public WotLKCrypt() { 
+		Log.log("Created new WotLK crypt");
 	}
 
 	/**
@@ -83,9 +82,9 @@ public class WotLKCrypt implements GenericCrypt {
 	 * @param key the key
 	 */
 	public void init(byte[] key){
-		byte[] encryptHash = getKey(ServerEncryptionKey,key);
+		byte[] encryptHash = CryptTools.getKey(ServerEncryptionKey,key);
 		_clientDecrypt.init(encryptHash);
-		byte[] decryptHash = getKey(ServerDecryptionKey,key);
+		byte[] decryptHash = CryptTools.getKey(ServerDecryptionKey,key);
 		_serverEncrypt.init(decryptHash);
 		byte[] tar = new byte[1024];
 		for(int i = 0; i < tar.length; i++)
@@ -99,24 +98,4 @@ public class WotLKCrypt implements GenericCrypt {
 		this.isEnabled = true;
 	}
 	
-	/**
-	 * Gets the key.
-	 *
-	 * @param EncryptionKey the encryption key
-	 * @param key the key
-	 * @return the key
-	 */
-	private byte[] getKey(byte[] EncryptionKey,byte[] key) {
-		SecretKeySpec ds = new SecretKeySpec(EncryptionKey, "HmacSHA1");
-		Mac m;
-		try {
-			m = Mac.getInstance("HmacSHA1");
-			m.init(ds);
-			return  m.doFinal(key);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;		
-	}
-
 }

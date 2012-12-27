@@ -12,9 +12,10 @@ import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
-import bunnyEmu.main.utils.crypto.vanilla.VanillaCrypt;
-import bunnyEmu.main.utils.crypto.wotlk.WotLKCrypt;
+import bunnyEmu.main.utils.crypto.VanillaCrypt;
+import bunnyEmu.main.utils.crypto.WotLKCrypt;
 
 /**
  *
@@ -39,10 +40,11 @@ public class Client {
         _name = name.toUpperCase();
         _password = password;
         _version = version;
-        if(version <= Constants.VERSION_BC)
-        	_crypt = new VanillaCrypt();
-        else
-        	_crypt = new WotLKCrypt();
+        switch(version){
+        	case Constants.VERSION_VANILLA: _crypt = new VanillaCrypt();	break;
+        	case Constants.VERSION_BC: _crypt = new BCCrypt();				break;
+        	case Constants.VERSION_WOTLK: _crypt = new WotLKCrypt();		break;
+        }
         
         Char char1 = new Char("Char", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
 	   	addCharacter(char1);
