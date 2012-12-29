@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import bunnyEmu.main.utils.Log;
+
 
 /*
  * The Class Crypt.
@@ -17,10 +19,11 @@ public class VanillaCrypt implements GenericCrypt{
 	
 	
 	/**
-	 * Instantiates a new crypt.
+	 * Instantiates a new Vanilla crypt.
 	 */
+	
 	public VanillaCrypt() { 
-		
+		Log.log("Created new Vanilla crypt");
 	}
 
 	public byte[] decrypt(byte[] data){
@@ -50,38 +53,8 @@ public class VanillaCrypt implements GenericCrypt{
 
 	@Override
 	public void init(byte[] key) {
-		byte[] seed = { 0x38, (byte) 0xA7, (byte) 0x83, 0x15, (byte) 0xF8,(byte)  0x92, 0x25, 0x30, 0x71, (byte) 0x98, 0x67, (byte) 0xB1, (byte) 0x8C, 0x4, (byte) 0xE2, (byte) 0xAA };
-
-		//_key = key;
-		_key = getKey(seed, key);
+		_key = key;
 		_send_i = _send_j = _recv_i = _recv_j = 0;
 	    _initialized = true;
 	}
-	
-	/**
-	 * Gets the key.
-	 *
-	 * @param EncryptionKey the encryption key
-	 * @param key the key
-	 * @return the key
-	
-	*/
-	
-	private byte[] getKey(byte[] EncryptionKey,byte[] key) {
-		SecretKeySpec ds = new SecretKeySpec(EncryptionKey, "HmacSHA1");
-		Mac m;
-		try {
-			m = Mac.getInstance("HmacSHA1");
-			m.init(ds);
-			return  m.doFinal(key);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;		
-	}
-	
-	 
-
-	
-
 }

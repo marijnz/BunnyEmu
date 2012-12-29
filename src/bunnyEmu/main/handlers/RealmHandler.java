@@ -12,8 +12,15 @@ import bunnyEmu.main.utils.Log;
 public class RealmHandler {
 	
     private static ArrayList<Realm> realms = new ArrayList<Realm>(10);
+    
+    /**
+     * A list of all clients that hasn't connected to a realm yet, as soon a Client connects to a realm it gets removed from this list
+     */
     private static HashMap<String, Client> temporaryClients = new HashMap<String, Client>();
     
+    /**
+     * @return The realmlist packet, version dependable
+     */
 	public static AuthServerPacket getRealmList(){
 		short size = 8;
         for (int i = 0; i < realms.size(); i++) 
@@ -44,10 +51,18 @@ public class RealmHandler {
         return realmPacket;
 	}
 	
+	/**
+	 * Adding a realm to the realmlist
+	 * @param realm The realm
+	 */
 	public static void addRealm(Realm realm){
 		realms.add(realm);
 	}
 	
+	/**
+	 * Creates a new realm for the given version if it doesn't exist already
+	 * @param version The WoW client version
+	 */
 	public static void addVersionRealm(int version){
 		for(Realm realm : realms)
 			if(realm.getVersion() == version)

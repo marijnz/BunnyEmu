@@ -76,6 +76,12 @@ public class Realm extends Thread {
 		clients.remove(client);
 	}
 
+	/**
+	 * Get a client connected to this realm
+	 * 
+	 * @param name The name of the client
+	 * @return
+	 */
 	public Client getClient(String name) {
 		name = name.toUpperCase();
 		for (int i = 0; i < clients.size(); i++) {

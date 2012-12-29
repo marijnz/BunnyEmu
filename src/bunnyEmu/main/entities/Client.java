@@ -40,11 +40,13 @@ public class Client {
         _name = name.toUpperCase();
         _password = password;
         _version = version;
-        switch(version){
-        	case Constants.VERSION_VANILLA: _crypt = new VanillaCrypt();	break;
-        	case Constants.VERSION_BC: _crypt = new BCCrypt();				break;
-        	case Constants.VERSION_WOTLK: _crypt = new WotLKCrypt();		break;
-        }
+        
+        if(version <= Constants.VERSION_VANILLA)
+        	_crypt = new VanillaCrypt();
+        else if(version <= Constants.VERSION_VANILLA)
+        	_crypt = new BCCrypt();
+        else
+        	_crypt = new WotLKCrypt();
         
         Char char1 = new Char("Char", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
 	   	addCharacter(char1);

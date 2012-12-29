@@ -73,8 +73,6 @@ import bunnyEmu.main.utils.Log;
             I = new byte[I_len];
             in.packet.get(I, 0, I_len);                       // I  
             
-            Log.log("test: " + version);
-            
             String P = "password".toUpperCase();
             
            //Generate account hash
@@ -223,10 +221,8 @@ import bunnyEmu.main.utils.Log;
             md.update(K.asByteArray());
 
             short size = 32;
-            if(_client.getVersion() <= Constants.VERSION_VANILLA){
+            if(_client.getVersion() <= Constants.VERSION_VANILLA)
             	size = 26;
-            	Log.log("siz is ");
-            }
             
 	        AuthServerPacket serverLogonAuth = new AuthServerPacket((short) size);
 	        serverLogonAuth.put((byte) 1); // cmd

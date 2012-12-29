@@ -1,5 +1,11 @@
 package bunnyEmu.main.entities;
 
+/**
+ * A Character
+ * 
+ * @author Marijn
+ *
+ */
 public class Char {
 
 	private static int countGUID = 12;

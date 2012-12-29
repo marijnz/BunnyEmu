@@ -20,6 +20,8 @@ import bunnyEmu.main.utils.Log;
 
 /**
  *
+ * To login: Run and login with a WoW client with any username but make sure to use the password: "password".
+ *
  * @author Marijn
  */
 public class Server {

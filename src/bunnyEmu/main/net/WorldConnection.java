@@ -74,6 +74,9 @@ public class WorldConnection extends Connection{
         return super.send(p);
     }
     
+    /**
+     * Encodes and also encrypts if the crypt has been initialized
+     */
     private byte[] encode(int size, int opcode){
         int index = 0;
         int newSize = size+2;
@@ -117,6 +120,9 @@ public class WorldConnection extends Connection{
         return p;
     }
     
+    /**
+     * Decodes and also decrypts if the crypt has been initialized
+     */
     private void decodeHeader(Packet p){
     	if (clientParent != null)
     		p.header = clientParent.getCrypt().decrypt(p.header);

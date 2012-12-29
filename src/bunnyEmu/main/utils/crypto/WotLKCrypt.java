@@ -77,7 +77,7 @@ public class WotLKCrypt implements GenericCrypt {
 	}
 	
 	/**
-	 * Inits the.
+	 * Inits the crypt
 	 *
 	 * @param key the key
 	 */
