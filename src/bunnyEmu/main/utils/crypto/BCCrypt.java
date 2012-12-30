@@ -10,6 +10,7 @@ public class BCCrypt extends VanillaCrypt {
 	public BCCrypt(){
 		Log.log("Created new Burning Crusade crypt");
 	}
+	
 	@Override
 	public void init(byte[] key) {
 		_key = CryptTools.getKey(seed, key);

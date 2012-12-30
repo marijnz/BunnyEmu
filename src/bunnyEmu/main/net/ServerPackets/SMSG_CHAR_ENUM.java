@@ -6,6 +6,7 @@ import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
 public class SMSG_CHAR_ENUM extends ServerPacket {
@@ -16,7 +17,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 		super(Opcodes.SMSG_CHAR_ENUM, 0);
 		
 		charCount = client.getCharacters().size();
-		create(Opcodes.SMSG_CHAR_ENUM, 300 * charCount, null);
+		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount, null);
 
 		put((byte) charCount);
 		
@@ -40,7 +41,11 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putFloat(currentChar.getX()); // X
 			putFloat(currentChar.getY()); // Y
 			putFloat(currentChar.getZ()); // Z
-			putInt(0); // Guild ID;
+			// Guild ID
+			if (client.getVersion() < Constants.VERSION_CATA)
+				putInt(0); 
+			else
+				putLong(0);
 			putInt(0); // Character Flags;
 			if (client.getVersion() <= Constants.VERSION_BC)
 				put((byte) 0); // Login Flags;
@@ -54,7 +59,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putInt(0); // Pet FamilyID;
 
 			int EQUIPMENT_SLOT_END = 19;
-			if (client.getVersion() > Constants.VERSION_BC)
+			if (client.getVersion() == Constants.VERSION_WOTLK)
 				EQUIPMENT_SLOT_END++;
 			
 			for (int itemSlot = 0; itemSlot < EQUIPMENT_SLOT_END; ++itemSlot) {
@@ -65,7 +70,10 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			}
 
 			if (client.getVersion() >= Constants.VERSION_WOTLK) {
-				for (int c = 0; c < 3; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32 {
+				int bagCount = 3;
+				if (client.getVersion() >= Constants.VERSION_CATA)
+					bagCount++;
+				for (int c = 0; c < bagCount; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32 {
 					putInt(0); // bag;
 					put((byte) 18); // slot;
 					putInt(1); // enchant?;
@@ -77,6 +85,8 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			
 			if (client.getVersion() == Constants.VERSION_BC)
 				putInt(0); // enchant?
+			
+				
 
 		}
 

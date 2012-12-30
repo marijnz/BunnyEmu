@@ -4,13 +4,19 @@
  */
 package bunnyEmu.main.entities;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Opcodes;
+import bunnyEmu.main.utils.PacketMap;
 
 /**
  * 
@@ -26,6 +32,7 @@ public class Realm extends Thread {
 	public int timezone;
 	public float population;
 	private int version;
+	private PacketMap packets;
 
 	private ArrayList<Client> clients = new ArrayList<Client>(10);
 
@@ -43,7 +50,13 @@ public class Realm extends Thread {
 		Log.log(port);
 		this.port = port;
 		this.version = version;
+		if(version <= Constants.VERSION_WOTLK)
+			packets = Opcodes.formWotLK();
+		else
+			packets = Opcodes.formCata();
 		start();
+		
+		Log.log("Created new realm: " + this.name);
 	}
 
 	public int getSize() {
@@ -94,5 +107,53 @@ public class Realm extends Thread {
 	public int getVersion() {
 		return version;
 	}
+
+	public PacketMap getPackets() {
+		return packets;
+	}
+	
+	 /**
+     * Loading a packet text file assuming an arcemu-like packet dump
+     * @param packetDir The packet to be loaded
+     * @param capacity	How much size should be buffered for the returned data
+     */
+    public ServerPacket loadPacket(String packetDir, int capacity){
+    	Log.log("loading packet");
+    	String opcode = null;
+    	ByteBuffer data = ByteBuffer.allocate(capacity);
+    	try {
+    		BufferedReader in = new BufferedReader(new FileReader("assets" + "/" + packetDir));
+            String line = "";
+            line = in.readLine(); // opcode and info line
+            int firstHook = line.indexOf("(")+3;
+
+            opcode = line.substring(firstHook, line.indexOf(")", firstHook));
+            for (int i = 0; i < 3; i++)
+            	in.readLine(); // unused text
+            
+            // "|" = start or end of line
+            while((line = in.readLine()).charAt(0) == '|'){
+            	String curHexChar = "";
+            	int i = 1; // Skip the first "|"
+            	while(true){
+            		curHexChar = line.substring(i, i + 2);
+            		i += 3;
+            		if(curHexChar.contains(" ") || curHexChar.contains("|"))
+            			break;
+            		data.put((byte) Integer.parseInt(curHexChar, 16)); // Read two bytes, hex
+            	}
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    	
+    	Log.log(data.toString());
+    	ServerPacket p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);
+    	//ServerPacket p = ne ServerPacket(Opcodes.SMSG_COMPRESSED_UPDATE_OBJECT, data);
+    	//p.wrap();
+    	return p;
+    	
+    }
 
 }

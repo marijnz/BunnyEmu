@@ -16,7 +16,8 @@ import bunnyEmu.main.utils.BigNumber;
  * 
  */
 public abstract class Packet{
-    public short opcode;
+    public short nOpcode;
+    public String sOpcode;
     public short size;
     public byte[] header;
     public ByteBuffer packet;
@@ -74,6 +75,10 @@ public abstract class Packet{
         return packet.get(dst);
     }
     
+    public ByteBuffer get(byte[] dst, int offset, int length){
+        return packet.get(dst, offset, length);
+    }
+    
     public String getString(){
     	StringBuilder b = new StringBuilder();
 
@@ -113,7 +118,7 @@ public abstract class Packet{
     
     @Override
     public String toString(){
-       return ("<" +Integer.toHexString( opcode).toUpperCase() +  "> " + new BigNumber(header).toHexString() + "  " + new BigNumber(packet.array()).toHexString());
+       return ("<" +Integer.toHexString( nOpcode).toUpperCase() +  "> " + new BigNumber(header).toHexString() + "  " + new BigNumber(packet.array()).toHexString());
     }
     
     /**

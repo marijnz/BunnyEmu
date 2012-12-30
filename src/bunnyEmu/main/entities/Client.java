@@ -36,6 +36,9 @@ public class Client {
     private ArrayList<Char> characters = new ArrayList<Char>();
     private Char currentCharacter;
     
+    /**
+     * Creates a new Client, the version given will 
+     */
     public Client(String name, String password, int version){
         _name = name.toUpperCase();
         _password = password;
@@ -43,13 +46,15 @@ public class Client {
         
         if(version <= Constants.VERSION_VANILLA)
         	_crypt = new VanillaCrypt();
-        else if(version <= Constants.VERSION_VANILLA)
+        else if(version <= Constants.VERSION_BC)
         	_crypt = new BCCrypt();
         else
         	_crypt = new WotLKCrypt();
         
-        Char char1 = new Char("Char", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
+        Char char1 = new Char("testy", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
+        Char char2 = new Char("bc", 150, -4415, 21, 1, (byte) 6,(byte) 1);
 	   	addCharacter(char1);
+	   	addCharacter(char2);
     }
     
     public void setSessionKey(byte[] K){

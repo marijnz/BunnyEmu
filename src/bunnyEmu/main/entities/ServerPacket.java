@@ -13,29 +13,29 @@ import java.nio.ByteOrder;
  */
 public class ServerPacket extends Packet{
     
-	public ServerPacket(int opcode){
-		 create(opcode, 0, null);
+	public ServerPacket(String sOpcode){
+		 create(sOpcode, 0, null);
 	}
 	
-    public ServerPacket(int opcode, int size){
-    	create(opcode, size, null);
+    public ServerPacket(String sOpcode, int size){
+    	create(sOpcode, size, null);
     }
     
-    public ServerPacket(int opcode, int size, byte oneByte){
+    public ServerPacket(String sOpcode, int size, byte oneByte){
     	byte[] b = {oneByte};
-    	create(opcode, size, b);
+    	create(sOpcode, size, b);
     }
     
-    public ServerPacket(int opcode, int size, byte[] data){
-    	create(opcode, size, data);
+    public ServerPacket(String sOpcode, int size, byte[] data){
+    	create(sOpcode, size, data);
     }
     
-    public ServerPacket(int opcode, ByteBuffer data){
-    	create(opcode, data.capacity(), data.array());
+    public ServerPacket(String sOpcode, ByteBuffer data){
+    	create(sOpcode, data.capacity(), data.array());
     }
     
-    protected void create(int opcode, int size, byte[] data){
-    	 this.opcode = (short) opcode;
+    protected void create(String sOpcode, int size, byte[] data){
+    	 this.sOpcode = sOpcode;
          this.size = (short) size;
          if(data == null)
         	 packet = ByteBuffer.allocate(size);

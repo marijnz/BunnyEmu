@@ -44,43 +44,7 @@ public class Server {
         listenSocket();
      }
     
-    /**
-     * Loading a packet text file assuming an arcemu-like packet dump
-     * @param packetDir The packet to be loaded
-     * @param capacity	How much size should be buffered for the returned data
-     */
-    public static ServerPacket loadPacket(String packetDir, int capacity){
-    	String opcode = null;
-    	ByteBuffer data = ByteBuffer.allocate(capacity);
-    	try {
-    		BufferedReader in = new BufferedReader(new FileReader("assets" + "/" + packetDir));
-            String line = "";
-            line = in.readLine(); // opcode and info line
-            int firstHook = line.indexOf("(")+3;
-
-            opcode = line.substring(firstHook, line.indexOf(")", firstHook));
-            for (int i = 0; i < 3; i++)
-            	in.readLine(); // unused text
-            
-            // "|" = start or end of line
-            while((line = in.readLine()).charAt(0) == '|'){
-            	String curHexChar = "";
-            	int i = 1; // Skip the first "|"
-            	while(true){
-            		curHexChar = line.substring(i, i + 2);
-            		i += 3;
-            		if(curHexChar.contains(" ") || curHexChar.contains("|"))
-            			break;
-            		data.put((byte) Integer.parseInt(curHexChar, 16)); // Read two bytes, hex
-            	}
-            }
-            in.close();
-        } catch (IOException e) {
-            //log the exception
-        }
-    	
-    	return new ServerPacket(Short.parseShort(opcode, 16), data);
-    }
+   
     
     private void listenSocket(){
         try{

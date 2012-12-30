@@ -3,24 +3,29 @@ package bunnyEmu.main.net;
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
+import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
+import bunnyEmu.main.net.ServerPackets.SMSG_FORCE_RUN_SPEED_CHANGE;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
 import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
 import bunnyEmu.main.net.ServerPackets.SMSG_PONG;
 import bunnyEmu.main.utils.AuthCodes;
+import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
 
 public class WorldSession {
 	private WorldConnection connection;
+	private Realm realm;
 	
 	
-	public WorldSession(WorldConnection c) {
+	public WorldSession(WorldConnection c, Realm realm) {
 		connection = c;
+		this.realm = realm;
 	}
 	 
 	 
@@ -42,13 +47,22 @@ public class WorldSession {
 	
 	public void verifyLogin(ClientPacket p){
 		Char character = connection.getClientParent().setCurrentCharacter(p.getLong());
+		Log.log(character.getGUID());
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 		
-		connection.send(Server.loadPacket("testpacket.txt", 2500));
-	
+		if(realm.getVersion() == Constants.VERSION_BC)
+			connection.send(realm.loadPacket("updatepacket_bc", 5000));
+		else if(realm.getVersion() == Constants.VERSION_WOTLK)
+			connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+		else if(realm.getVersion() == Constants.VERSION_CATA)
+			connection.send(realm.loadPacket("updatepacket_cata", 500));
+		
 		sendAccountDataTimes(0xEA);
 		sendMOTD();
 		sendSpellGo();
+		//connection.send(realm.loadPacket("forcerun", 20));
+		
+		connection.send(new SMSG_FORCE_RUN_SPEED_CHANGE(character, 30));
 	}
 	
 	public void sendAccountDataTimes(int mask){

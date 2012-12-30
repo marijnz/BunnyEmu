@@ -47,6 +47,10 @@ public class Log {
         log(level, String.valueOf(message));
     }
     
+    public static void log(long message){
+        log(_level, String.valueOf(message));
+    }
+    
     public static void log(int level, String message){
     	 switch(level){
         	case ERROR: System.out.println("ERROR: " + message); break;

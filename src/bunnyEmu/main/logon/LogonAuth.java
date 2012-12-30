@@ -238,10 +238,8 @@ import bunnyEmu.main.utils.Log;
 	  	        //  unk2-3
 	  	        serverLogonAuth.putShort((short) 0);
 	        }
-	        //serverLogonAuth.wrap();
+	        
             connection.send(serverLogonAuth);
-            	
-           
         }
         
         

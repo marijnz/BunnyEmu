@@ -41,7 +41,7 @@ public class LogonConnection extends Connection {
                     continue;
                 Log.log("got auth packet: " + p.toString());
                 
-                switch(p.opcode){
+                switch(p.nOpcode){
                 	case CLIENT_LOGON_CHALLENGE:
                 		auth.serverLogonChallenge(p);  	// Responding to the client with some coowl data.
                         break; 
@@ -64,16 +64,16 @@ public class LogonConnection extends Connection {
 
 	private ClientPacket readPacket(byte firstByte){
 		ClientPacket p = new ClientPacket();
-         p.opcode = firstByte;
+         p.nOpcode = firstByte;
          p.packet = ByteBuffer.allocate(200);
          try {
-	         if(p.opcode == CLIENT_LOGON_CHALLENGE){
+	         if(p.nOpcode == CLIENT_LOGON_CHALLENGE){
 	        	 in.readByte();
 	        	 p.size = in.readByte();
 	        	 in.readByte();
-	         } else if (p.opcode == CLIENT_LOGON_PROOF){
+	         } else if (p.nOpcode == CLIENT_LOGON_PROOF){
 	        	 p.size = 1 + 32 + 20 + 20 + 1 + 1;
-	         } else if(p.opcode == CLIENT_REALMLIST)
+	         } else if(p.nOpcode == CLIENT_REALMLIST)
 	        	 p.size = 4;
 	         
 	         byte[] b = new byte[p.size];
