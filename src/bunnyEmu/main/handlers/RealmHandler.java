@@ -35,7 +35,7 @@ public class RealmHandler {
        
         // all realms
         for (Realm realm : realms) {
-        	realmPacket.put((byte) 4); 
+        	realmPacket.put((byte) 1); 
         	realmPacket.put((byte) 0); 
         	realmPacket.put((byte) realm.flags);   
         	realmPacket.putString(realm.name);      // Name
@@ -44,7 +44,7 @@ public class RealmHandler {
         	realmPacket.put((byte) (Math.random() * 10)); // char count
 
         	realmPacket.put((byte) 1);        // ??
-        	realmPacket.put((byte) 1);        // ??
+        	realmPacket.put((byte) 0x2C);        // ??
         }
         
         realmPacket.putShort((short) 0x0010);
@@ -67,7 +67,7 @@ public class RealmHandler {
 		for(Realm realm : realms)
 			if(realm.getVersion() == version)
 				return;
-		realms.add(new Realm(realms.size(), "Version realm", Server.localIP, 3456 + realms.size(), version));
+		realms.add(new Realm(realms.size(), "Version realm", Server.localIP, 8100 + realms.size(), version));
 	}
 	
 	/**

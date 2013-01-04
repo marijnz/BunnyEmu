@@ -4,15 +4,12 @@
  */
 package bunnyEmu.main;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
@@ -27,6 +24,7 @@ import bunnyEmu.main.utils.Log;
 public class Server {
     
 	public static String localIP = "localhost";
+	//public static String localIP = "http://www.marijnzwemmer.com";
 	
 	private ServerSocket serverSocket;
 	private ArrayList<Connection> connections = new ArrayList<Connection>(10);
@@ -38,17 +36,21 @@ public class Server {
 	
 	
     public void launch() {
-        
-        RealmHandler.addRealm(new Realm(1, "Server test 2", "localhost", 3344, 1));
-        RealmHandler.addRealm(new Realm(1, "Server test 2", "localhost", 3345, 1));
+    	System.out.println("test2");
+        RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344, 1));
+        //RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3345, 1));
         listenSocket();
      }
     
-   
+   public ServerSocket getServerSocket(){
+	   return serverSocket;
+   }
     
     private void listenSocket(){
         try{
-            serverSocket = new ServerSocket(3724);
+        	InetAddress addr = InetAddress.getByName(localIP);
+            serverSocket = new ServerSocket(3724, 0, addr);
+            
         } catch (IOException e) {
             Log.log("3724 not working");
         }

@@ -1,4 +1,4 @@
-    package bunnyEmu.main.logon;
+package bunnyEmu.main.logon;
 
 import java.io.IOException;
 import java.security.MessageDigest;

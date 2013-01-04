@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Constants;
@@ -28,9 +27,9 @@ public class Realm extends Thread {
 	public String address;
 	public int port;
 	public int icon;
-	public int flags;
+	public int flags = 0;
 	public int timezone;
-	public float population;
+	public float population = 0;
 	private int version;
 	private PacketMap packets;
 

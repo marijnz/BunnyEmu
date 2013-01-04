@@ -1,6 +1,5 @@
 package bunnyEmu.main.net;
 
-import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;

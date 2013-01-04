@@ -4,6 +4,8 @@
  */
 package bunnyEmu.main.utils;
 
+import bunnyEmu.main.ServerApplet;
+
 
 
 /**
@@ -57,6 +59,9 @@ public class Log {
         	case INFO:	System.out.println("INFO: " + message); break;
         	case DEBUG:	System.out.println("DEBUG: " + message); break;
         }
+    	if(ServerApplet.debugLabel != null){
+    		ServerApplet.debugLabel.setText(ServerApplet.debugLabel.getText() + "\n" + message);
+    	}
     }
     
     
