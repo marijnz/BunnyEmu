@@ -23,7 +23,7 @@ import bunnyEmu.main.utils.Log;
  */
 public class Server {
     
-	public static String localIP = "localhost";
+	public static String localIP = "127.0.0.1";
 	//public static String localIP = "http://www.marijnzwemmer.com";
 	
 	private ServerSocket serverSocket;
@@ -37,7 +37,7 @@ public class Server {
 	
     public void launch() {
     	System.out.println("test2");
-        RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344, 1));
+        //RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344, 1));
         //RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3345, 1));
         listenSocket();
      }
@@ -50,7 +50,7 @@ public class Server {
         try{
         	InetAddress addr = InetAddress.getByName(localIP);
             serverSocket = new ServerSocket(3724, 0, addr);
-            
+            serverSocket.accept();
         } catch (IOException e) {
             Log.log("3724 not working");
         }

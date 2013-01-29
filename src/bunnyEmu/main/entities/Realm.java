@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import bunnyEmu.main.Server;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
@@ -38,7 +39,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", "localhost", 3456, Constants.VERSION_WOTLK);
+		this(1, "Marijnz ultimate server", Server.localIP, 3456, Constants.VERSION_WOTLK);
 	}
 
 	public Realm(int id, String name, String address, int port, int version) {
@@ -51,8 +52,10 @@ public class Realm extends Thread {
 		this.version = version;
 		if(version <= Constants.VERSION_WOTLK)
 			packets = Opcodes.formWotLK();
-		else
+		else if(version <= Constants.VERSION_CATA)
 			packets = Opcodes.formCata();
+		else if(version <= Constants.VERSION_MOP)
+			packets = Opcodes.formMoP();
 		start();
 		
 		Log.log("Created new realm: " + this.name);
@@ -149,7 +152,7 @@ public class Realm extends Thread {
     	
     	Log.log(data.toString());
     	ServerPacket p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);
-    	//ServerPacket p = ne ServerPacket(Opcodes.SMSG_COMPRESSED_UPDATE_OBJECT, data);
+    	//ServerPacket p = new ServerPacket(Opcodes.SMSG_COMPRESSED_UPDATE_OBJECT, data);
     	//p.wrap();
     	return p;
     	

@@ -118,7 +118,7 @@ public abstract class Packet{
     
     @Override
     public String toString(){
-       return ("<" +Integer.toHexString( nOpcode).toUpperCase() +  "> " + new BigNumber(header).toHexString() + "  " + new BigNumber(packet.array()).toHexString());
+       return this.sOpcode + " " + ("<" +Integer.toHexString( nOpcode).toUpperCase() +  "> " + new BigNumber(header).toHexString() + "  " + new BigNumber(packet.array()).toHexString());
     }
     
     /**

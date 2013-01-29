@@ -14,6 +14,7 @@ import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
+import bunnyEmu.main.utils.crypto.MoPCrypt;
 import bunnyEmu.main.utils.crypto.VanillaCrypt;
 import bunnyEmu.main.utils.crypto.WotLKCrypt;
 
@@ -48,8 +49,10 @@ public class Client {
         	_crypt = new VanillaCrypt();
         else if(version <= Constants.VERSION_BC)
         	_crypt = new BCCrypt();
-        else
+        else if(version <= Constants.VERSION_CATA)
         	_crypt = new WotLKCrypt();
+        else if(version <= Constants.VERSION_MOP)
+        	_crypt = new MoPCrypt();
         
         Char char1 = new Char("testy", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
         Char char2 = new Char("bc", 150, -4415, 21, 1, (byte) 6,(byte) 1);

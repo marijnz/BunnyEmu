@@ -35,19 +35,21 @@ public class RealmHandler {
        
         // all realms
         for (Realm realm : realms) {
-        	realmPacket.put((byte) 1); 
+        	realmPacket.put((byte) 0x2A); 
         	realmPacket.put((byte) 0); 
         	realmPacket.put((byte) realm.flags);   
         	realmPacket.putString(realm.name);      // Name
         	realmPacket.putString(realm.address);   // Address
+        	Log.log("address: " + realm.address);
         	realmPacket.putFloat(realm.population);      // Population
-        	realmPacket.put((byte) (Math.random() * 10)); // char count
+        	realmPacket.put((byte) 0); // char count
 
         	realmPacket.put((byte) 1);        // ??
         	realmPacket.put((byte) 0x2C);        // ??
         }
         
-        realmPacket.putShort((short) 0x0010);
+        realmPacket.putShort((short) 0x10);
+        realmPacket.wrap();
         return realmPacket;
 	}
 	
@@ -104,6 +106,10 @@ public class RealmHandler {
 				
 		}
 		return temporaryClients.get(name);
+	}
+	
+	public static Realm getRealm(int id){
+		return realms.get(id);
 	}
 	
 	

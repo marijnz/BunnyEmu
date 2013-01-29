@@ -66,7 +66,8 @@ public class WorldSession {
 	
 	public void sendAccountDataTimes(int mask){
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
-		connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
+		if(this.realm.getVersion() <= Constants.VERSION_CATA)
+			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 	
 	

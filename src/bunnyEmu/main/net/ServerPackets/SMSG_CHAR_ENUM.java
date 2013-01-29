@@ -14,7 +14,16 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 	int charCount;
 
 	public SMSG_CHAR_ENUM(Client client) {
-		super(Opcodes.SMSG_CHAR_ENUM, 0);
+		super(Opcodes.SMSG_CHAR_ENUM, 6);
+		/*
+		this.put((byte) 0);
+		this.put((byte) 0);
+		this.put((byte) 0);
+		this.put((byte) 0);
+		this.put((byte) 0);
+		this.put((byte) 0x80);
+		
+		*/
 		
 		charCount = client.getCharacters().size();
 		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount, null);
@@ -91,6 +100,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 		}
 
 		wrap();
+		
 	}
 
 }
