@@ -82,7 +82,6 @@ public class WorldConnection extends Connection{
             p = new ClientPacket();
             p.header[0] = firstByte;
             in.read(p.header, 1, ((realm.getVersion() <= Constants.VERSION_CATA) ? 5 : 3));
-            Log.log((realm.getVersion() <= Constants.VERSION_CATA) ? 5 : 3);
             decodeHeader(p);
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             
@@ -90,7 +89,7 @@ public class WorldConnection extends Connection{
             	Log.log("Unknown packet: " + Integer.toHexString(p.nOpcode).toUpperCase());
             		
             if (p.size < 0){
-            	Log.log(Log.ERROR, p.size + " is < 0, RETURNING");
+            	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
             	return null;
             } else if (p.size == 0){
             	p.packet = ByteBuffer.wrap(new byte[1]); // just put a empty byte in it..
@@ -118,7 +117,7 @@ public class WorldConnection extends Connection{
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Log.log("Sending packet: 0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
+    	Log.log("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
         return super.send(p);
@@ -161,8 +160,11 @@ public class WorldConnection extends Connection{
      * Decodes and also decrypts if the crypt has been initialized
      */
     private void decodeHeader(Packet p){
+    	//Log.log("------- DECODING HEADER --------");
     	if (clientParent != null)
     		p.header = clientParent.getCrypt().decrypt(p.header);
+    	
+    	//Log.log("got decrypted header: " + new BigNumber(p.header).toHexString());
         
     	if(realm.getVersion() < Constants.VERSION_MOP){
     		ByteBuffer toHeader = ByteBuffer.allocate(6);
@@ -180,14 +182,16 @@ public class WorldConnection extends Connection{
             	toHeader.order(ByteOrder.LITTLE_ENDIAN);
             	toHeader.put(p.header,0, 4);
             	toHeader.position(0);
-            	int header = toHeader.getShort();
-        		short size = (short)((header >> 12));
-	        	short opcode = (short)(header & 0xFFF);
+            	int header = toHeader.getInt();
+        		int size = ((header >> 12));
+        		int opcode = (header & 0xFFF);
 	        	p.header[0] = (byte)(0xFF & size);
 	        	p.header[1] = (byte)(0xFF & (size >> 8));
 	        	p.header[2] = (byte)(0xFF & opcode);
 	        	p.header[3] = (byte)(0xFF & (opcode >> 8));
     		}
+    		
+    		//Log.log("got decoded header: " + new BigNumber(p.header).toHexString());
     		
     		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= Constants.VERSION_CATA) ? 6 : 4);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
@@ -196,6 +200,8 @@ public class WorldConnection extends Connection{
 
 	        p.size = toHeader.getShort();
         	p.nOpcode = toHeader.getShort();
+        	p.header = toHeader.array();
+        	//Log.log("------- DECODED HEADER --------");
     	}
     
     }

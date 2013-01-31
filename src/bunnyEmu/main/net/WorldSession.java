@@ -1,11 +1,14 @@
 package bunnyEmu.main.net;
 
+import java.io.UnsupportedEncodingException;
+
 import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
+import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM_MOP;
 import bunnyEmu.main.net.ServerPackets.SMSG_FORCE_RUN_SPEED_CHANGE;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
@@ -30,8 +33,15 @@ public class WorldSession {
 	 
 	public void sendCharacters(){
    	 	Log.log("sending chars");
-
-	   connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
+   	 	if(this.realm.getVersion() <= Constants.VERSION_CATA)
+   	 		connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
+		else
+			try {
+				connection.send(new SMSG_CHAR_ENUM_MOP(connection.getClientParent()));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			//connection.send(realm.loadPacket("charenum_mop", 535));
    }
 	
 	public void addCharacter(ClientPacket p){
@@ -45,17 +55,21 @@ public class WorldSession {
 	}
 	
 	public void verifyLogin(ClientPacket p){
-		Char character = connection.getClientParent().setCurrentCharacter(p.getLong());
-		Log.log(character.getGUID());
-		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
-		
-		if(realm.getVersion() == Constants.VERSION_BC)
-			connection.send(realm.loadPacket("updatepacket_bc", 5000));
-		else if(realm.getVersion() == Constants.VERSION_WOTLK)
-			connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
-		else if(realm.getVersion() == Constants.VERSION_CATA)
-			connection.send(realm.loadPacket("updatepacket_cata", 500));
-		
+		Char character;
+		if(realm.getVersion() <= Constants.VERSION_CATA){
+			character = connection.getClientParent().setCurrentCharacter(p.getLong());
+			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
+			if(realm.getVersion() == Constants.VERSION_BC)
+				connection.send(realm.loadPacket("updatepacket_bc", 5000));
+			else if(realm.getVersion() == Constants.VERSION_WOTLK)
+				connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+			else if(realm.getVersion() == Constants.VERSION_CATA)
+				connection.send(realm.loadPacket("updatepacket_cata", 500));
+		} else{
+			character = connection.getClientParent().setCurrentCharacter(1);
+			connection.send(realm.loadPacket("updatepacket_mop", 7000));
+		}
+			
 		sendAccountDataTimes(0xEA);
 		sendMOTD();
 		sendSpellGo();

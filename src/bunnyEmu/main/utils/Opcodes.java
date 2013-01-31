@@ -135,15 +135,15 @@ public class Opcodes {
 	public static PacketMap formMoP(){
 		packets = new PacketMap();
 		
-		add(CMSG_CHAR_CREATE               		,0x07EEC); // 4.0.6a 13623
+		add(CMSG_CHAR_CREATE               		,0xEB3); // MoP
 		add(CMSG_CHAR_ENUM               		,0x0146); // MoP
 		add(CMSG_AUTH_PROOF               		,0x0C07); // MoP
 		add(CMSG_CHAR_ENUM						,0x06AA4);  // 4.0.6a 13623
 		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x5A5); 	// MoP
-		add(CMSG_REALM_SPLIT					,0x060AC); // 4.0.6a 13623 //unused
+		add(CMSG_REALM_SPLIT					,0x261); // MoP
 		add(CMSG_PING       					,0x0064E); //4.0.6a 13623 
 		add(CMSG_WORLD_LOGIN       				,0x08508); //4.0.6a 13623 //unused
-		add(CMSG_PLAYER_LOGIN       			,0x08180); //4.0.6a 13623
+		add(CMSG_PLAYER_LOGIN       			,0xEBA); // MoP
 		add(CMSG_NAME_QUERY       				,0x07AAC); //4.0.6a 13623
 		add(CMSG_UPDATE_ACCOUNT_DATA       		,0x072A4); //4.0.6a 13623 // unused
 		
@@ -152,14 +152,14 @@ public class Opcodes {
 		add(SMSG_AUTH_RESPONSE 					,0x0A15); // MoP
 		add(SMSG_CHAR_ENUM						,0x033D); // MoP
 		add(SMSG_CHAR_CREATE					,0x0F25); // MoP
-		add(SMSG_PONG       					,0x0A01B); //4.0.6a 13623
+		add(SMSG_PONG       					,0x8AE); // MoP
 		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0E48); // MoP, called AccountDataInitialized
 		add(SMSG_LOGIN_VERIFY_WORLD        		,0x028C0); //4.0.6a 13623
 		add(SMSG_TIME_SYNC_REQ        			,0x0410); // MoP
 		add(SMSG_MOTD        					,0x0849); // MoP
 		add(SMSG_NAME_QUERY_RESPONSE        	,0x07BC8); //4.0.6a 13623
 		add(SMSG_SPELL_GO        				,0x030C0); //4.0.6a 13623
-		add(SMSG_UPDATE_OBJECT        			,0x03780); //4.0.6a 13623
+		add(SMSG_UPDATE_OBJECT        			,0x120); // MoP
 		add(SMSG_COMPRESSED_UPDATE_OBJECT		,0x0EAC0); //4.0.6a 13623
 		
 		add(MSG_TRANSFER_INITIATE				,0x04F57); // MoP

@@ -54,10 +54,10 @@ public class Client {
         else if(version <= Constants.VERSION_MOP)
         	_crypt = new MoPCrypt();
         
-        Char char1 = new Char("testy", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
-        Char char2 = new Char("bc", 150, -4415, 21, 1, (byte) 6,(byte) 1);
+        Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
+      //Char char2 = new Char("bc", 150, -4415, 21, 1, (byte) 6,(byte) 1);
 	   	addCharacter(char1);
-	   	addCharacter(char2);
+	   	//addCharacter(char2);
     }
     
     public void setSessionKey(byte[] K){
