@@ -1,9 +1,8 @@
 package bunnyEmu.main.utils;
 
-import java.util.HashMap;
 
 /**
- * Here's the list of all opcodes used. Use a form function to get a packetmap
+ * The list of all opcodes used. Using a form function to get a packetmap
  * 
  * @author Marijn
  *

@@ -3,7 +3,7 @@ package bunnyEmu.main.utils;
 import java.util.HashMap;
 
 /**
- * A HashMap with keys to both sides
+ * A HashMap with keys to both sides (Opcode String - Opcode Short) 
  * 
  * @author Marijn
  *
@@ -18,10 +18,17 @@ public class PacketMap{
 	    backward.put(key2, key);
 	  }
 
+	  /**
+	   * @return The opcode value of the packet that belongs to the opcode's name given
+	   */
+	  
 	  public synchronized Short getOpcodeValue(String key) {
 	    return forward.get(key);
 	  }
 
+	  /**
+	   * @return The String name of the packet that belongs to the key
+	   */
 	  public synchronized String getOpcodeName(Short key) {
 	    return backward.get(key);
 	  }

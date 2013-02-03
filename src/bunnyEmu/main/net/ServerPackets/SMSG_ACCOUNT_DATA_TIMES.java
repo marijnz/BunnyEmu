@@ -3,6 +3,12 @@ package bunnyEmu.main.net.ServerPackets;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Current time, required
+ * 
+ * @author Marijn
+ *
+ */
 public class SMSG_ACCOUNT_DATA_TIMES extends ServerPacket{
 	
 	public SMSG_ACCOUNT_DATA_TIMES(int mask){
@@ -12,10 +18,8 @@ public class SMSG_ACCOUNT_DATA_TIMES extends ServerPacket{
 		put((byte) 1);
 		putInt(mask);		// type mask
 		for(int i = 0; i < 8; ++i)
-			if ((mask & (1 << i)) > 0) {
+			if ((mask & (1 << i)) > 0)
 				putInt(0);
-			}
-		
 		wrap();
 	}
 

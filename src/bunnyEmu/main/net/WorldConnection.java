@@ -19,14 +19,19 @@ import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
+ * 
+ * A connection between the client and the World
  *
  * @author Marijn
+ * 
+ * 
  */
 public class WorldConnection extends Connection{
     
     private RealmAuth auth;
     private WorldSession worldSession;
     private Realm realm;
+    
     public WorldConnection(Socket clientSocket, Realm realm){
         super(clientSocket);
         this.realm = realm;
@@ -54,7 +59,6 @@ public class WorldConnection extends Connection{
                 switch(p.sOpcode){
                 	case Opcodes.MSG_TRANSFER_INITIATE:					auth.authChallenge(); 						break; // MoP only
                     case Opcodes.CMSG_AUTH_PROOF:  						auth.authSession(p);						break;
-                    													//worldSession.sendAccountDataTimes(0x15);	
                     case Opcodes.CMSG_READY_FOR_ACCOUNT_DATA_TIMES:		worldSession.sendAccountDataTimes(0x15);	break;
                     case Opcodes.CMSG_CHAR_ENUM:						worldSession.sendCharacters();				break;
                     case Opcodes.CMSG_CHAR_CREATE:						worldSession.addCharacter(p); 				break;
@@ -69,7 +73,7 @@ public class WorldConnection extends Connection{
         } catch (IOException ex) {
         	Log.log(WorldConnection.class.getName() + " force closed");
         } finally{
-        	// The client parent might be null if the realm authentication went wrong
+        	// The client parent might be null if the realm authentication hasn't been completed yet
         	if(clientParent != null)
         		clientParent.disconnectFromRealm();
             close();
@@ -92,12 +96,13 @@ public class WorldConnection extends Connection{
             	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
             	return null;
             } else if (p.size == 0){
-            	p.packet = ByteBuffer.wrap(new byte[1]); // just put a empty byte in it..
+            	p.packet = ByteBuffer.wrap(new byte[1]); // just put an empty byte in it to avoid null errors on logging
             } else{
 	            byte[] b = new byte[p.size];
 	            in.read(b);
-	            p.packet = ByteBuffer.wrap(b);
-	            p.packet.order(ByteOrder.LITTLE_ENDIAN);
+	            p.packet = ByteBuffer.allocate(b.length);
+	            p.packet.order(ByteOrder.LITTLE_ENDIAN); 
+	            p.packet.put(b);
             }
         } catch (IOException e) {
             Log.log(Log.DEBUG, "Couldn't read client packet");
@@ -139,7 +144,6 @@ public class WorldConnection extends Connection{
 		header[index] = (byte)(0xFF & (opcode >> 8));
 		
         if (clientParent != null){
-        	//Log.log("First opcode1: " + opcode +  "  - " + new BigNumber(header).toHexString());
         	if(realm.getVersion() >= Constants.VERSION_MOP){
         		int totalLength = newSize-2;
                 totalLength <<= 12;
@@ -160,12 +164,10 @@ public class WorldConnection extends Connection{
      * Decodes and also decrypts if the crypt has been initialized
      */
     private void decodeHeader(Packet p){
-    	//Log.log("------- DECODING HEADER --------");
+    	// Client parent isn't null so client is authenticated
     	if (clientParent != null)
     		p.header = clientParent.getCrypt().decrypt(p.header);
     	
-    	//Log.log("got decrypted header: " + new BigNumber(p.header).toHexString());
-        
     	if(realm.getVersion() < Constants.VERSION_MOP){
     		ByteBuffer toHeader = ByteBuffer.allocate(6);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
@@ -190,8 +192,6 @@ public class WorldConnection extends Connection{
 	        	p.header[2] = (byte)(0xFF & opcode);
 	        	p.header[3] = (byte)(0xFF & (opcode >> 8));
     		}
-    		
-    		//Log.log("got decoded header: " + new BigNumber(p.header).toHexString());
     		
     		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= Constants.VERSION_CATA) ? 6 : 4);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);

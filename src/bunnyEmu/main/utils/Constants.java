@@ -1,5 +1,11 @@
 package bunnyEmu.main.utils;
 
+/**
+ * All major WoW versions
+ * 
+ * @author Marijn
+ *
+ */
 public class Constants {
 
 	public static final int VERSION_VANILLA = 112; // 1.1.2

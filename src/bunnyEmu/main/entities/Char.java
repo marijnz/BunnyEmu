@@ -8,7 +8,7 @@ package bunnyEmu.main.entities;
  */
 public class Char {
 
-	private static int countGUID = 1;
+	private static int countGUID = 12;
 	
 	private String name;
 	private float x;

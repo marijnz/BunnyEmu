@@ -4,6 +4,12 @@ import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Required upon login, basic info
+ * 
+ * @author Marijn
+ *
+ */
 public class SMSG_NAME_QUERY_RESPONSE extends ServerPacket{
 
 	

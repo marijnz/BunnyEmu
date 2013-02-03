@@ -3,6 +3,12 @@ package bunnyEmu.main.net.ServerPackets;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Respond with a Pong, useles?
+ * 
+ * @author Marijn
+ *
+ */
 public class SMSG_PONG extends ServerPacket{
 	
 	private static int currentPing = 1;

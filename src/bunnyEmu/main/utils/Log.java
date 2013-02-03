@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package bunnyEmu.main.utils;
 
 import bunnyEmu.main.ServerApplet;
 
 
-
 /**
+ * A nice logging class, making logging easier
  *
  * @author Marijn
  */

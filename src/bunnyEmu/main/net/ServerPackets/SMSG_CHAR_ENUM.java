@@ -9,6 +9,12 @@ import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Character list response
+ * 
+ * @author Marijn
+ *
+ */
 public class SMSG_CHAR_ENUM extends ServerPacket {
 
 	int charCount;

@@ -1,6 +1,7 @@
 package bunnyEmu.main.utils;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.Packet;
 
@@ -21,11 +22,6 @@ public class BitPack {
 
     public byte BitPosition;
     public byte BitValue;
-
-    private long Guid;
-    private long GuildGuid;
-    private long TargetGuid;
-    private long TransportGuid;
 
 	public BitPack(Packet packet) {
         this.packet = packet;
@@ -113,20 +109,19 @@ public class BitPack {
     }
     
     public void setGuid(long guid) {
-		Guid = guid;
-		this.GuidBytes = ByteBuffer.allocate(8).putLong(guid).array();
+		ByteBuffer b = ByteBuffer.allocate(8);
+		b.order(ByteOrder.LITTLE_ENDIAN);
+		b.putLong(guid);
+		this.GuidBytes = b.array();
 	}
 
 	public void setGuildGuid(long guildGuid) {
-		GuildGuid = guildGuid;
-		this.GuidBytes = ByteBuffer.allocate(8).putLong(guildGuid).array();
+		this.GuildGuidBytes = ByteBuffer.allocate(8).putLong(guildGuid).array();
 	}
 
 	public void setTargetGuid(long targetGuid) {
-		TargetGuid = targetGuid;
 	}
 	public void setTransportGuid(long transportGuid) {
-		TransportGuid = transportGuid;
 	}
 
 }

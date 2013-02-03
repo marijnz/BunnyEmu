@@ -4,8 +4,6 @@
  */
 package bunnyEmu.main.entities;
 
-
-
 /**
  *
  * @author Marijn

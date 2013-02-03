@@ -4,7 +4,6 @@
  */
 package bunnyEmu.main.logon;
 
-import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -20,6 +19,8 @@ import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
+ *
+ * Authenticates a client to the assigned realm
  *
  * @author Marijn
  */

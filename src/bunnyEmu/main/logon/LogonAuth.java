@@ -14,6 +14,8 @@ import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 
     /**
+     * 
+     * Authenticates a client to the realm server
      *
      * @author Marijn
      */
@@ -47,7 +49,6 @@ import bunnyEmu.main.utils.Log;
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
             Log.log("serverLogonChallenge");
-            
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";

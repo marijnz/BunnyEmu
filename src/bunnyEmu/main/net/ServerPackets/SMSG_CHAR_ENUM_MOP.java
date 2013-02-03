@@ -10,6 +10,12 @@ import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Character list response for MoP
+ * 
+ * @author Marijn
+ *
+ */
 
 public class SMSG_CHAR_ENUM_MOP extends ServerPacket {
 	
@@ -28,14 +34,14 @@ public class SMSG_CHAR_ENUM_MOP extends ServerPacket {
         	  Char currentChar = client.getCharacters().get(c);
               String name       = currentChar.getName();
               boolean loginCinematic = false;
-
+              
               bitPack.setGuid(currentChar.getGUID());
               bitPack.setGuildGuid(0);
 
               bitPack.writeGuidMask(new byte[]{7, 0, 4});
               bitPack.writeGuildGuidMask(new byte[]{2});
               bitPack.writeGuidMask(new byte[]{5, 3});
-              bitPack.write(name.getBytes("US-ASCII").length + 1, 7);
+              bitPack.write(name.getBytes("US-ASCII").length, 7);
               bitPack.writeGuildGuidMask(new byte[]{0, 5, 3});
               bitPack.write(1); // login cinamatic
               bitPack.writeGuildGuidMask(new byte[]{6, 7});
@@ -55,6 +61,7 @@ public class SMSG_CHAR_ENUM_MOP extends ServerPacket {
         	  Char currentChar = client.getCharacters().get(c);
         	  String name = currentChar.getName();
         	  bitPack.setGuid(currentChar.getGUID());
+        	  Log.log("GUID: " + currentChar.getGUID());
               bitPack.setGuildGuid(0);
 
               this.putInt(0); // CharacterFlags
@@ -104,11 +111,11 @@ public class SMSG_CHAR_ENUM_MOP extends ServerPacket {
               bitPack.writeGuidBytes(new byte[]{4});
               bitPack.writeGuildGuidBytes(new byte[]{5});
 
-              this.putString(name);
+              this.put(name.getBytes("US-ASCII"));
 
               bitPack.writeGuildGuidBytes(new byte[]{0});
 
-              this.put((byte) 60); // level
+              this.put((byte) 121); // level
 
               bitPack.writeGuidBytes(new byte[]{3});
               bitPack.writeGuildGuidBytes(new byte[]{7});
