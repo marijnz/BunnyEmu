@@ -109,6 +109,21 @@ public class Realm extends Thread {
 	public int getVersion() {
 		return version;
 	}
+	
+	public String getVersionName(){
+		if(this.version <= Constants.VERSION_VANILLA)
+			return "Vanilla";
+		if(this.version <= Constants.VERSION_BC)
+			return "BC";
+		if(this.version <= Constants.VERSION_WOTLK)
+			return "WotLK";
+		if(this.version <= Constants.VERSION_CATA)
+			return "Cata";
+		if(this.version <= Constants.VERSION_MOP)
+			return "MoP";
+		else
+			return null;
+	}
 
 	public PacketMap getPackets() {
 		return packets;

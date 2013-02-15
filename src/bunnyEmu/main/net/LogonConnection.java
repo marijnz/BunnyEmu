@@ -86,11 +86,9 @@ public class LogonConnection extends Connection {
         return p;
 	}
 	
-	 
-    @Override 
     public boolean send(Packet p){
     	Log.log("Sending packet: (" + p.size + ") " + p.packetAsHex());
-        return super.send(p);
+        return super.sendPacket(p);
     }
 		
 }

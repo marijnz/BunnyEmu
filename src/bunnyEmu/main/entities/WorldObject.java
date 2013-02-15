@@ -16,7 +16,6 @@ public class WorldObject {
 	protected int mapID;
 
 	private Hashtable<Integer, Integer> updateData = new Hashtable<Integer, Integer>();
-	//private Hashtable<Integer, Class<?>> updateDataTypes = new Hashtable<Integer, Class<?>>();
 	private BitSet mask;
 	private int maskSize;
 

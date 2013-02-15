@@ -45,6 +45,8 @@ public class Opcodes {
 	public static final String SMSG_TIME_SYNC_REQ				= "SMSG_TIME_SYNC_REQ";
 	public static final String SMSG_FORCE_RUN_SPEED_CHANGE		= "SMSG_FORCE_RUN_SPEED_CHANGE";
 	public static final String SMSG_FORCE_MOVE_ROOT				= "SMSG_FORCE_MOVE_ROOT";
+	public static final String SMSG_MOVE_SET_CANFLY				= "SMSG_MOVE_SET_CANFLY"; 			// MoP
+	public static final String SMSG_KNOWN_SPELLS				= "SMSG_KNOWN_SPELLS";			// MoP
 	
 	public static final String MSG_SET_DUNGEON_DIFFICULTY 	= "MSG_SET_DUNGEON_DIFFICULTY";
 	public static final String MSG_SET_RAID_DIFFICULTY 			= "MSG_SET_RAID_DIFFICULTY";
@@ -160,6 +162,9 @@ public class Opcodes {
 		add(SMSG_SPELL_GO        				,0x030C0); //4.0.6a 13623
 		add(SMSG_UPDATE_OBJECT        			,0x120); // MoP
 		add(SMSG_COMPRESSED_UPDATE_OBJECT		,0x0EAC0); //4.0.6a 13623
+		add(SMSG_MOVE_SET_CANFLY				,0x419); //MoP
+		add(SMSG_KNOWN_SPELLS					,0x155); //MoP
+		
 		
 		add(MSG_TRANSFER_INITIATE				,0x04F57); // MoP
 		

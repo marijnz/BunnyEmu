@@ -1,6 +1,5 @@
 package bunnyEmu.main.net;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.Char;
@@ -9,9 +8,10 @@ import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
-import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM_MOP;
+import bunnyEmu.main.net.ServerPackets.SMSG_KNOWN_SPELLS;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
+import bunnyEmu.main.net.ServerPackets.SMSG_MOVE_SET_CANFLY;
 import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
 import bunnyEmu.main.net.ServerPackets.SMSG_PONG;
 import bunnyEmu.main.net.ServerPackets.SMSG_UPDATE_OBJECT_CREATE;
@@ -32,15 +32,7 @@ public class WorldSession {
 
 	public void sendCharacters() {
 		Log.log("sending chars");
-		if (this.realm.getVersion() <= Constants.VERSION_CATA)
-			connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
-		else
-			try {
-				connection.send(new SMSG_CHAR_ENUM_MOP(connection.getClientParent()));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		// connection.send(realm.loadPacket("charenum_mop", 535));
+		connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
 	}
 
 	public void addCharacter(ClientPacket p) {
@@ -61,8 +53,8 @@ public class WorldSession {
 			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 			if (realm.getVersion() == Constants.VERSION_BC)
 				connection.send(realm.loadPacket("updatepacket_bc", 5000));
-			else if (realm.getVersion() == Constants.VERSION_WOTLK)
-				connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+			//else if (realm.getVersion() == Constants.VERSION_WOTLK)
+			//	connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
 			else if (realm.getVersion() == Constants.VERSION_CATA)
 				connection.send(realm.loadPacket("updatepacket_cata", 500));
 		} else {
@@ -73,9 +65,12 @@ public class WorldSession {
 			
 			long guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
 			character = connection.getClientParent().setCurrentCharacter(guid);
-			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+			
 		}
+		connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
 
+		connection.send(new SMSG_MOVE_SET_CANFLY(character));
+		//connection.send(new SMSG_KNOWN_SPELLS(character));
 		sendAccountDataTimes(0xEA);
 		sendMOTD();
 		sendSpellGo(); // Shiny start

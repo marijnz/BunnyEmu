@@ -1,6 +1,5 @@
 package bunnyEmu.main.entities;
 
-import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.types.UpdateFields.ObjectFields;
 import bunnyEmu.main.utils.types.UpdateFields.PlayerFields;
 import bunnyEmu.main.utils.types.UpdateFields.UnitFields;
@@ -38,7 +37,7 @@ public class Char extends WorldObject{
 		 setUpdateField(ObjectFields.Guid, guid, Long.class);
 		 setUpdateField(ObjectFields.Data, (long) 0, Long.class);
 		 setUpdateField(ObjectFields.Type, 0x19, Integer.class);
-		 setUpdateField(ObjectFields.Scale, 1.0f, Float.class);
+		 setUpdateField(ObjectFields.Scale, 2.0f, Float.class);
 		 
 		 // UnitFields
 		 setUpdateField(UnitFields.Charm, (long) 0, Long.class);
@@ -50,13 +49,13 @@ public class Char extends WorldObject{
 		 setUpdateField(UnitFields.Target, (long) 0, Long.class);
 		 setUpdateField(UnitFields.ChannelObject, (long) 0, Long.class);
 		 
-		 setUpdateField(UnitFields.Health, 123, Integer.class);
+		 setUpdateField(UnitFields.Health, 13377, Integer.class);
 		 
 
          for (int i = 0; i < 5; i++)
         	 setUpdateField(UnitFields.Power + i, 0, Integer.class);
 
-         setUpdateField(UnitFields.MaxHealth, 123, Integer.class);
+         setUpdateField(UnitFields.MaxHealth, 13377, Integer.class);
 
          for (int i = 0; i < 5; i++)
         	 setUpdateField(UnitFields.MaxPower + i, 0, Integer.class);
@@ -65,7 +64,7 @@ public class Char extends WorldObject{
          setUpdateField(UnitFields.PowerRegenInterruptedFlatModifier, 0, Integer.class);
          setUpdateField(UnitFields.BaseHealth, 0, Integer.class);
          setUpdateField(UnitFields.BaseMana, 0, Integer.class);
-         setUpdateField(UnitFields.Level, 1, Integer.class);
+         setUpdateField(UnitFields.Level, 240, Integer.class);
          setUpdateField(UnitFields.FactionTemplate, 0x74, Integer.class);
          setUpdateField(UnitFields.Flags, 0, Integer.class);
          setUpdateField(UnitFields.Flags2, 0, Integer.class);
@@ -89,6 +88,20 @@ public class Char extends WorldObject{
          setUpdateField(PlayerFields.HairColorID, (byte) 0, Byte.class, (byte) 2); // hairstyle
          setUpdateField(PlayerFields.HairColorID, (byte) 0, Byte.class, (byte) 3); // haircolor
          setUpdateField(PlayerFields.RestState, (byte) 0, Byte.class, (byte) 0); 	// facial hair
+         
+         setUpdateField(PlayerFields.ArenaFaction, (byte) 1, Byte.class, (byte) 0); //gender
+         setUpdateField(PlayerFields.ArenaFaction, (byte) 0, Byte.class, (byte) 1); 
+         setUpdateField(PlayerFields.ArenaFaction, (byte) 0, Byte.class, (byte) 2); 
+         setUpdateField(PlayerFields.ArenaFaction, (byte) 0, Byte.class, (byte) 3); 
+         
+         int displayID = 2457 ;
+         
+         setUpdateField(UnitFields.DisplayID, displayID, Integer.class);
+         setUpdateField(UnitFields.NativeDisplayID, displayID, Integer.class);
+         
+         setUpdateField(PlayerFields.Skill, 98, Integer.class);
+         for (int i = 1; i < 448; i++)
+        	 setUpdateField(PlayerFields.Skill + i, 0, Integer.class);
          
 	}
 

@@ -5,15 +5,17 @@
 package bunnyEmu.main.net;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.ClientPacket;
+import bunnyEmu.main.entities.IPacketWritable;
 import bunnyEmu.main.entities.Packet;
 import bunnyEmu.main.entities.Realm;
+import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.logon.RealmAuth;
-import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
@@ -31,10 +33,18 @@ public class WorldConnection extends Connection{
     private RealmAuth auth;
     private WorldSession worldSession;
     private Realm realm;
+    private Method packetWriter;
     
     public WorldConnection(Socket clientSocket, Realm realm){
         super(clientSocket);
         this.realm = realm;
+        
+        try {
+        	packetWriter = IPacketWritable.class.getMethod("write" + realm.getVersionName());
+		} catch (Exception e){
+			
+		}
+        
         auth = new RealmAuth(this, realm);
         if(realm.getVersion() < Constants.VERSION_MOP)
         	auth.authChallenge();
@@ -110,14 +120,18 @@ public class WorldConnection extends Connection{
         return p;
     }
    
-    
-    @Override 
-    public boolean send(Packet p){
+    public boolean send(ServerPacket p){
     	try{
+    		try {
+				if(!((boolean) packetWriter.invoke(p, new Object[0])))
+					p.writeGeneric();
+			} catch (Exception e){
+				e.printStackTrace();
+				return false;
+			}
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
     		Log.log(p.sOpcode + " can't be send, it has no opcode linked");
-    		e.printStackTrace();
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
@@ -125,7 +139,7 @@ public class WorldConnection extends Connection{
     	Log.log("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
-        return super.send(p);
+        return super.sendPacket(p);
     }
     
     /**
@@ -201,7 +215,6 @@ public class WorldConnection extends Connection{
 	        p.size = toHeader.getShort();
         	p.nOpcode = toHeader.getShort();
         	p.header = toHeader.array();
-        	//Log.log("------- DECODED HEADER --------");
     	}
     
     }

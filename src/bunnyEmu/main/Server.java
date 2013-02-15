@@ -50,7 +50,6 @@ public class Server {
         try{
         	InetAddress addr = InetAddress.getByName(localIP);
             serverSocket = new ServerSocket(3724, 0, addr);
-            serverSocket.accept();
         } catch (IOException e) {
             Log.log("3724 not working");
         }

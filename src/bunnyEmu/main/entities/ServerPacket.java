@@ -6,13 +6,12 @@ package bunnyEmu.main.entities;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.BitSet;
 
 /**
  *
  * @author Marijn
  */
-public class ServerPacket extends Packet{
+public class ServerPacket extends Packet implements IPacketWritable{
     
 	public ServerPacket(String sOpcode){
 		 create(sOpcode, 0, null);
@@ -76,6 +75,36 @@ public class ServerPacket extends Packet{
 	    temp.put(header);
 	    temp.put(packet);
 	    return temp.array();
+	}
+
+	@Override
+	public boolean writeVanilla() {
+		return false;
+	}
+
+	@Override
+	public boolean writeBC() {
+		return false;
+	}
+
+	@Override
+	public boolean writeWotLK() {
+		return false;
+	}
+
+	@Override
+	public boolean writeCata() {
+		return false;
+	}
+
+	@Override
+	public boolean writeMoP() {
+		return false;
+	}
+	
+	@Override
+	public boolean writeGeneric() {
+		return false;
 	}
 	
 }

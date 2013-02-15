@@ -18,7 +18,7 @@ public class UpdatePacket extends ServerPacket {
 		super(sOpcode, size);
 	}
 
-	protected void writeUpdateObjectMovement(Char character, int updateFlags) {
+	protected void writeUpdateObjectMovementMoP(Char character, byte updateFlags) {
 		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
 		BitPack bitPack = new BitPack(this);
 
@@ -67,48 +67,17 @@ public class UpdatePacket extends ServerPacket {
 				// Transports not implanted.
 			}
 
-			/*
-			 * MovementFlags2 are not implanted if (movementFlag2 != 0)
-			 * bitPack.write(0, 12);
-			 */
-
 			bitPack.write(true); // Movementflags are not implanted
 			bitPack.writeGuidMask(new byte[] { 1 });
 
-			/*
-			 * IsInterpolated, not implanted if (IsInterpolated) {
-			 * bitPack.write(0); // IsFalling }
-			 */
-
 			bitPack.write(0); // HasSplineData, don't write simple basic
-								// splineData
 
-			/*
-			 * Movementflags are not implanted if (movementFlags != 0)
-			 * bitPack.write((uint)movementFlags, 30);
-			 */
-
-			// Don't send basic spline data and disable advanced data
-			// if (HasSplineData)
-			// bitPack.write(0); // Disable advance splineData
 		}
 
 		bitPack.flush();
 
 		if (values.IsAlive) {
 			packet.putFloat((float) MovementSpeed.FlyBackSpeed);
-
-			// Don't send basic spline data
-			/*
-			 * if (HasSplineBasicData) { // Advanced spline data not implanted
-			 * if (HasAdvancedSplineData) {
-			 * 
-			 * }
-			 * 
-			 * packet.writeFloat(character.X); packet.writeFloat(character.Y);
-			 * packet.writeUInt32(0); packet.writeFloat(character.Z); }
-			 */
-
 			packet.putFloat((float) MovementSpeed.SwimSpeed);
 
 			if (values.IsTransport) {
@@ -148,5 +117,73 @@ public class UpdatePacket extends ServerPacket {
 			packet.putLong(0);
 		// packet.writeInt64(Quaternion.GetCompressed(wObject.Position.O));
 	}
+	
+	
+	
+	
+	
+	
+	
+	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
+		this.putShort(updateFlags);  // update flags              
+		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+
+		short moveFlags = 0;
+		
+	    if (values.IsAlive){
+	    	this.putInt(0); // flags2
+	        this.putShort(moveFlags);      		// movement flags
+	        this.putInt(1);				// time (in milliseconds)
+	        
+	        packet.putFloat(character.getX());
+	        packet.putFloat(character.getY());
+	        packet.putFloat(character.getZ());
+	        packet.putFloat(0); // orientation
+	        packet.put((byte) 9);
+	        packet.putInt(0); // last fall time?
+	       	
+			packet.putFloat((float) MovementSpeed.WalkSpeed);
+			packet.putFloat((float) MovementSpeed.RunSpeed);
+			packet.putFloat((float) MovementSpeed.WalkSpeed); // walk back
+			packet.putFloat((float) MovementSpeed.SwimSpeed);
+			packet.putFloat((float) MovementSpeed.SwimBackSpeed);
+			packet.putFloat((float) MovementSpeed.FlySpeed);
+			packet.putFloat((float) MovementSpeed.FlyBackSpeed);
+	        packet.putFloat((float) MovementSpeed.TurnSpeed);
+	        packet.putFloat((float) MovementSpeed.PitchSpeed);
+	        
+	        /*
+	        if( m_objectTypeId==TYPEID_UNIT )
+	        {
+	            int PosCount=0;
+	            if(moveFlags & 0x400000){
+	                *data << (uint32)0x0;
+	                *data << (uint32)0x659;
+	                *data << (uint32)0xB7B;
+	                *data << (uint32)0xFDA0B4;
+	                *data << (uint32)PosCount;
+	                for(int i=0;i<PosCount+1;i++)
+	                {
+	                    *data << (float)0;                      //x
+	                    *data << (float)0;                      //y
+	                    *data << (float)0;                      //z
+	                }
+	            }
+	        }
+	        */
+	    }
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
