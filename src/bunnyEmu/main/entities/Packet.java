@@ -30,6 +30,10 @@ public abstract class Packet{
         packet.put(b);
     }
     
+    public void put(byte[] b, int offset, int length){
+        packet.put(b, offset, length);
+    }
+    
     public void put(BigNumber b){
         packet.put(b.asByteArray());
     }

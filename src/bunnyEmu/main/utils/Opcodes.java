@@ -126,7 +126,7 @@ public class Opcodes {
 		add(SMSG_NAME_QUERY_RESPONSE        	,0x07BC8); //4.0.6a 13623
 		add(SMSG_SPELL_GO        				,0x030C0); //4.0.6a 13623
 		add(SMSG_UPDATE_OBJECT        			,0x03780); //4.0.6a 13623
-		add(SMSG_COMPRESSED_UPDATE_OBJECT		,0x0EAC0);
+		add(SMSG_COMPRESSED_UPDATE_OBJECT		,0xEAC0); //4.0.6a 13623
 		
 		return packets.clone();
 	}

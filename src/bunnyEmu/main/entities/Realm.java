@@ -151,9 +151,12 @@ public class Realm extends Thread {
         }
     	
     	Log.log(data.toString());
-    	ServerPacket p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);
-    	//ServerPacket p = new ServerPacket(Opcodes.SMSG_COMPRESSED_UPDATE_OBJECT, data);
-    	//p.wrap();
+    	ServerPacket p;
+    	try{
+    		p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);
+    	} catch (NumberFormatException e){
+    		p = new ServerPacket(Opcodes.SMSG_COMPRESSED_UPDATE_OBJECT, data);
+    	}
     	return p;
     	
     }

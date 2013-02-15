@@ -1,6 +1,7 @@
 package bunnyEmu.main.net;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
@@ -9,13 +10,12 @@ import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM_MOP;
-import bunnyEmu.main.net.ServerPackets.SMSG_FORCE_RUN_SPEED_CHANGE;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
 import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
 import bunnyEmu.main.net.ServerPackets.SMSG_PONG;
+import bunnyEmu.main.net.ServerPackets.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
-import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.BitUnpack;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
@@ -56,6 +56,7 @@ public class WorldSession {
 	public void verifyLogin(ClientPacket p) {
 		Char character;
 		if (realm.getVersion() <= Constants.VERSION_CATA) {
+			p.packet.order(ByteOrder.BIG_ENDIAN);
 			character = connection.getClientParent().setCurrentCharacter(p.getLong());
 			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 			if (realm.getVersion() == Constants.VERSION_BC)
@@ -72,14 +73,12 @@ public class WorldSession {
 			
 			long guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
 			character = connection.getClientParent().setCurrentCharacter(guid);
-			connection.send(realm.loadPacket("updatepacket_mop", 7000));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
 		}
 
 		sendAccountDataTimes(0xEA);
 		sendMOTD();
 		sendSpellGo(); // Shiny start
-
-		//connection.send(new SMSG_FORCE_RUN_SPEED_CHANGE(character, 30));
 	}
 
 	public void sendAccountDataTimes(int mask) {

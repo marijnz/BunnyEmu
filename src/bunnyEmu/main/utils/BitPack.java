@@ -27,6 +27,10 @@ public class BitPack {
         this.packet = packet;
         BitPosition = 8;
     }
+	
+	public void write(boolean bit){
+		this.write((bit) ? 1 : 0);
+	}
 
     public void write(int bit){
         --BitPosition;

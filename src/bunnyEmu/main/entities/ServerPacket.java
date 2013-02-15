@@ -6,6 +6,7 @@ package bunnyEmu.main.entities;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.BitSet;
 
 /**
  *
