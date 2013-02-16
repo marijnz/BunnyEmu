@@ -2,18 +2,22 @@ package bunnyEmu.main.net;
 
 import java.nio.ByteOrder;
 
-import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
 import bunnyEmu.main.net.ServerPackets.SMSG_KNOWN_SPELLS;
 import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
+import bunnyEmu.main.net.ServerPackets.SMSG_MESSAGECHAT;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
 import bunnyEmu.main.net.ServerPackets.SMSG_MOVE_SET_CANFLY;
+import bunnyEmu.main.net.ServerPackets.SMSG_NAME_CACHE;
 import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
+import bunnyEmu.main.net.ServerPackets.SMSG_NEW_WORLD;
 import bunnyEmu.main.net.ServerPackets.SMSG_PONG;
+import bunnyEmu.main.net.ServerPackets.SMSG_REALM_CACHE;
 import bunnyEmu.main.net.ServerPackets.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitUnpack;
@@ -51,28 +55,31 @@ public class WorldSession {
 			p.packet.order(ByteOrder.BIG_ENDIAN);
 			character = connection.getClientParent().setCurrentCharacter(p.getLong());
 			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
-			if (realm.getVersion() == Constants.VERSION_BC)
-				connection.send(realm.loadPacket("updatepacket_bc", 5000));
-			//else if (realm.getVersion() == Constants.VERSION_WOTLK)
-			//	connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
-			else if (realm.getVersion() == Constants.VERSION_CATA)
-				connection.send(realm.loadPacket("updatepacket_cata", 500));
 		} else {
-			// MoP packs the bits..
 			byte[] guidMask = { 5, 7, 6, 1, 2, 3, 4, 0 };
 			byte[] guidBytes = { 6, 4, 3, 5, 0, 2, 7, 1 };
 			BitUnpack GuidUnpacker = new BitUnpack(p);
 			
 			long guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
 			character = connection.getClientParent().setCurrentCharacter(guid);
-			
 		}
-		connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+
+		connection.send(new SMSG_KNOWN_SPELLS(character));
+		character.setSpeed(15);
+		
+		// Currently only fully supports MoP
+		if (realm.getVersion() <= Constants.VERSION_BC)
+			connection.send(realm.loadPacket("updatepacket_bc", 5000));
+		else if (realm.getVersion() <= Constants.VERSION_WOTLK)
+			connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+		else if (realm.getVersion() <= Constants.VERSION_CATA)
+			connection.send(realm.loadPacket("updatepacket_cata", 500));
+		else
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
 
 		connection.send(new SMSG_MOVE_SET_CANFLY(character));
-		//connection.send(new SMSG_KNOWN_SPELLS(character));
 		sendAccountDataTimes(0xEA);
-		sendMOTD();
+		sendMOTD("Welcome to BunnyEmu, have fun exploring!");
 		sendSpellGo(); // Shiny start
 	}
 
@@ -82,8 +89,8 @@ public class WorldSession {
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 
-	public void sendMOTD() {
-		connection.send(new SMSG_MOTD("Welcome to this test server"));
+	public void sendMOTD(String message) {
+		connection.send(new SMSG_MOTD(message));
 	}
 
 	public void sendPong() {
@@ -92,6 +99,62 @@ public class WorldSession {
 
 	public void sendNameResponse() {
 		connection.send(new SMSG_NAME_QUERY_RESPONSE(connection.clientParent.getCurrentCharacter()));
+	}
+	
+	public void handleNameCache(ClientPacket p){
+		long guid = p.getLong();
+		Log.log("GUID: " + guid);
+		//if(guid != connection.clientParent.getCurrentCharacter().getGUID())
+		//	return;
+		
+		connection.send(new SMSG_NAME_CACHE(connection.clientParent.getCurrentCharacter(), realm));
+	}
+	
+	public void handleRealmCache(ClientPacket p){
+		
+		int realmId = p.getInt();
+		if(realm.id != realmId)
+			return;
+		
+		connection.send(new SMSG_REALM_CACHE(realm));
+	}
+	
+	public void handleChatMessage(ClientPacket p){
+		Char character = connection.clientParent.getCurrentCharacter();
+		 BitUnpack bitUnpack = new BitUnpack(p);
+         int language = p.getInt();
+
+         int messageLength = bitUnpack.GetBits((byte) 9);
+         String message = p.getString(messageLength);
+         connection.send(new SMSG_MESSAGECHAT(connection.clientParent.getCurrentCharacter(), language, message));
+         
+         try{
+	         if(message.contains(".tele")){
+	        	 String[] coords = message.split("\\s");
+	        	 int mapId = Integer.parseInt(coords[1]);
+	        	 float x = Float.parseFloat(coords[2]);
+	        	 float y = Float.parseFloat(coords[3]);
+	        	 float z = Float.parseFloat(coords[4]);
+	        	 teleportTo(-x, -y, z, mapId);
+	         }
+	         if(message.contains(".speed")){
+	        	 String[] coords = message.split("\\s");
+	        	 int speed = Integer.parseInt(coords[1]);
+	        	 character.setSpeed((speed > 0) ? speed : 0);
+	        	 this.sendMOTD("Modifying the multiplying speed requires a teleport to be applied.");
+	         }
+         } catch (Exception e){
+        	 this.sendMOTD("Invalid command!");
+         }
+	}
+	
+	public void teleportTo(float x, float y, float z, int mapId){
+		Char character = this.connection.getClientParent().getCurrentCharacter();
+		character.setPosition(x, y, z, mapId);
+		connection.send(new SMSG_NEW_WORLD(character));
+        connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+
+		connection.send(new SMSG_MOVE_SET_CANFLY(character));
 	}
 
 	/**
@@ -108,47 +171,4 @@ public class WorldSession {
 		connection.send(new ServerPacket(Opcodes.SMSG_SPELL_GO, data.length,
 				data));
 	}
-
-	private void setPosition() {
-		Char currentChar = connection.getClientParent().getCurrentCharacter();
-
-		ServerPacket updatePoint = new ServerPacket(Opcodes.SMSG_NEW_WORLD, 20);
-		updatePoint.putInt(currentChar.getMapID());
-		updatePoint.putFloat(currentChar.getX());
-		updatePoint.putFloat(currentChar.getY());
-		updatePoint.putFloat(currentChar.getZ());
-		updatePoint.putInt(0);// orientation
-		connection.send(updatePoint);
-	}
-
-	private void setSpeed(float speed) {
-		ServerPacket setRunSpeed = new ServerPacket(
-				Opcodes.SMSG_FORCE_RUN_SPEED_CHANGE, 50);
-		setRunSpeed.writePackedGuid(connection.getClientParent()
-				.getCurrentCharacter().getGUID());
-		setRunSpeed.putInt(0);
-		setRunSpeed.put((byte) 0);
-		setRunSpeed.putFloat(speed);
-
-		connection.send(setRunSpeed);
-	}
-
-	private void sendMessage(String channel, String message) {
-		ServerPacket msgPacket = new ServerPacket(Opcodes.SMSG_MESSAGECHAT, 1
-				+ 4 + 8 + 4 + channel.length() + 1 + 8 + 4 + message.length()
-				+ 1 + 1);
-		msgPacket.put((byte) 17);
-		msgPacket.putInt(0); // language
-		msgPacket.writePackedGuid(connection.clientParent.getCurrentCharacter()
-				.getGUID()); // guid
-		msgPacket.putInt(0); // rank?
-		msgPacket.putString(channel); // channel name
-		msgPacket.writePackedGuid(connection.clientParent.getCurrentCharacter()
-				.getGUID()); // guid again?
-		msgPacket.putInt(message.length() + 1);
-		msgPacket.putString(message);
-		msgPacket.put((byte) 4); // gm = 4, normal = 0
-		connection.send(msgPacket);
-	}
-
 }

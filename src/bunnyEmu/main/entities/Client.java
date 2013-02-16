@@ -7,6 +7,7 @@ package bunnyEmu.main.entities;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;

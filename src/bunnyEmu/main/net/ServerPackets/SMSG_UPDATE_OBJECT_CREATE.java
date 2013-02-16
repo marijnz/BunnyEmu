@@ -1,7 +1,7 @@
 package bunnyEmu.main.net.ServerPackets;
 
-import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.Client;
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.types.ObjectType;
 import bunnyEmu.main.utils.types.UpdateFlag;

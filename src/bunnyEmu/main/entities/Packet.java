@@ -92,6 +92,15 @@ public abstract class Packet{
 		return b.toString();
     }
     
+    public String getString(int length){
+    	StringBuilder b = new StringBuilder();
+
+		for (int i = 0; i < length ; i++)
+			b.append((char) packet.get());
+
+		return b.toString();
+    }
+    
     public byte[] getFull(){
     	return packet.array();
     }

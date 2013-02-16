@@ -69,7 +69,7 @@ public class RealmHandler {
 		for(Realm realm : realms)
 			if(realm.getVersion() == version)
 				return;
-		realms.add(new Realm(realms.size(), "Version realm", Server.localIP, 8100 + realms.size(), version));
+		realms.add(new Realm(realms.size()+1, "Version realm", Server.localIP, 8100 + realms.size(), version));
 	}
 	
 	/**

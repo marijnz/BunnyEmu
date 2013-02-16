@@ -1,7 +1,10 @@
 package bunnyEmu.main.net.ServerPackets;
 
-import bunnyEmu.main.entities.Char;
+import java.util.ArrayList;
+
 import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.character.Char;
+import bunnyEmu.main.entities.character.Spell;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -10,7 +13,7 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 	private Char character;
 
 	public SMSG_KNOWN_SPELLS(Char character) {
-		super(Opcodes.SMSG_KNOWN_SPELLS, 50);
+		super(Opcodes.SMSG_KNOWN_SPELLS, 50 + character.getSpells().size() * 4 );
 		this.character = character;
 
 	}
@@ -20,11 +23,15 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 
 		BitPack bitPack = new BitPack(this);
 
-		bitPack.write(1, 24);
+		ArrayList<Spell> spells = character.getSpells();
+		
+		bitPack.write(spells.size(), 24);
 		bitPack.write(1);
 		bitPack.flush();
 
-		this.putInt(98);
+		for(Spell spell : spells)
+			this.putInt(spell.getId());
+		
 		this.wrap();
 		return true;
 	}

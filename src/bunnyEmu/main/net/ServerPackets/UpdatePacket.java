@@ -1,7 +1,7 @@
 package bunnyEmu.main.net.ServerPackets;
 
-import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.types.MovementSpeed;
 import bunnyEmu.main.utils.types.ObjectMovementValues;
@@ -84,25 +84,26 @@ public class UpdatePacket extends ServerPacket {
 				// Not implanted
 			}
 
+			float speed = character.getSpeed();
 			bitPack.writeGuidBytes(new byte[] { 1 });
 			packet.putFloat((float) MovementSpeed.TurnSpeed);
-			packet.putFloat(character.getY());
+			packet.putFloat(character.getX());
 			bitPack.writeGuidBytes(new byte[] { 3 });
 			packet.putFloat(character.getZ());
 			packet.putFloat(0); // orientation
-			packet.putFloat((float) MovementSpeed.RunBackSpeed);
+			packet.putFloat((float) MovementSpeed.RunBackSpeed * speed);
 			bitPack.writeGuidBytes(new byte[] { 0, 6 });
-			packet.putFloat(character.getX());
-			packet.putFloat((float) MovementSpeed.WalkSpeed);
+			packet.putFloat(character.getY());
+			packet.putFloat((float) MovementSpeed.WalkSpeed * speed);
 			bitPack.writeGuidBytes(new byte[] { 5 });
 			packet.putInt(0);
-			packet.putFloat((float) MovementSpeed.PitchSpeed);
+			packet.putFloat((float) MovementSpeed.PitchSpeed * speed);
 			bitPack.writeGuidBytes(new byte[] { 2 });
-			packet.putFloat((float) MovementSpeed.RunSpeed);
+			packet.putFloat((float) MovementSpeed.RunSpeed * speed);
 			bitPack.writeGuidBytes(new byte[] { 7 });
-			packet.putFloat((float) MovementSpeed.SwimBackSpeed);
+			packet.putFloat((float) MovementSpeed.SwimBackSpeed * speed);
 			bitPack.writeGuidBytes(new byte[] { 4 });
-			packet.putFloat((float) MovementSpeed.FlySpeed);
+			packet.putFloat((float) MovementSpeed.FlySpeed * speed);
 		}
 
 		if (values.HasStationaryPosition) {

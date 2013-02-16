@@ -7,7 +7,7 @@ import bunnyEmu.main.utils.Log;
 
 public class WorldObject {
 
-	private static int countGUID = 12;
+	private static int countGUID = 8;
 
 	protected float x;
 	protected float y;
@@ -27,6 +27,13 @@ public class WorldObject {
 
 		maskSize = (dataLength + 32) / 32;
 		mask = new BitSet(dataLength);
+	}
+	
+	public void setPosition(float x, float y, float z, int mapId){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.mapID = mapId;
 	}
 	
 	public <T extends Number> void setUpdateField(int index, T value, Class<T> type) {

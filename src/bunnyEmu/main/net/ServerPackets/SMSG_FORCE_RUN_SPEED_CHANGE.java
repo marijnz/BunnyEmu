@@ -1,7 +1,7 @@
 package bunnyEmu.main.net.ServerPackets;
 
-import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.Opcodes;
 
 public class SMSG_FORCE_RUN_SPEED_CHANGE extends ServerPacket{

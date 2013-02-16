@@ -3,9 +3,9 @@ package bunnyEmu.main.net.ServerPackets;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
 
-import bunnyEmu.main.entities.Char;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
@@ -42,7 +42,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putString(currentChar.getName()); // name
 			put((byte) currentChar.getCharRace()); // Race;
 			put((byte) currentChar.getCharClass()); // Class;
-			put((byte) 0); // Gender;
+			put((byte) 1); // Gender;
 			put((byte) 1); // Skin;
 			put((byte) 4); // Face;
 			put((byte) 5); // Hair Style;
@@ -214,7 +214,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 
 				bitPack.writeGuildGuidBytes(new byte[] { 4 });
 
-				this.put((byte) 0); // gender
+				this.put((byte) 1); // gender
 				this.putInt(currentChar.getMapID());
 				this.putInt(0); // customize flags
 				this.put(currentChar.getCharRace()); // gender

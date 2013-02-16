@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 import bunnyEmu.main.entities.Packet;
 
 /**
- * Bitunpacker, adopted by Arctium
+ * Bitunpacker, adopted by Arctium. MoP only
  * 
  * @author Marijn
  * 

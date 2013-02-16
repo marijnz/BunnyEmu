@@ -75,7 +75,9 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_PLAYER_LOGIN:						worldSession.verifyLogin(p); 				break;
                     case Opcodes.CMSG_PING:								worldSession.sendPong(); 					break;
                     case Opcodes.CMSG_NAME_QUERY:						worldSession.sendNameResponse(); 			break;
-                    case Opcodes.CMSG_REALM_SPLIT:																	break;
+                    case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
+                    case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);			break; // MoP only
+                    case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage(p);			break;
                     default: Log.log("unknown: "  + p.toString());
                 }
             }
@@ -99,8 +101,8 @@ public class WorldConnection extends Connection{
             decodeHeader(p);
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             
-            if(p.sOpcode == null)
-            	Log.log("Unknown packet: " + Integer.toHexString(p.nOpcode).toUpperCase());
+            //if(p.sOpcode == null)
+            //	Log.log("Unknown packet: " + Integer.toHexString(p.nOpcode).toUpperCase());
             		
             if (p.size < 0){
             	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
