@@ -4,6 +4,12 @@ import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Modifies the client's run speed.
+ * 
+ * @author Marijn
+ *
+ */
 public class SMSG_FORCE_RUN_SPEED_CHANGE extends ServerPacket{
 	
 	public SMSG_FORCE_RUN_SPEED_CHANGE(Char character, float speed) {

@@ -1,16 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.entities;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import bunnyEmu.main.utils.BigNumber;
 
 /**
+ * A basic packet with generic read and write methods. 
  *
  * @author Marijn
  * 

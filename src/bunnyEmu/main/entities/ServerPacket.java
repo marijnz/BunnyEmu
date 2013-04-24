@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.entities;
 
@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- *
  * @author Marijn
  */
 public class ServerPacket extends Packet implements IPacketWritable{

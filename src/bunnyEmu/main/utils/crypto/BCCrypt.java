@@ -7,6 +7,10 @@ public class BCCrypt extends VanillaCrypt {
 
 	private final static byte[] seed = { 0x38, (byte) 0xA7, (byte) 0x83, 0x15, (byte) 0xF8,(byte)  0x92, 0x25, 0x30, 0x71, (byte) 0x98, 0x67, (byte) 0xB1, (byte) 0x8C, 0x4, (byte) 0xE2, (byte) 0xAA };
 
+	/**
+	 * Instantiates a new Burning Crusade crypt.
+	 */
+	
 	public BCCrypt(){
 		Log.log("Created new Burning Crusade crypt");
 	}

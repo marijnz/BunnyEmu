@@ -25,6 +25,13 @@ import bunnyEmu.main.utils.Constants;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
+/**
+ * Used after world authentication, handles incoming packets.
+ * TODO: Handle packets in different classes (when things are getting on larger scale)
+ * 
+ * @author Marijn
+ *
+ */
 public class WorldSession {
 	private WorldConnection connection;
 	private Realm realm;
@@ -34,11 +41,19 @@ public class WorldSession {
 		this.realm = realm;
 	}
 
+	/**
+	 * Send the character list to the client.
+	 */
 	public void sendCharacters() {
 		Log.log("sending chars");
 		connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
 	}
 
+	/**
+	 * Creates a character for the client.
+	 * 
+	 * @param p
+	 */
 	public void addCharacter(ClientPacket p) {
 		String name = p.getString();
 		byte cRace = p.get();
@@ -49,6 +64,9 @@ public class WorldSession {
 		connection.send(new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
 	}
 
+	/**
+	 * Sends initial packets after world login has been confirmed.
+	 */
 	public void verifyLogin(ClientPacket p) {
 		Char character;
 		if (realm.getVersion() <= Constants.VERSION_CATA) {
@@ -83,35 +101,50 @@ public class WorldSession {
 		sendSpellGo(); // Shiny start
 	}
 
+	/**
+	 * Synch the server and client times.
+	 */
 	public void sendAccountDataTimes(int mask) {
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
 		if (this.realm.getVersion() <= Constants.VERSION_CATA)
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 
+	/**
+	 * Send a message to the player in Message Of The Day style
+	 */
 	public void sendMOTD(String message) {
 		connection.send(new SMSG_MOTD(message));
 	}
 
+	/**
+	 * Response to Ping
+	 */
 	public void sendPong() {
 		connection.send(new SMSG_PONG());
 	}
 
+	/**
+	 * Response the name request
+	 */
 	public void sendNameResponse() {
 		connection.send(new SMSG_NAME_QUERY_RESPONSE(connection.clientParent.getCurrentCharacter()));
 	}
 	
+	/**
+	 * Character data? Required for MoP
+	 */
 	public void handleNameCache(ClientPacket p){
 		long guid = p.getLong();
 		Log.log("GUID: " + guid);
-		//if(guid != connection.clientParent.getCurrentCharacter().getGUID())
-		//	return;
 		
 		connection.send(new SMSG_NAME_CACHE(connection.clientParent.getCurrentCharacter(), realm));
 	}
 	
+	/**
+	 * Realm data? Required for MoP
+	 */
 	public void handleRealmCache(ClientPacket p){
-		
 		int realmId = p.getInt();
 		if(realm.id != realmId)
 			return;
@@ -119,6 +152,9 @@ public class WorldSession {
 		connection.send(new SMSG_REALM_CACHE(realm));
 	}
 	
+	/**
+	 * Handles a chat message given by the client, checks for commands.
+	 */
 	public void handleChatMessage(ClientPacket p){
 		Char character = connection.clientParent.getCurrentCharacter();
 		 BitUnpack bitUnpack = new BitUnpack(p);
@@ -148,6 +184,9 @@ public class WorldSession {
          }
 	}
 	
+	/**
+	 * Instantly teleports the client to the given coords
+	 */
 	public void teleportTo(float x, float y, float z, int mapId){
 		Char character = this.connection.getClientParent().getCurrentCharacter();
 		character.setPosition(x, y, z, mapId);

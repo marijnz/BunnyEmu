@@ -1,11 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.entities;
 
 /**
- * Unsigned reading adopted from Bart.
+ * Client packet that supports unsigned reading (returns val in double size!)
+ * TODO: Actually use the unsigned reading instead of the hacky fixes.
  *
  * @author Marijn
  */

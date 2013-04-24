@@ -16,9 +16,6 @@
  *******************************************************************************/
 package bunnyEmu.main.utils.crypto;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import bunnyEmu.main.utils.Log;
 
 // TODO: Auto-generated Javadoc

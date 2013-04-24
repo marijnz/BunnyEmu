@@ -85,10 +85,10 @@ import bunnyEmu.main.utils.Log;
             byte[] accountHash = md.digest();
             Log.log("AccountHash: " + new BigNumber(accountHash).toHexString());
             String username = new String(I);
-            _client = new Client(username, P, Integer.parseInt(version));
+            _client = new Client(username, Integer.parseInt(version));
             _client.attachLogon((LogonConnection) connection);
 
-            // Kick the existing client out if it's logged in already
+            // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = RealmHandler.findClient(username);
             if(existingClient != null)
             	existingClient.disconnect();

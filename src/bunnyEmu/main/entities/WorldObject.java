@@ -5,7 +5,13 @@ import java.util.Hashtable;
 
 import bunnyEmu.main.utils.Log;
 
-public class WorldObject {
+/**
+ * A WorldObject that supports update packets
+ * 
+ * @author Marijn
+ * 
+ */
+public abstract class WorldObject {
 
 	private static int countGUID = 8;
 
@@ -22,7 +28,7 @@ public class WorldObject {
 	public WorldObject() {
 		Log.log("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
-		// 1973
+		// 1973 in MoP?
 		int dataLength = 1973;
 
 		maskSize = (dataLength + 32) / 32;
@@ -36,16 +42,26 @@ public class WorldObject {
 		this.mapID = mapId;
 	}
 	
+	/**
+	 * Set a new update field with offset 0.
+	 */
 	public <T extends Number> void setUpdateField(int index, T value, Class<T> type) {
 		this.setUpdateField(index, value, type, (byte) 0);
 	}
 
+	/**
+	 * Set a new update field
+	 * 
+	 * @param index The index of the updatefield, i.e.: Mana regeneration
+	 * @param value The value of the updatefield, i.e.: 235.32f
+	 * @param type The type of the given value, i.e.: Float
+	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed apart on the same index
+	 */
 	public <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset) {
 		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
 			mask.set(index);
 			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();
 			int multipliedOffset = offset * (type.isAssignableFrom(Byte.class) ? 8 : 16);
-			Log.log("temp val: " + tmpValue + " multiplied offset: " + multipliedOffset + " " + updateData.get(index));
 			if (updateData.contains(index) && updateData.get(index) != null)
 				updateData.put(index, (int)((int)updateData.get(index) | (int)(tmpValue << multipliedOffset)));
             else
@@ -64,11 +80,15 @@ public class WorldObject {
 			mask.set(index);
 			updateData.put(index, value.intValue());
 		} else{
-			Log.log("DATATYPE NOT SUPPORTED");
+			Log.log("Datatype not supported");
 		}
 	}
 
-	public void WriteUpdateFields(Packet p, boolean sendAllFields) {
+	/**
+	 * Write the update hashtable to the update packet.
+	 * @param p The packet the update data has to be written on
+	 */
+	public void WriteUpdateFields(Packet p) {
 		p.put((byte) maskSize);
 
 		byte[] b = new byte[((mask.size() + 8) / 8) + 1];
@@ -116,6 +136,9 @@ public class WorldObject {
 		this.mapID = mapID;
 	}
 
+	/**
+	 * @return The generated GUID for this object
+	 */
 	public long getGUID() {
 		return guid;
 	}

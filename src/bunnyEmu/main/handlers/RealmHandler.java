@@ -14,7 +14,8 @@ public class RealmHandler {
     private static ArrayList<Realm> realms = new ArrayList<Realm>(10);
     
     /**
-     * A list of all clients that hasn't connected to a realm yet, as soon a Client connects to a realm it gets removed from this list
+     * A list of all clients that haven't connected to a realm yet, as soon a client connects to a realm it gets removed from this list
+     * TODO: Implement properly, clients aren't removed on wrong password DC's.
      */
     private static HashMap<String, Client> temporaryClients = new HashMap<String, Client>();
     
@@ -28,8 +29,8 @@ public class RealmHandler {
         
         AuthServerPacket realmPacket = new AuthServerPacket((short) (size + 3));
         
-        realmPacket.put((byte) 0x10);          // Packet header (16 in hex)
-        realmPacket.putShort(size);       // Size Placeholder
+        realmPacket.put((byte) 0x10);          // Header
+        realmPacket.putShort(size);       		// Size Placeholder
         realmPacket.putInt(0);                 // unknown?
         realmPacket.putShort((short) realms.size());       // Realm count
        
@@ -111,6 +112,5 @@ public class RealmHandler {
 	public static Realm getRealm(int id){
 		return realms.get(id);
 	}
-	
 	
 }

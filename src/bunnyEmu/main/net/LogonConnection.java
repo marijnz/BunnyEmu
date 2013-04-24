@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.net;
 
@@ -14,8 +14,10 @@ import bunnyEmu.main.logon.LogonAuth;
 import bunnyEmu.main.utils.Log;
 
 /**
+ * Establish the first connection between server and client, handles client packets for all WoW versions.
+ * 
  * @author Marijn
- * TODO: Clean constants for the packets
+ * 
  */
 public class LogonConnection extends Connection {
 

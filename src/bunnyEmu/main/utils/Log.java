@@ -2,9 +2,8 @@ package bunnyEmu.main.utils;
 
 import bunnyEmu.main.ServerApplet;
 
-
 /**
- * A nice logging class, making logging easier
+ * A nice logging class, makes logging easier
  *
  * @author Marijn
  */

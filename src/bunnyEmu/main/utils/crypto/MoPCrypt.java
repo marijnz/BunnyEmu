@@ -4,6 +4,10 @@ import bunnyEmu.main.utils.Log;
 
 public class MoPCrypt extends WotLKCrypt{
 	
+	/**
+	 * Instantiates a new Mists of Pandaria crypt.
+	 */
+	
 	public MoPCrypt(){
 		Log.log("Created MoP Crypt!");
 		this.ServerEncryptionKey = new byte[] { 0x08, (byte) 0xF1, (byte) 0x95, (byte) 0x9F, 0x47, (byte) 0xE5, (byte) 0xD2, (byte) 0xDB, (byte) 0xA1, 0x3D, 0x77, (byte) 0x8F, 0x3F, 0x3E, (byte) 0xE7, 0x00 };

@@ -4,7 +4,7 @@ import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
- * Message of the day upon login
+ * Message of the day message
  * 
  * @author Marijn
  *

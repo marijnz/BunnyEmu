@@ -1,6 +1,7 @@
 package bunnyEmu.main.entities;
 
 /**
+ * Interface that gives a structure to Server packets.
  * 
  * @author Marijn
  *

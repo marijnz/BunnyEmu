@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.net;
 
@@ -22,7 +22,7 @@ import bunnyEmu.main.utils.Opcodes;
 
 /**
  * 
- * A connection between the client and the World
+ * A connection between the client and the world, handles all incoming packets for all WoW versions (<= MoP)
  *
  * @author Marijn
  * 
@@ -62,8 +62,8 @@ public class WorldConnection extends Connection{
                 p = readPacket(readByte);
                 if(p == null)
                     continue;
-                Log.log("got packet: " + p.toString());
-                if( p.sOpcode == null)
+                Log.log("Received packet: " + p.toString());
+                if(p.sOpcode == null)
                 	continue;
                 p.position(0);
                 switch(p.sOpcode){
@@ -78,7 +78,6 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
                     case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);			break; // MoP only
                     case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage(p);			break;
-                    default: Log.log("unknown: "  + p.toString());
                 }
             }
             Log.log("World closed connection from " + clientSocket.toString());

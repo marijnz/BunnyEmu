@@ -7,7 +7,7 @@ import bunnyEmu.main.utils.types.MovementSpeed;
 import bunnyEmu.main.utils.types.ObjectMovementValues;
 
 /**
- * Adapted from Arctium
+ * Adapted from Arctium, currently only used in the initial update packet.
  * 
  * @author Marijn
  * 
@@ -63,28 +63,17 @@ public class UpdatePacket extends ServerPacket {
 			bitPack.write(values.IsTransport);
 			bitPack.write(!values.HasRotation);
 
-			if (values.IsTransport) {
-				// Transports not implanted.
-			}
-
 			bitPack.write(true); // Movementflags are not implanted
 			bitPack.writeGuidMask(new byte[] { 1 });
+			bitPack.write(0); // HasSplineData ?
 
-			bitPack.write(0); // HasSplineData, don't write simple basic
-
-		}
-
-		bitPack.flush();
-
-		if (values.IsAlive) {
+			bitPack.flush();
+			
+			
 			packet.putFloat((float) MovementSpeed.FlyBackSpeed);
 			packet.putFloat((float) MovementSpeed.SwimSpeed);
 
-			if (values.IsTransport) {
-				// Not implanted
-			}
-
-			float speed = character.getSpeed();
+			float speed = character.getSpeed(); // Speed multiplier
 			bitPack.writeGuidBytes(new byte[] { 1 });
 			packet.putFloat((float) MovementSpeed.TurnSpeed);
 			packet.putFloat(character.getX());
@@ -119,72 +108,40 @@ public class UpdatePacket extends ServerPacket {
 		// packet.writeInt64(Quaternion.GetCompressed(wObject.Position.O));
 	}
 	
-	
-	
-	
-	
-	
-	
-	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
+
+	/**
+	 * TODO: Make it working
+	 */
+	protected void writeUpdateObjectMovementCata(Char character, short updateFlags) {
 		this.putShort(updateFlags);  // update flags              
 		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
 
 		short moveFlags = 0;
 		
 	    if (values.IsAlive){
+	    	// Build Movement
 	    	this.putInt(0); // flags2
 	        this.putShort(moveFlags);      		// movement flags
-	        this.putInt(1);				// time (in milliseconds)
+	        this.putInt((int) 0);				// time (in milliseconds)
 	        
 	        packet.putFloat(character.getX());
 	        packet.putFloat(character.getY());
 	        packet.putFloat(character.getZ());
 	        packet.putFloat(0); // orientation
-	        packet.put((byte) 9);
-	        packet.putInt(0); // last fall time?
-	       	
+	        
+	        // Movement 2
 			packet.putFloat((float) MovementSpeed.WalkSpeed);
 			packet.putFloat((float) MovementSpeed.RunSpeed);
-			packet.putFloat((float) MovementSpeed.WalkSpeed); // walk back
+			packet.putFloat((float) MovementSpeed.RunBackSpeed); // walk/run back ?
 			packet.putFloat((float) MovementSpeed.SwimSpeed);
 			packet.putFloat((float) MovementSpeed.SwimBackSpeed);
 			packet.putFloat((float) MovementSpeed.FlySpeed);
 			packet.putFloat((float) MovementSpeed.FlyBackSpeed);
 	        packet.putFloat((float) MovementSpeed.TurnSpeed);
 	        packet.putFloat((float) MovementSpeed.PitchSpeed);
-	        
-	        /*
-	        if( m_objectTypeId==TYPEID_UNIT )
-	        {
-	            int PosCount=0;
-	            if(moveFlags & 0x400000){
-	                *data << (uint32)0x0;
-	                *data << (uint32)0x659;
-	                *data << (uint32)0xB7B;
-	                *data << (uint32)0xFDA0B4;
-	                *data << (uint32)PosCount;
-	                for(int i=0;i<PosCount+1;i++)
-	                {
-	                    *data << (float)0;                      //x
-	                    *data << (float)0;                      //y
-	                    *data << (float)0;                      //z
-	                }
-	            }
-	        }
-	        */
 	    }
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 
 }

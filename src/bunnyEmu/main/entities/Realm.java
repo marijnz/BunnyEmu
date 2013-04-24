@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.entities;
 
@@ -19,6 +19,7 @@ import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketMap;
 
 /**
+ * A realm that has to be added to the RealmHandler.
  * 
  * @author Marijn
  */
@@ -42,6 +43,15 @@ public class Realm extends Thread {
 		this(1, "Marijnz ultimate server", Server.localIP, 3456, Constants.VERSION_WOTLK);
 	}
 
+	/**
+	 * Instantiates a new realm, usually only created through the RealmHandler.
+	 * 
+	 * @param id An unique id.
+	 * @param name The name of the ream how it should be listed in the realmlist.
+	 * @param address The address of the worldsocket, usually same host as the logonsocket.
+	 * @param port The port of the worldsocket.
+	 * @param version The version of the realm, see Readme for up-to-date version support.
+	 */
 	public Realm(int id, String name, String address, int port, int version) {
 		this.id = id;
 		this.name = "[" + version + "]" + name ;
@@ -61,6 +71,9 @@ public class Realm extends Thread {
 		Log.log("Created new realm: " + this.name);
 	}
 
+	/**
+	 * @return The size of the realm, only used for the realmlist packet.
+	 */
 	public int getSize() {
 		return 8 + 4 + address.length() + name.length();
 	}
@@ -70,7 +83,7 @@ public class Realm extends Thread {
 		try {
 			listenSocket();
 		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't create a listensocket for realm " + id);
+			Log.log(Log.ERROR, "Couldn't create a listening socket for realm " + id);
 		}
 	}
 
@@ -78,15 +91,24 @@ public class Realm extends Thread {
 		socket = new ServerSocket(port);
 
 		while (true) {
+			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
 			Log.log(Log.INFO, "Connection made to realm " + id);
 		}
 	}
 
+	/**
+	 * Add a new client to the realm, usually done after the client has been connected to it.
+	 * @param client The connected client
+	 */
 	public void addClient(Client client) {
 		clients.add(client);
 	}
 
+	/**
+	 * Removes a client from the realm, usually done after the client has been disconnected.
+	 * @param The disconnected client 
+	 */
 	public void removeClient(Client client) {
 		clients.remove(client);
 	}
@@ -106,6 +128,9 @@ public class Realm extends Thread {
 		return null;
 	}
 
+	/**
+	 * @return The version of this realm, can be used to build packets for specific versions.
+	 */
 	public int getVersion() {
 		return version;
 	}
@@ -125,6 +150,10 @@ public class Realm extends Thread {
 			return null;
 	}
 
+
+	/**
+	 * @return The packets that belong to the version this realm has been assigned.
+	 */
 	public PacketMap getPackets() {
 		return packets;
 	}
@@ -133,6 +162,8 @@ public class Realm extends Thread {
      * Loading a packet text file assuming an arcemu-like packet dump
      * @param packetDir The packet to be loaded
      * @param capacity	How much size should be buffered for the returned data
+     * 
+	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
     	Log.log("loading packet");

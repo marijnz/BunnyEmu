@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main.utils;
 
@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
+ * BigInteger wrapper used for the authentication (SRP6 protocol)
  *
  * @author Marijn
  */

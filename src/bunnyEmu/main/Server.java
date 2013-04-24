@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * BunnyEmu - A Java WoW sandbox/emulator
+ * https://github.com/marijnz/BunnyEmu
  */
 package bunnyEmu.main;
 
@@ -9,8 +9,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.Log;

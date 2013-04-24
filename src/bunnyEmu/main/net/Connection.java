@@ -10,6 +10,7 @@ import bunnyEmu.main.entities.Packet;
 import bunnyEmu.main.utils.Log;
 
 /**
+ * A connection made between the server and client, 
  * 
  * @author Marijn
  */
@@ -21,6 +22,11 @@ public abstract class Connection extends Thread {
 	protected boolean connected = true;
 	protected Client clientParent;
 
+	/**
+	 * Create a new connection attached based on the given socket
+	 * 
+	 * @param clientSocket The socket the client connected on
+	 */
 	public Connection(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 		initialize();
@@ -36,7 +42,7 @@ public abstract class Connection extends Thread {
 			Log.log(Log.ERROR, "Couldn't create in and output streams");
 		}
 	}
-
+	
 	protected void close() {
 		try {
 			//data.allConnections.remove(this);
@@ -49,10 +55,15 @@ public abstract class Connection extends Thread {
 		}
 	}
 
+	/**
+	 * 
+	 * @param p The sent packet
+	 * 
+	 * @return True if succesful, false if the actual capacity exceeds the given size
+	 */
 	protected boolean sendPacket(Packet p) {
 		if (p.size < p.packet.capacity()) {
-			Log.log(Log.ERROR, "packet not send: size " + p.size
-					+ " <  capacity " + p.packet.capacity());
+			Log.log(Log.ERROR, "packet not send: size " + p.size + " <  capacity " + p.packet.capacity());
 			return false;
 		}
 		return sendBytes(p.getFull());
@@ -80,10 +91,16 @@ public abstract class Connection extends Thread {
 		return clientSocket;
 	}
 
+	/**
+	 * @return The client that belongs to this connection.
+	 */
 	public Client getClientParent() {
 		return clientParent;
 	}
 
+	/**
+	 * @param c The client that belongs to this connection.
+	 */
 	public void setClientParent(Client c) {
 		clientParent = c;
 	}

@@ -5,7 +5,7 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
- * Verifying world upon login
+ * Verifying world upon worldlogin
  * 
  * @author Marijn
  *

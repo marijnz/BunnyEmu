@@ -4,7 +4,7 @@ import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
- * Respond with a Pong, useles?
+ * Response to ping, unrequired?
  * 
  * @author Marijn
  *

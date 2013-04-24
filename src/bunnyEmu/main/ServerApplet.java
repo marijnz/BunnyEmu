@@ -5,10 +5,8 @@ import java.awt.Button;
 import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.TextArea;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class ServerApplet extends Applet implements ActionListener {
 
@@ -18,7 +16,7 @@ public class ServerApplet extends Applet implements ActionListener {
 	
 	Label label2 = new Label("IP: ");
 	
-	public static TextArea debugLabel = new TextArea("Debug ");
+	public static TextArea debugLabel = new TextArea("- Set your realmlist to localhost \n - Login with any username and passsword: \"password \"");
 	
 	Button button1 = new Button("Start");
 	
@@ -50,18 +48,6 @@ public class ServerApplet extends Applet implements ActionListener {
 			}
 		}.start();
 		
-		new Thread(){
-			@Override
-			public void run() {
-				label2.setText("IP: loading");
-				while(true){
-					if(server.getServerSocket().getInetAddress() != null)
-						label2.setText(server.getServerSocket().getInetAddress().toString());
-					else
-						label2.setText("IP: can't be loaded");
-				}
-			}
-		};
 		
 	}
 
