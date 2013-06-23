@@ -14,15 +14,15 @@ import java.security.SecureRandom;
  */
 public class BigNumber{
     
-    BigInteger bigInteger;
+    private BigInteger bigInteger;
     
     public BigNumber(byte[] val) {
        if (val[0] < 0){
             byte[] tmp = new byte[val.length + 1];
             System.arraycopy(val, 0, tmp, 1, val.length);
             val = tmp;
-	}
-	this.bigInteger = new BigInteger(val);
+       }
+       this.bigInteger = new BigInteger(val);
     }
     
     public BigNumber(String val, int radix) {
@@ -48,7 +48,6 @@ public class BigNumber{
         return new BigNumber(BigInteger.valueOf(val));
     }
     
-    
     public BigNumber multiply(BigNumber val){
         return new BigNumber(bigInteger.multiply(val.getInt()));
     }
@@ -66,7 +65,7 @@ public class BigNumber{
     }
     
     public BigNumber setRand(int amount){
-	bigInteger = new BigInteger(1,new SecureRandom().generateSeed(amount));
+    	bigInteger = new BigInteger(1,new SecureRandom().generateSeed(amount));
         return this;
     }
     
@@ -129,22 +128,22 @@ public class BigNumber{
     
     
     public void setBinary(byte[] array){
-	// Reverse array
-	int length = array.length;
-	for (int i = 0; i < length / 2; i++){
-            byte j = array[i];
-            array[i] = array[length - 1 - i];
-            array[length - 1 - i] = j;
-	}
-		
-	// Add the first byte indicates the sign of the BigInteger
-	if (array[0] < 0){
-		byte[] tmp = new byte[array.length + 1];
-		System.arraycopy(array, 0, tmp, 1, array.length);
-		array = tmp;
-	}
-        
-	bigInteger = new BigInteger(array);
+		// Reverse array
+		int length = array.length;
+		for (int i = 0; i < length / 2; i++){
+	            byte j = array[i];
+	            array[i] = array[length - 1 - i];
+	            array[length - 1 - i] = j;
+		}
+			
+		// Add the first byte indicates the sign of the BigInteger
+		if (array[0] < 0){
+			byte[] tmp = new byte[array.length + 1];
+			System.arraycopy(array, 0, tmp, 1, array.length);
+			array = tmp;
+		}
+	        
+		bigInteger = new BigInteger(array);
     }
     
     @Override
@@ -174,43 +173,12 @@ public class BigNumber{
         return bigInteger.toByteArray();
     }
      
-    /*
-      private byte[] correctNullWorking(byte[] array){
-        if (array[0] == 0  && array.length > 1){
-             for (int i = 0; i < array.length; i++) {
-                            //System.out.print(array[i]);
-                            //System.out.print(" ");
-             }
-            //System.out.print("removed first null byte ");
-            
-                
-            byte[] tmp = new byte[array.length - 1];
-            System.arraycopy(array, 1, tmp, 0, tmp.length);
-            //Logger.log(" (length now: " + tmp.length);
-            return (tmp);
-        }
-        else return array;
-    }
-    /*
-    
-    
-   
-    
-    private byte[] reverse(byte[] array) {
-        int i = 0;
-        int j = array.length - 1;
-        byte tmp;
-        while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
-            j--;
-            i++;
-        }
-        return array;
+     
+     public boolean equals(BigNumber b){
+		return (b.toHexString().equals(this.toHexString()));
      }
-    
-   
-     */
+     
+     
+     
      
 }

@@ -1,11 +1,9 @@
 package bunnyEmu.main.handlers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.AuthServerPacket;
-import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.utils.Log;
 
@@ -14,10 +12,11 @@ public class RealmHandler {
     private static ArrayList<Realm> realms = new ArrayList<Realm>(10);
     
     /**
-     * A list of all clients that haven't connected to a realm yet, as soon a client connects to a realm it gets removed from this list
-     * TODO: Implement properly, clients aren't removed on wrong password DC's.
+     * @return All launched realms
      */
-    private static HashMap<String, Client> temporaryClients = new HashMap<String, Client>();
+    public static ArrayList<Realm> getRealms(){
+    	return realms;
+    }
     
     /**
      * @return The realmlist packet, version dependable
@@ -64,7 +63,8 @@ public class RealmHandler {
 	
 	/**
 	 * Creates a new realm for the given version if it doesn't exist already
-	 * @param version The WoW client version
+	 * 
+	 * @param version The WoW client version, such as 335
 	 */
 	public static void addVersionRealm(int version){
 		for(Realm realm : realms)
@@ -72,42 +72,7 @@ public class RealmHandler {
 				return;
 		realms.add(new Realm(realms.size()+1, "Version realm", Server.localIP, 8100 + realms.size(), version));
 	}
-	
-	/**
-	 * @param client An authenticated client which isn't connected to a realm
-	 * @return Returns false if there already is a connected client with this name
-	 */
-	
-	public static boolean addTempClient(Client client){
-		Log.log("Adding temporary client: " + client.getName());
-		if(temporaryClients.containsKey(client.getName()))
-			return false;
-		temporaryClients.put(client.getName(), client);
-		return true;
-	}
-	
-	/**
-	 * @param name The username of the client
-	 * @return The client which also gets removed from the temporary clients list
-	 */
-	public static Client getTempClient(String name){
-		return temporaryClients.remove(name);
-	}
-	
-	/**
-	 * Search for a client in all created realms and temporary unconnected clients
-	 */
-	public static Client findClient(String name){
-		for(Realm realm : realms){
-			Client client = realm.getClient(name);
-			if(client != null){
-				Log.log("got client: " + name);
-				return client;
-			}
-				
-		}
-		return temporaryClients.get(name);
-	}
+
 	
 	public static Realm getRealm(int id){
 		return realms.get(id);

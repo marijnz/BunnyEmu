@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import bunnyEmu.main.entities.AuthServerPacket;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.ClientPacket;
+import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.BigNumber;
@@ -85,17 +86,17 @@ import bunnyEmu.main.utils.Log;
             byte[] accountHash = md.digest();
             Log.log("AccountHash: " + new BigNumber(accountHash).toHexString());
             String username = new String(I);
-            _client = new Client(username, Integer.parseInt(version));
-            _client.attachLogon((LogonConnection) connection);
+            client = new Client(username, Integer.parseInt(version));
+            client.attachLogon((LogonConnection) connection);
 
             // Kick the existing client out if it's logged in already, Blizzlike
-            Client existingClient = RealmHandler.findClient(username);
+            Client existingClient = ClientHandler.findClient(username);
             if(existingClient != null)
             	existingClient.disconnect();
 
-        	RealmHandler.addVersionRealm(_client.getVersion());
+        	RealmHandler.addVersionRealm(client.getVersion());
         	
-            RealmHandler.addTempClient(_client);
+        	ClientHandler.addTempClient(client);
             
             // Generate x - the Private key
             md.update(s.asByteArray(32));
@@ -143,7 +144,6 @@ import bunnyEmu.main.utils.Log;
             // Generate u - the so called "Random scrambling parameter"
             BigNumber A = new BigNumber();
             A.setBinary(_A);
-            //A = new BigNumber("7290BF0303C3857F0B4E62EBA9602EDF6C49CFF9996F1AF3CA324AC4BE9A98A7");
             md.update(A.asByteArray(32));
             md.update(B.asByteArray(32));
 
@@ -208,21 +208,25 @@ import bunnyEmu.main.utils.Log;
             BigNumber M = new BigNumber(m);
             BigNumber M1 = new BigNumber(_M1);
             
-          //  if(!M.equals(M1)) {
-          //      return;
-          //  }
-            
             Log.log(Log.DEBUG, "M = " + M.toHexString());
             Log.log(Log.DEBUG, "M1 = " + M1.toHexString());
+            
+            if(!M.equals(M1)) {
+            	ClientHandler.removeTempClient(client.getName());
+                client.disconnect();
+                return;
+            }
+            
+          
 
-            _client.setSessionKey(K.asByteArray());
+            client.setSessionKey(K.asByteArray());
             
             md.update(A.asByteArray());
             md.update(_M1); 
             md.update(K.asByteArray());
 
             short size = 32;
-            if(_client.getVersion() <= Constants.VERSION_VANILLA)
+            if(client.getVersion() <= Constants.VERSION_VANILLA)
             	size = 26;
             
 	        AuthServerPacket serverLogonAuth = new AuthServerPacket((short) size);
@@ -230,7 +234,7 @@ import bunnyEmu.main.utils.Log;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(_client.getVersion() <= Constants.VERSION_VANILLA)
+	        if(client.getVersion() <= Constants.VERSION_VANILLA)
 	        	serverLogonAuth.putInt(0);     
 	        else{
 	        	serverLogonAuth.putInt(0x00800000);

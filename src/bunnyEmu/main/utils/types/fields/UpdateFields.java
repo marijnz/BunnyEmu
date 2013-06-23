@@ -1,5 +1,11 @@
-package bunnyEmu.main.utils.types;
+package bunnyEmu.main.utils.types.fields;
 
+/**
+ * UpdateFields for MoP 5.1.0
+ * 
+ * @author Marijn
+ *
+ */
 public class UpdateFields {
 
 	 public class ObjectFields

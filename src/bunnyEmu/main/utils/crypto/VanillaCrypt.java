@@ -13,9 +13,9 @@ public class VanillaCrypt implements GenericCrypt{
 	protected byte[] _key;
 	
 	
-	/**
-	 * Instantiates a new Vanilla crypt.
-	 */
+		/**
+		 * Instantiates a new Vanilla crypt.
+		 */
 	
 	public VanillaCrypt() { 
 		Log.log("Created new Vanilla crypt");

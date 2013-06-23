@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
-import bunnyEmu.main.handlers.RealmHandler;
+import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Constants;
@@ -126,11 +126,11 @@ public class RealmAuth extends Auth {
         }
         
         Log.log(accountName);
-        _client = RealmHandler.getTempClient(accountName);
-        _client.connect(realm);
+        client = ClientHandler.removeTempClient(accountName);
+        client.connect(realm);
         
-        if (_client != null) {
-            _client.attachWorld((WorldConnection) connection);
+        if (client != null) {
+            client.attachWorld((WorldConnection) connection);
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance("SHA1");
@@ -146,12 +146,12 @@ public class RealmAuth extends Auth {
             md.update(connection.getClientParent().getSessionKey());
             byte[] digest2 = md.digest();	
             
-            Log.log("authSession " + _client.getName() + " " + new BigNumber(digest1).toHexString() + "  " + new BigNumber(digest2).toHexString());
+            Log.log("authSession " + client.getName() + " " + new BigNumber(digest1).toHexString() + "  " + new BigNumber(digest2).toHexString());
             
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
-            if (!(realm.getVersion() < Constants.VERSION_CATA) || new BigNumber(digest1).toHexString().equals(new BigNumber(digest2).toHexString())) {
+            if (realm.getVersion() > Constants.VERSION_CATA || new BigNumber(digest1).toHexString().equals(new BigNumber(digest2).toHexString())) {
             	connection.getClientParent().initCrypt(connection.getClientParent().getSessionKey()); 
-            	Log.log("Valid account: " + _client.getName());
+            	Log.log("Valid account: " + client.getName());
                 if(realm.getVersion() <= Constants.VERSION_CATA){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
@@ -167,7 +167,7 @@ public class RealmAuth extends Auth {
                     
                 }
             } else
-            	_client.disconnectFromRealm();
+            	client.disconnectFromRealm();
         } else{
 	        Log.log("Unvalid account");
         }

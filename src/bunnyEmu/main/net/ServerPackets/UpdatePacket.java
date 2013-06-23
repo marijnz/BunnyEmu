@@ -143,5 +143,41 @@ public class UpdatePacket extends ServerPacket {
 		
 	}
 	
+	/**
+	 * TODO: make it working
+	 */
+	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
+		this.putShort(updateFlags);  // update flags              
+		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+
+		short moveFlags = 0;
+		
+	    if (values.IsAlive){
+	    	// Build Movement
+	    	this.putInt(0); // flags2
+	        this.putShort(moveFlags);      		// movement flags
+	        this.putInt((int) 0);				// time (in milliseconds) TODO: actual time?
+	        
+	        packet.putFloat(character.getX());
+	        packet.putFloat(character.getY());
+	        packet.putFloat(character.getZ());
+	        packet.putFloat(0); // orientation
+	        
+	        packet.putInt(0); // Air time?
+	        
+	        // Movement 2
+			packet.putFloat((float) MovementSpeed.WalkSpeed);
+			packet.putFloat((float) MovementSpeed.RunSpeed);
+			packet.putFloat((float) MovementSpeed.RunBackSpeed); // walk/run back ?
+			packet.putFloat((float) MovementSpeed.SwimSpeed);
+			packet.putFloat((float) MovementSpeed.SwimBackSpeed);
+			packet.putFloat((float) MovementSpeed.FlySpeed);
+			packet.putFloat((float) MovementSpeed.FlyBackSpeed);
+	        packet.putFloat((float) MovementSpeed.TurnSpeed);
+	        packet.putFloat((float) MovementSpeed.PitchSpeed);
+	    }
+		
+	}
+	
 
 }

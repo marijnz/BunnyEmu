@@ -89,7 +89,8 @@ public class WorldSession {
 		if (realm.getVersion() <= Constants.VERSION_BC)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
 		else if (realm.getVersion() <= Constants.VERSION_WOTLK)
-			connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+			//connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
 		else if (realm.getVersion() <= Constants.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else

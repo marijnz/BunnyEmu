@@ -3,9 +3,9 @@ package bunnyEmu.main.entities.character;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.WorldObject;
-import bunnyEmu.main.utils.types.UpdateFields.ObjectFields;
-import bunnyEmu.main.utils.types.UpdateFields.PlayerFields;
-import bunnyEmu.main.utils.types.UpdateFields.UnitFields;
+import bunnyEmu.main.utils.types.fields.UpdateFields.ObjectFields;
+import bunnyEmu.main.utils.types.fields.UpdateFields.PlayerFields;
+import bunnyEmu.main.utils.types.fields.UpdateFields.UnitFields;
 
 /**
  * A Character

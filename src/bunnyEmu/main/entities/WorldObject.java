@@ -88,7 +88,7 @@ public abstract class WorldObject {
 	 * Write the update hashtable to the update packet.
 	 * @param p The packet the update data has to be written on
 	 */
-	public void WriteUpdateFields(Packet p) {
+	public void writeUpdateFields(Packet p) {
 		p.put((byte) maskSize);
 
 		byte[] b = new byte[((mask.size() + 8) / 8) + 1];

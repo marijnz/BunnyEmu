@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
-import bunnyEmu.main.handlers.RealmHandler;
+import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Constants;
@@ -138,24 +138,29 @@ public class Client {
     public void disconnect(){
     	if(_connectedRealm != null)
     		_connectedRealm.removeClient(this);
-    	RealmHandler.getTempClient(_name);
+    	else
+    		ClientHandler.removeTempClient(_name);
     	try {
 			_logonConnection.getSocket().close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	try{
-    		_worldConnection.getSocket().close();
-    	} catch (IOException e) {
-			e.printStackTrace();
-		}
+    	// World connection might not exist yet if the client is disconnected as a result of an incorrect password
+    	if(_worldConnection != null){
+	    	try{
+	    		_worldConnection.getSocket().close();
+	    	} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
     	Log.log(this._name + " disconnected!");
     }
     
     public void disconnectFromRealm(){
     	_connectedRealm.removeClient(this);
     	_connectedRealm = null;
-    	RealmHandler.addTempClient(this);
+    	ClientHandler.addTempClient(this);
     }
     
     /**

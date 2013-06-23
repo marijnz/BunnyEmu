@@ -53,9 +53,9 @@ public class Server {
         }
         try{
             while(true){
-                   LogonConnection con = new LogonConnection(serverSocket.accept());
-                   Log.log(Log.INFO, "Client connected to logon server");
-                   connections.add(con);
+               LogonConnection con = new LogonConnection(serverSocket.accept());
+               Log.log(Log.INFO, "Client connected to logon server");
+               connections.add(con);
             }
         } catch (IOException e) {
             Log.log("Accept failed: 3724");
