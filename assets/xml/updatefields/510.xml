@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<types>
+	<type name = "ObjectFields">
+		<field>
+			<name>Guid</name>
+			<value>0</value>
+		</field>
+		<field>
+			<name>Data</name>
+			<value>2</value>
+		</field>
+		<field>
+			<name>Type</name>
+			<value>4</value>
+		</field>
+		<field>
+			<name>Scale</name>
+			<value>7</value>
+		</field>
+	</type>
+
+	<type name = "UnitFields">
+		<field>
+			<name>DisplayPower</name>
+			<value>22</value>
+		</field>
+		<field>
+			<name>Health</name>
+			<value>24</value>
+		</field>
+		<field>
+			<name>MaxHealth</name>
+			<value>26</value>
+		</field>
+		<field>
+			<name>Level</name>
+			<value>52</value>
+		</field>
+		<field>
+			<name>FactionTemplate</name>
+			<value>54</value>
+		</field>
+		<field>
+			<name>DisplayID</name>
+			<value>66</value>
+		</field>
+		<field>
+			<name>NativeDisplayID</name>
+			<value>67</value>
+		</field>
+		
+	</type>
+
+	<type name = "PlayerFields">
+		<field>
+			<name>HairColorID</name>
+			<value>161</value>
+		</field>
+		<field>
+			<name>RestState</name>
+			<value>162</value>
+		</field>
+		<field>
+			<name>ArenaFaction</name>
+			<value>163</value>
+		</field>
+		<field>
+			<name>VirtualPlayerRealm</name>
+			<value>956</value>
+		</field>
+		<field>
+			<name>CurrentSpecID</name>
+			<value>957</value>
+		</field>
+		<field>
+			<name>XP</name>
+			<value>1144</value>
+		</field>
+		<field>
+			<name>NextLevelXP</name>
+			<value>1145</value>
+		</field>
+		<field>
+			<name>Skill</name>
+			<value>1146</value>
+		</field>
+		<field>
+			<name>WatchedFactionIndex</name>
+			<value>1884</value>
+		</field>
+	</type>
+</types>

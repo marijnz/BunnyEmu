@@ -11,7 +11,7 @@ import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 
     /**
@@ -226,7 +226,7 @@ import bunnyEmu.main.utils.Log;
             md.update(K.asByteArray());
 
             short size = 32;
-            if(client.getVersion() <= Constants.VERSION_VANILLA)
+            if(client.getVersion() <= Versions.VERSION_VANILLA)
             	size = 26;
             
 	        AuthServerPacket serverLogonAuth = new AuthServerPacket((short) size);
@@ -234,7 +234,7 @@ import bunnyEmu.main.utils.Log;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(client.getVersion() <= Constants.VERSION_VANILLA)
+	        if(client.getVersion() <= Versions.VERSION_VANILLA)
 	        	serverLogonAuth.putInt(0);     
 	        else{
 	        	serverLogonAuth.putInt(0x00800000);

@@ -21,7 +21,7 @@ import bunnyEmu.main.net.ServerPackets.SMSG_REALM_CACHE;
 import bunnyEmu.main.net.ServerPackets.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -60,7 +60,7 @@ public class WorldSession {
 		byte cClass = p.get();
 		// More left (male/female , style data)
 		Log.log("Created new char with name: " + name);
-		connection.getClientParent().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
+		connection.getClientParent().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass, realm));
 		connection.send(new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
 	}
 
@@ -69,7 +69,7 @@ public class WorldSession {
 	 */
 	public void verifyLogin(ClientPacket p) {
 		Char character;
-		if (realm.getVersion() <= Constants.VERSION_CATA) {
+		if (realm.getVersion() <= Versions.VERSION_CATA) {
 			p.packet.order(ByteOrder.BIG_ENDIAN);
 			character = connection.getClientParent().setCurrentCharacter(p.getLong());
 			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -86,12 +86,12 @@ public class WorldSession {
 		character.setSpeed(15);
 		
 		// Currently only fully supports MoP
-		if (realm.getVersion() <= Constants.VERSION_BC)
+		if (realm.getVersion() <= Versions.VERSION_BC)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
-		else if (realm.getVersion() <= Constants.VERSION_WOTLK)
+		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
-		else if (realm.getVersion() <= Constants.VERSION_CATA)
+		else if (realm.getVersion() <= Versions.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
@@ -107,7 +107,7 @@ public class WorldSession {
 	 */
 	public void sendAccountDataTimes(int mask) {
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
-		if (this.realm.getVersion() <= Constants.VERSION_CATA)
+		if (this.realm.getVersion() <= Versions.VERSION_CATA)
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 

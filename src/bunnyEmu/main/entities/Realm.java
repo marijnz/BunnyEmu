@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.Server;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketMap;
@@ -40,7 +40,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.localIP, 3456, Constants.VERSION_WOTLK);
+		this(1, "Marijnz ultimate server", Server.localIP, 3456, Versions.VERSION_WOTLK);
 	}
 
 	/**
@@ -60,11 +60,11 @@ public class Realm extends Thread {
 		Log.log(port);
 		this.port = port;
 		this.version = version;
-		if(version <= Constants.VERSION_WOTLK)
+		if(version <= Versions.VERSION_WOTLK)
 			packets = Opcodes.formWotLK();
-		else if(version <= Constants.VERSION_CATA)
+		else if(version <= Versions.VERSION_CATA)
 			packets = Opcodes.formCata();
-		else if(version <= Constants.VERSION_MOP)
+		else if(version <= Versions.VERSION_MOP)
 			packets = Opcodes.formMoP();
 		start();
 		
@@ -136,15 +136,15 @@ public class Realm extends Thread {
 	}
 	
 	public String getVersionName(){
-		if(this.version <= Constants.VERSION_VANILLA)
+		if(this.version <= Versions.VERSION_VANILLA)
 			return "Vanilla";
-		if(this.version <= Constants.VERSION_BC)
+		if(this.version <= Versions.VERSION_BC)
 			return "BC";
-		if(this.version <= Constants.VERSION_WOTLK)
+		if(this.version <= Versions.VERSION_WOTLK)
 			return "WotLK";
-		if(this.version <= Constants.VERSION_CATA)
+		if(this.version <= Versions.VERSION_CATA)
 			return "Cata";
-		if(this.version <= Constants.VERSION_MOP)
+		if(this.version <= Versions.VERSION_MOP)
 			return "MoP";
 		else
 			return null;

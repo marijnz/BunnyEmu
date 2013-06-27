@@ -11,7 +11,7 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
@@ -27,14 +27,14 @@ import bunnyEmu.main.utils.crypto.WotLKCrypt;
  */
 public class Client {
     
-    private String _name;
-    private int _version;
-    private byte[] _sessionKey;
-    private GenericCrypt _crypt;
+    private String name;
+    private int version;
+    private byte[] sessionKey;
+    private GenericCrypt crypt;
     
     private LogonConnection _logonConnection;
     private WorldConnection _worldConnection;
-    private Realm _connectedRealm;
+    private Realm realm;
     
     private ArrayList<Char> characters = new ArrayList<Char>();
     private Char currentCharacter;
@@ -45,20 +45,20 @@ public class Client {
      * @param version The patch/version of the client i.e.: 335. 
      */
     public Client(String name, int version){
-        _name = name.toUpperCase();
-        _version = version;
+        name = name.toUpperCase();
+        this.version = version;
         
-        if(version <= Constants.VERSION_VANILLA)
-        	_crypt = new VanillaCrypt();
-        else if(version <= Constants.VERSION_BC)
-        	_crypt = new BCCrypt();
-        else if(version <= Constants.VERSION_CATA)
-        	_crypt = new WotLKCrypt();
-        else if(version <= Constants.VERSION_MOP)
-        	_crypt = new MoPCrypt();
+        if(version <= Versions.VERSION_VANILLA)
+        	crypt = new VanillaCrypt();
+        else if(version <= Versions.VERSION_BC)
+        	crypt = new BCCrypt();
+        else if(version <= Versions.VERSION_CATA)
+        	crypt = new WotLKCrypt();
+        else if(version <= Versions.VERSION_MOP)
+        	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
-        Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 8,(byte) 7);
+        Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 8,(byte) 7, realm);
 	   	addCharacter(char2);
 	   	//addCharacter(char2);
     }
@@ -67,18 +67,18 @@ public class Client {
      * @param K The session key generated in LogonAuth
      */
     public void setSessionKey(byte[] K){
-        _sessionKey = K;
+        sessionKey = K;
     }
     
     /**
      * @return K The session key generated in LogonAuth
      */
     public byte[] getSessionKey(){
-        return _sessionKey;
+        return sessionKey;
     }
     
     public GenericCrypt getCrypt(){
-        return _crypt;
+        return crypt;
     }
     
     /**
@@ -87,14 +87,14 @@ public class Client {
      * @return K The session key generated in LogonAuth
      */
     public void initCrypt(byte[] K){
-        _crypt.init(K);
+        crypt.init(K);
     }
     
     /**
      * @return The username of this client.
      */
     public String getName(){
-        return _name;
+        return name;
     }
     
     /**
@@ -125,8 +125,8 @@ public class Client {
      * @param realm The realm the client selected in the realmlist.
      */
     public void connect(Realm realm){
-    	_connectedRealm = realm;
-    	_connectedRealm.addClient(this);
+    	this.realm = realm;
+    	realm.addClient(this);
     }
     
     /**
@@ -136,10 +136,10 @@ public class Client {
      * - Closed world connection
      */
     public void disconnect(){
-    	if(_connectedRealm != null)
-    		_connectedRealm.removeClient(this);
+    	if(realm != null)
+    		realm.removeClient(this);
     	else
-    		ClientHandler.removeTempClient(_name);
+    		ClientHandler.removeTempClient(name);
     	try {
 			_logonConnection.getSocket().close();
 		} catch (IOException e) {
@@ -154,12 +154,12 @@ public class Client {
 			}
     	}
     	
-    	Log.log(this._name + " disconnected!");
+    	Log.log(this.name + " disconnected!");
     }
     
     public void disconnectFromRealm(){
-    	_connectedRealm.removeClient(this);
-    	_connectedRealm = null;
+    	realm.removeClient(this);
+    	realm = null;
     	ClientHandler.addTempClient(this);
     }
     
@@ -207,6 +207,6 @@ public class Client {
 	 * @return The version this Client logged in with, could be different than the actual supported versions.
 	 */
 	public int getVersion() {
-		return _version;
+		return version;
 	}
 }

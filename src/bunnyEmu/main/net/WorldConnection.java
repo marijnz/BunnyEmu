@@ -16,7 +16,7 @@ import bunnyEmu.main.entities.Packet;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.logon.RealmAuth;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -46,7 +46,7 @@ public class WorldConnection extends Connection{
 		}
         
         auth = new RealmAuth(this, realm);
-        if(realm.getVersion() < Constants.VERSION_MOP)
+        if(realm.getVersion() < Versions.VERSION_MOP)
         	auth.authChallenge();
         else
         	auth.transferInitiate();
@@ -96,7 +96,7 @@ public class WorldConnection extends Connection{
         try {
             p = new ClientPacket();
             p.header[0] = firstByte;
-            in.read(p.header, 1, ((realm.getVersion() <= Constants.VERSION_CATA) ? 5 : 3));
+            in.read(p.header, 1, ((realm.getVersion() <= Versions.VERSION_CATA) ? 5 : 3));
             decodeHeader(p);
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             
@@ -153,13 +153,13 @@ public class WorldConnection extends Connection{
         if (newSize > 0x7FFF) 
             header[index++] = (byte) (0x80 | (0xFF & (newSize >> 16)));
 	
-		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Constants.VERSION_CATA) ? 8 : 0)));
-		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Constants.VERSION_CATA) ? 0 : 8)));
+		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Versions.VERSION_CATA) ? 8 : 0)));
+		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Versions.VERSION_CATA) ? 0 : 8)));
 		header[index++] = (byte)(0xFF & opcode);
 		header[index] = (byte)(0xFF & (opcode >> 8));
 		
         if (clientParent != null){
-        	if(realm.getVersion() >= Constants.VERSION_MOP){
+        	if(realm.getVersion() >= Versions.VERSION_MOP){
         		int totalLength = newSize-2;
                 totalLength <<= 12;
                 totalLength |= (opcode & 0xFFF);
@@ -183,7 +183,7 @@ public class WorldConnection extends Connection{
     	if (clientParent != null)
     		p.header = clientParent.getCrypt().decrypt(p.header);
     	
-    	if(realm.getVersion() < Constants.VERSION_MOP){
+    	if(realm.getVersion() < Versions.VERSION_MOP){
     		ByteBuffer toHeader = ByteBuffer.allocate(6);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
         	toHeader.put(p.header);
@@ -208,9 +208,9 @@ public class WorldConnection extends Connection{
 	        	p.header[3] = (byte)(0xFF & (opcode >> 8));
     		}
     		
-    		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= Constants.VERSION_CATA) ? 6 : 4);
+    		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= Versions.VERSION_CATA) ? 6 : 4);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
-        	toHeader.put(p.header, 0, (realm.getVersion() <= Constants.VERSION_CATA) ? 6 : 4);
+        	toHeader.put(p.header, 0, (realm.getVersion() <= Versions.VERSION_CATA) ? 6 : 4);
         	toHeader.position(0);
 
 	        p.size = toHeader.getShort();

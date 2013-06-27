@@ -7,7 +7,7 @@ import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Constants;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -55,12 +55,12 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putFloat(currentChar.getY()); // Y
 			putFloat(currentChar.getZ()); // Z
 			// Guild ID
-			if (client.getVersion() < Constants.VERSION_CATA)
+			if (client.getVersion() < Versions.VERSION_CATA)
 				putInt(0);
 			else
 				putLong(0);
 			putInt(0); // Character Flags;
-			if (client.getVersion() <= Constants.VERSION_BC)
+			if (client.getVersion() <= Versions.VERSION_BC)
 				put((byte) 0); // Login Flags;
 			else {
 				putInt(0); // Login Flags;
@@ -72,19 +72,19 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putInt(0); // Pet FamilyID;
 
 			int EQUIPMENT_SLOT_END = 19;
-			if (client.getVersion() == Constants.VERSION_WOTLK)
+			if (client.getVersion() == Versions.VERSION_WOTLK)
 				EQUIPMENT_SLOT_END++;
 
 			for (int itemSlot = 0; itemSlot < EQUIPMENT_SLOT_END; ++itemSlot) {
 				putInt(0); // Item DisplayID;
 				put((byte) 0); // Item Inventory Type;
-				if (client.getVersion() >= Constants.VERSION_BC)
+				if (client.getVersion() >= Versions.VERSION_BC)
 					putInt(1); // Item EnchantID;
 			}
 
-			if (client.getVersion() >= Constants.VERSION_WOTLK) {
+			if (client.getVersion() >= Versions.VERSION_WOTLK) {
 				int bagCount = 3;
-				if (client.getVersion() >= Constants.VERSION_CATA)
+				if (client.getVersion() >= Versions.VERSION_CATA)
 					bagCount++;
 				for (int c = 0; c < bagCount; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32
 					putInt(0); // bag;
@@ -96,7 +96,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				put((byte) 0); // first bag inventory type
 			}
 
-			if (client.getVersion() == Constants.VERSION_BC)
+			if (client.getVersion() == Versions.VERSION_BC)
 				putInt(0); // enchant?
 
 		}

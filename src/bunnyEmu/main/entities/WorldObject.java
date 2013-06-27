@@ -4,6 +4,7 @@ import java.util.BitSet;
 import java.util.Hashtable;
 
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.xml.FieldParser;
 
 /**
  * A WorldObject that supports update packets
@@ -24,8 +25,11 @@ public abstract class WorldObject {
 	private Hashtable<Integer, Integer> updateData = new Hashtable<Integer, Integer>();
 	private BitSet mask;
 	private int maskSize;
+	
+	private FieldParser fields; // UpdateFields, version dependable
+	
 
-	public WorldObject() {
+	public WorldObject(Realm realm) {
 		Log.log("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
 		// 1973 in MoP?
@@ -33,6 +37,8 @@ public abstract class WorldObject {
 
 		maskSize = (dataLength + 32) / 32;
 		mask = new BitSet(dataLength);
+		
+		fields = new FieldParser(realm.getVersion());
 	}
 	
 	public void setPosition(float x, float y, float z, int mapId){
@@ -45,19 +51,23 @@ public abstract class WorldObject {
 	/**
 	 * Set a new update field with offset 0.
 	 */
-	public <T extends Number> void setUpdateField(int index, T value, Class<T> type) {
-		this.setUpdateField(index, value, type, (byte) 0);
+	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type) {
+		this.setUpdateField(field, name, value, type, (byte) 0);
 	}
 
 	/**
 	 * Set a new update field
 	 * 
+	 * @param field For example: UnitFields
+	 * @param name For example: MaxHealth
 	 * @param index The index of the updatefield, i.e.: Mana regeneration
 	 * @param value The value of the updatefield, i.e.: 235.32f
 	 * @param type The type of the given value, i.e.: Float
 	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed apart on the same index
 	 */
-	public <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset) {
+	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type, byte offset) {
+		int index = fields.get(field, name);
+		
 		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
 			mask.set(index);
 			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();

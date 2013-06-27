@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.xml.FieldParser;
 
 /**
  *
@@ -29,6 +30,7 @@ public class Server {
 	
 	public static void main(String[] args) {
 		Log.setlevel(Log.ERROR);
+		FieldParser p = new FieldParser(510);
 		new Server().launch();
 	}
 	
