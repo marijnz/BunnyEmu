@@ -8,15 +8,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.WorldConnection;
+import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
+import bunnyEmu.main.utils.Versions;
 
 /**
  *
@@ -70,87 +70,33 @@ public class RealmAuth extends Auth {
         connection.send(authChallenge);
     }
     
-    public void authSession(ClientPacket authSession) {
+    public void authSession(CMSG_AUTH_PROOF authProof) {
         Log.log("authSession");
-        String accountName = null;
-        byte[] mClientSeed = new byte[4];
-        byte[] mClientBuild = new byte[2];
-        byte[] digest1 = new byte[20];
-        
-        if(realm.getVersion() <= Versions.VERSION_WOTLK){
-        	
-        	authSession.getInt();// mClientBuild
-   	        authSession.getInt();               // unk2
-   	        accountName = authSession.getString();     // accountName
-   	        if(realm.getVersion() > Versions.VERSION_BC)
-   	        	authSession.getInt();               // unk3
-   	        
-   	        authSession.get(mClientSeed);       // mClientSeed
-   	        if(realm.getVersion() > Versions.VERSION_BC){
-   		        authSession.getLong();
-   		        authSession.getInt();
-   		        authSession.getInt();
-   		        authSession.getInt();
-   	        }
-   	        authSession.get(digest1);
-        } else if(realm.getVersion() <= Versions.VERSION_CATA){
-        	int position = 0;
-        	authSession.get(digest1, position, 7);
-        	authSession.get(new byte[4]);
-        	authSession.get(digest1, position += 7, 1);
-        	authSession.get(new byte[12]);
-        	authSession.get(digest1, position += 1, 1);
-        	authSession.get(new byte[1]);
-        	authSession.get(digest1, position += 1, 2);
-        	authSession.get(mClientSeed);
-
-        	authSession.get(new byte[4]);
-        	authSession.get(digest1, position += 2, 6);
-        	authSession.get(mClientBuild);// mClientBuild
-        	Log.log(new BigNumber(mClientBuild).toHexString());
-        	authSession.get(digest1, position += 6, 1);
-        	authSession.get(new byte[5]);
-        	
-        	authSession.get(digest1, position += 1, 2);
-        	
-        	int firstByte = (0x000000FF & ((int)authSession.get()));
-        	short addonSize = (short)firstByte;
-        	
-        	authSession.get(new byte[addonSize+3]); // adjusting to addonsize (1+3 = int)
-        	accountName = authSession.getString();
-        } else{
-        	authSession.get(new byte[54]);
-        	int addonSize = authSession.getInt();
-        	authSession.get(new byte[addonSize + 2]); // +2 = 0-byte and "X"?
-        	accountName = authSession.getString();
-        }
-        
-        Log.log(accountName);
-        client = ClientHandler.removeTempClient(accountName);
-        client.connect(realm);
+       
+        client = ClientHandler.removeTempClient(authProof.getAccountName());
+       
         
         if (client != null) {
+        	client.connect(realm);
             client.attachWorld((WorldConnection) connection);
             MessageDigest md = null;
             try {
                 md = MessageDigest.getInstance("SHA1");
-            } catch (NoSuchAlgorithmException ex) {
-                Log.log("Couldn't load algorithm");
+            } catch (NoSuchAlgorithmException e) {
             }
 
-            byte[] t = {0, 0, 0, 0};
-            md.update(connection.getClientParent().getName().getBytes());
-            md.update(t);
-            md.update(mClientSeed);
+            md.update(connection.getClient().getName().getBytes());
+            md.update(new byte[] {0, 0, 0, 0}); // t
+            md.update(authProof.getClientSeed());
             md.update(_seed);
-            md.update(connection.getClientParent().getSessionKey());
-            byte[] digest2 = md.digest();	
+            md.update(connection.getClient().getSessionKey());
+            byte[] digest = md.digest();	
             
-            Log.log("authSession " + client.getName() + " " + new BigNumber(digest1).toHexString() + "  " + new BigNumber(digest2).toHexString());
+            Log.log("authSession " + client.getName());
             
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
-            if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(digest1).toHexString().equals(new BigNumber(digest2).toHexString())) {
-            	connection.getClientParent().initCrypt(connection.getClientParent().getSessionKey()); 
+            if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
+            	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
             	Log.log("Valid account: " + client.getName());
                 if(realm.getVersion() <= Versions.VERSION_CATA){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
@@ -164,12 +110,12 @@ public class RealmAuth extends Auth {
                     connection.send(realm.loadPacket("authresponse_mop", 78));
                     connection.send(new ServerPacket(Opcodes.SMSG_UPDATE_CLIENT_CACHE_VERSION, 4));
                     connection.send(new ServerPacket(Opcodes.SMSG_TUTORIAL_FLAGS, 8*4));
-                    
                 }
+                return;
             } else
-            	client.disconnectFromRealm();
-        } else{
-	        Log.log("Unvalid account");
-        }
+                client.disconnect();
+        } else
+        	connection.close();
+        Log.log("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
     }
 }

@@ -1,5 +1,12 @@
 package bunnyEmu.main.utils.types;
 
+/**
+ * Reference:
+ * https://sharesource.org/hg/sniffitzt/file/889649f15711/src/processor/objects/InstancedObject.java (3.3.5)
+ * 
+ * @author Marijn
+ *
+ */
 public class ObjectType {
 
 	 public static final byte Player = 4;

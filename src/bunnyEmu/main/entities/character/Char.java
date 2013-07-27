@@ -3,7 +3,8 @@ package bunnyEmu.main.entities.character;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.entities.WorldObject;
+import bunnyEmu.main.entities.Unit;
+import bunnyEmu.main.utils.types.MovementSpeed;
 
 /**
  * A Character
@@ -11,7 +12,7 @@ import bunnyEmu.main.entities.WorldObject;
  * @author Marijn
  *
  */
-public class Char extends WorldObject{
+public class Char extends Unit{
 
 	private String name;
 	private byte charRace;
@@ -22,8 +23,7 @@ public class Char extends WorldObject{
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
 	
 	
-	public Char(String name, float x, float y, float z, int mapID, byte charRace, byte charClass, Realm realm){
-		super(realm);
+	public Char(String name, float x, float y, float z, int mapID, byte charRace, byte charClass){
 		this.setName(name);
 		this.setX(x);
 		this.setY(y);
@@ -37,11 +37,17 @@ public class Char extends WorldObject{
 		skills.add(new Skill(109)); // language 1
 		//skills.add(new Skill(315)); // language 2
 		
-		this.setUpdateFields();
+		movement = new MovementSpeed();
 	}
 	
 
-	protected void setUpdateFields() {
+	/**
+	 * Prepare for initial update packet
+	 * 
+	 * @param realm The realm this char belongs to. Used for multiple version support, loading the right xml fields file, where indexes are defined
+	 */
+	public void setUpdateFields(Realm realm) {
+		this.initFields(realm);
 		 // ObjectFields
 		 setUpdateField("ObjectFields", "Guid", guid, Long.class);
 		 setUpdateField("ObjectFields", "Data", (long) 0, Long.class);
@@ -50,43 +56,44 @@ public class Char extends WorldObject{
 		 
 		 setUpdateField("UnitFields", "Health", 13377, Integer.class);
          setUpdateField("UnitFields", "MaxHealth", 13377, Integer.class);
-         
+          
          setUpdateField("UnitFields", "Level", 240, Integer.class);
          
          setUpdateField("UnitFields", "FactionTemplate", 0x74, Integer.class);
          
-         setUpdateField("UnitFields", "DisplayPower", this.charRace, Byte.class, (byte) 0);
-         setUpdateField("UnitFields", "DisplayPower", this.charClass, Byte.class, (byte) 1);
-         setUpdateField("UnitFields", "DisplayPower", this.charGender, Byte.class, (byte) 2);
-         setUpdateField("UnitFields", "DisplayPower", (byte) 0, Byte.class, (byte) 3);
+         setUpdateField("UnitFields", "Bytes0", this.charRace, Byte.class, (byte) 0);
+         setUpdateField("UnitFields", "Bytes0", this.charClass, Byte.class, (byte) 1);
+         setUpdateField("UnitFields", "Bytes0", this.charGender, Byte.class, (byte) 2);
+         setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, (byte) 3); // powertype (mana etc.)
 
          // PlayerFields
-         setUpdateField("PlayerFields", "HairColorID", (byte) 1, Byte.class, (byte) 0); // skin
-         setUpdateField("PlayerFields", "HairColorID", (byte) 1, Byte.class, (byte) 1); // face
-         setUpdateField("PlayerFields", "HairColorID", (byte) 1, Byte.class, (byte) 2); // hairstyle
-         setUpdateField("PlayerFields", "HairColorID", (byte) 1, Byte.class, (byte) 3); // haircolor
-         setUpdateField("PlayerFields", "RestState", (byte) 1, Byte.class, (byte) 0); 	// facial hair
-         setUpdateField("PlayerFields", "RestState", (byte) 0, Byte.class, (byte) 1);
-         setUpdateField("PlayerFields", "RestState", (byte) 0, Byte.class, (byte) 2);
-         setUpdateField("PlayerFields", "RestState", (byte) 2, Byte.class, (byte) 3); // ?
+         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 0); // skin
+         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 1); // face
+         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 2); // hairstyle
+         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 3); // haircolor
+         setUpdateField("PlayerFields", "Bytes2", (byte) 1, Byte.class, (byte) 0); 	// facial hair
+         setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 1); // PB2_2
+         setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 2); // Bankbag Slots
+         setUpdateField("PlayerFields", "Bytes2", (byte) 2, Byte.class, (byte) 3); // Reststate
          
-         setUpdateField("PlayerFields", "ArenaFaction", (byte) 1, Byte.class, (byte) 0); //gender..?
-         setUpdateField("PlayerFields", "ArenaFaction", (byte) 0, Byte.class, (byte) 1); 
-         setUpdateField("PlayerFields", "ArenaFaction", (byte) 0, Byte.class, (byte) 2); 
-         setUpdateField("PlayerFields", "ArenaFaction", (byte) 0, Byte.class, (byte) 3); 
+         setUpdateField("PlayerFields", "Bytes3", (byte) 1, Byte.class, (byte) 0); // gender
+         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 1); // drunkness
+         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 2); // PB3_3?
+         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 3); // PvPRank
          setUpdateField("PlayerFields", "WatchedFactionIndex", -1, Integer.class); // ?
          
          setUpdateField("PlayerFields", "XP", 0, Integer.class);
          setUpdateField("PlayerFields", "NextLevelXP", 400, Integer.class);
          setUpdateField("PlayerFields", "CurrentSpecID", 0, Integer.class);
          
-         int displayID = 2457 ;
+         // 2457 = panda?
+         int displayID = 55 ;
          
          setUpdateField("UnitFields", "DisplayID", displayID, Integer.class);
          setUpdateField("UnitFields", "NativeDisplayID", displayID, Integer.class);
          
          for(int i = 0; i < skills.size(); i++)
-        	 setUpdateField("PlayerFields", "Skill" + i, skills.get(i).getId(), Integer.class);
+        	 setUpdateField("PlayerFields", "Skill", i, skills.get(i).getId(), Integer.class);
          
          setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
          

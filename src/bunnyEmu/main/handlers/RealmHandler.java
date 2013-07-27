@@ -3,8 +3,8 @@ package bunnyEmu.main.handlers;
 import java.util.ArrayList;
 
 import bunnyEmu.main.Server;
-import bunnyEmu.main.entities.AuthServerPacket;
 import bunnyEmu.main.entities.Realm;
+import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.utils.Log;
 
 public class RealmHandler {
@@ -21,12 +21,12 @@ public class RealmHandler {
     /**
      * @return The realmlist packet, version dependable
      */
-	public static AuthServerPacket getRealmList(){
+	public static AuthPacket getRealmList(){
 		short size = 8;
         for (int i = 0; i < realms.size(); i++) 
             size += realms.get(i).getSize();
         
-        AuthServerPacket realmPacket = new AuthServerPacket((short) (size + 3));
+        AuthPacket realmPacket = new AuthPacket((short) (size + 3));
         
         realmPacket.put((byte) 0x10);          // Header
         realmPacket.putShort(size);       		// Size Placeholder

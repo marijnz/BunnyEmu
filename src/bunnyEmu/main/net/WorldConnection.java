@@ -10,15 +10,18 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import bunnyEmu.main.entities.ClientPacket;
-import bunnyEmu.main.entities.IPacketWritable;
-import bunnyEmu.main.entities.Packet;
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.entities.ServerPacket;
+import bunnyEmu.main.entities.packet.ClientPacket;
+import bunnyEmu.main.entities.packet.IPacketReadable;
+import bunnyEmu.main.entities.packet.IPacketWritable;
+import bunnyEmu.main.entities.packet.Packet;
+import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.logon.RealmAuth;
-import bunnyEmu.main.utils.Versions;
+import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
+import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
+import bunnyEmu.main.utils.Versions;
 
 /**
  * 
@@ -34,6 +37,7 @@ public class WorldConnection extends Connection{
     private WorldSession worldSession;
     private Realm realm;
     private Method packetWriter;
+    private Method packetReader;
     
     public WorldConnection(Socket clientSocket, Realm realm){
         super(clientSocket);
@@ -41,10 +45,9 @@ public class WorldConnection extends Connection{
         
         try {
         	packetWriter = IPacketWritable.class.getMethod("write" + realm.getVersionName());
+        	packetReader = IPacketReadable.class.getMethod("read" + realm.getVersionName());
 		} catch (Exception e){
-			
 		}
-        
         auth = new RealmAuth(this, realm);
         if(realm.getVersion() < Versions.VERSION_MOP)
         	auth.authChallenge();
@@ -62,17 +65,36 @@ public class WorldConnection extends Connection{
                 p = readPacket(readByte);
                 if(p == null)
                     continue;
-                Log.log("Received packet: " + p.toString());
-                if(p.sOpcode == null)
+                
+                if(p.sOpcode == null){
+                	Log.log("Received unknown packet: " + p.toString());
                 	continue;
+                }
+                
                 p.position(0);
+                try {
+                	// Trying to write implementation, if the class doesn't exist, nothing will happen
+                	ClientPacket pTemp = (ClientPacket) Class.forName("bunnyEmu.main.net.packets.client." + p.sOpcode).newInstance();
+                	pTemp.put(p);
+                	p = pTemp;
+					try {
+	    				if(!((boolean) packetReader.invoke(p, new Object[0])))
+	    					p.readGeneric();
+	    			} catch (Exception e){
+	    				e.printStackTrace();
+	    			}
+					Log.log("Received known packet with implementation: " + p.toString());
+				} catch (Exception e){
+					Log.log("Received known packet without implementation: " + p.toString());
+				}
+                
                 switch(p.sOpcode){
                 	case Opcodes.MSG_TRANSFER_INITIATE:					auth.authChallenge(); 						break; // MoP only
-                    case Opcodes.CMSG_AUTH_PROOF:  						auth.authSession(p);						break;
+                    case Opcodes.CMSG_AUTH_PROOF:  						auth.authSession((CMSG_AUTH_PROOF) p);		break;
                     case Opcodes.CMSG_READY_FOR_ACCOUNT_DATA_TIMES:		worldSession.sendAccountDataTimes(0x15);	break;
                     case Opcodes.CMSG_CHAR_ENUM:						worldSession.sendCharacters();				break;
                     case Opcodes.CMSG_CHAR_CREATE:						worldSession.addCharacter(p); 				break;
-                    case Opcodes.CMSG_PLAYER_LOGIN:						worldSession.verifyLogin(p); 				break;
+                    case Opcodes.CMSG_PLAYER_LOGIN:						worldSession.verifyLogin((CMSG_PLAYER_LOGIN) p); 				break;
                     case Opcodes.CMSG_PING:								worldSession.sendPong(); 					break;
                     case Opcodes.CMSG_NAME_QUERY:						worldSession.sendNameResponse(); 			break;
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
@@ -85,8 +107,8 @@ public class WorldConnection extends Connection{
         	Log.log(WorldConnection.class.getName() + " force closed");
         } finally{
         	// The client parent might be null if the realm authentication hasn't been completed yet
-        	if(clientParent != null)
-        		clientParent.disconnectFromRealm();
+        	if(client != null)
+        		client.disconnectFromRealm();
             close();
         }
     }
@@ -99,9 +121,6 @@ public class WorldConnection extends Connection{
             in.read(p.header, 1, ((realm.getVersion() <= Versions.VERSION_CATA) ? 5 : 3));
             decodeHeader(p);
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
-            
-            //if(p.sOpcode == null)
-            //	Log.log("Unknown packet: " + Integer.toHexString(p.nOpcode).toUpperCase());
             		
             if (p.size < 0){
             	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
@@ -158,7 +177,7 @@ public class WorldConnection extends Connection{
 		header[index++] = (byte)(0xFF & opcode);
 		header[index] = (byte)(0xFF & (opcode >> 8));
 		
-        if (clientParent != null){
+        if (client != null){
         	if(realm.getVersion() >= Versions.VERSION_MOP){
         		int totalLength = newSize-2;
                 totalLength <<= 12;
@@ -168,7 +187,7 @@ public class WorldConnection extends Connection{
                 buffer.putInt(totalLength);
                 header = buffer.array();
         	}
-        	header = clientParent.getCrypt().encrypt(header);
+        	header = client.getCrypt().encrypt(header);
         }
         
         return header;
@@ -180,8 +199,8 @@ public class WorldConnection extends Connection{
      */
     private void decodeHeader(Packet p){
     	// Client parent isn't null so client is authenticated
-    	if (clientParent != null)
-    		p.header = clientParent.getCrypt().decrypt(p.header);
+    	if (client != null)
+    		p.header = client.getCrypt().decrypt(p.header);
     	
     	if(realm.getVersion() < Versions.VERSION_MOP){
     		ByteBuffer toHeader = ByteBuffer.allocate(6);
@@ -194,7 +213,7 @@ public class WorldConnection extends Connection{
 			p.nOpcode = (short) toHeader.getInt();
 	        p.header = toHeader.array();
     	} else{
-    		if(clientParent != null){
+    		if(client != null){
     			ByteBuffer toHeader = ByteBuffer.allocate(4);
             	toHeader.order(ByteOrder.LITTLE_ENDIAN);
             	toHeader.put(p.header,0, 4);

@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import bunnyEmu.main.entities.Client;
-import bunnyEmu.main.entities.Packet;
+import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
 
 /**
@@ -19,8 +19,7 @@ public abstract class Connection extends Thread {
 	protected Socket clientSocket;
 	protected PrintWriter out;
 	protected DataInputStream in;
-	protected boolean connected = true;
-	protected Client clientParent;
+	protected Client client;
 
 	/**
 	 * Create a new connection attached based on the given socket
@@ -43,7 +42,7 @@ public abstract class Connection extends Thread {
 		}
 	}
 	
-	protected void close() {
+	public void close() {
 		try {
 			//data.allConnections.remove(this);
 			out.close();
@@ -94,15 +93,15 @@ public abstract class Connection extends Thread {
 	/**
 	 * @return The client that belongs to this connection.
 	 */
-	public Client getClientParent() {
-		return clientParent;
+	public Client getClient() {
+		return client;
 	}
 
 	/**
 	 * @param c The client that belongs to this connection.
 	 */
 	public void setClientParent(Client c) {
-		clientParent = c;
+		client = c;
 	}
 
 }

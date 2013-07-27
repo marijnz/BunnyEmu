@@ -21,7 +21,7 @@
 
 	<type name = "UnitFields">
 		<field>
-			<name>DisplayPower</name>
+			<name>Bytes0</name>
 			<value>22</value>
 		</field>
 		<field>
@@ -53,15 +53,15 @@
 
 	<type name = "PlayerFields">
 		<field>
-			<name>HairColorID</name>
+			<name>Bytes1</name>
 			<value>161</value>
 		</field>
 		<field>
-			<name>RestState</name>
+			<name>Bytes2</name>
 			<value>162</value>
 		</field>
 		<field>
-			<name>ArenaFaction</name>
+			<name>Bytes3</name>
 			<value>163</value>
 		</field>
 		<field>

@@ -171,14 +171,9 @@ public class BigNumber{
     
      public byte[] getBytes(){
         return bigInteger.toByteArray();
-    }
-     
+     }
      
      public boolean equals(BigNumber b){
 		return (b.toHexString().equals(this.toHexString()));
      }
-     
-     
-     
-     
 }

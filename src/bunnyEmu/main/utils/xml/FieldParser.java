@@ -69,7 +69,7 @@ public class FieldParser {
 		Log.log("Added new field: " + type + " " + name + " " + value);
 	}
 	
-	public int get(String type, String name){
+	public Integer get(String type, String name){
 		return typeFields.get(type).get(name);
 	}
 	

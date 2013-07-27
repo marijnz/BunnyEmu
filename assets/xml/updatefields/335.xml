@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<types>
+	<type name = "ObjectFields">
+		<field>
+			<name>Guid</name>
+			<value>0</value>
+		</field>
+		<field>
+			<name>Type</name>
+			<value>2</value>
+		</field>
+		<field>
+			<name>Scale</name>
+			<value>4</value>
+		</field>
+	</type>
+
+	<type name = "UnitFields">
+		<field>
+			<name>Bytes0</name>
+			<value>23</value>
+		</field>
+		<field>
+			<name>Health</name>
+			<value>24</value>
+		</field>
+		<field>
+			<name>MaxHealth</name>
+			<value>32</value>
+		</field>
+		<field>
+			<name>Level</name>
+			<value>54</value>
+		</field>
+		<field>
+			<name>FactionTemplate</name>
+			<value>55</value>
+		</field>
+		<field>
+			<name>DisplayID</name>
+			<value>67</value>
+		</field>
+		<field>
+			<name>NativeDisplayID</name>
+			<value>68</value>
+		</field>
+		
+	</type>
+
+	<type name = "PlayerFields">
+		<field>
+			<name>Bytes1</name>
+			<value>153</value>
+		</field>
+		<field>
+			<name>Bytes2</name>
+			<value>154</value>
+		</field>
+		<field>
+			<name>Bytes3</name>
+			<value>155</value>
+		</field>
+		<field>
+			<name>VirtualPlayerRealm</name>
+			<value>956</value>
+		</field>
+		<field>
+			<name>CurrentSpecID</name>
+			<value>957</value>
+		</field>
+		<field>
+			<name>XP</name>
+			<value>634</value>
+		</field>
+		<field>
+			<name>NextLevelXP</name>
+			<value>635</value>
+		</field>
+		<field>
+			<name>Skill</name>
+			<value>636</value>
+		</field>
+		<field>
+			<name>WatchedFactionIndex</name>
+			<value>1230</value>
+		</field>
+	</type>
+</types>

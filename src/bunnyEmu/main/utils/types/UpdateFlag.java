@@ -15,6 +15,8 @@ public class UpdateFlag {
 	public static final short Unknown2 				= 0x0400;
 	public static final short Unknown3 				= 0x0800;
 	public static final short Unknown4 				= 0x1000;
+	
+	public static final short SelfAlive				= 0x0001 | 0x0020;
 
 	
 	/* Self                = 0x0001,

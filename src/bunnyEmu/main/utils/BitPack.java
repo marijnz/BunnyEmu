@@ -3,7 +3,7 @@ package bunnyEmu.main.utils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import bunnyEmu.main.entities.Packet;
+import bunnyEmu.main.entities.packet.Packet;
 
 /**
  * Adopted from Arctium core, MoP

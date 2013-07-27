@@ -3,6 +3,7 @@ package bunnyEmu.main.entities;
 import java.util.BitSet;
 import java.util.Hashtable;
 
+import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.xml.FieldParser;
 
@@ -14,7 +15,8 @@ import bunnyEmu.main.utils.xml.FieldParser;
  */
 public abstract class WorldObject {
 
-	private static int countGUID = 8;
+	// TODO, fix for other values than 1 for UpdatePackets
+	private static int countGUID = 1;
 
 	protected float x;
 	protected float y;
@@ -26,18 +28,28 @@ public abstract class WorldObject {
 	private BitSet mask;
 	private int maskSize;
 	
+	private Realm realm;
+	
 	private FieldParser fields; // UpdateFields, version dependable
 	
-
-	public WorldObject(Realm realm) {
+	public WorldObject(){
 		Log.log("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
-		// 1973 in MoP?
+		// 1973 in MoP? Seems 1326 in wotlk
 		int dataLength = 1973;
 
 		maskSize = (dataLength + 32) / 32;
 		mask = new BitSet(dataLength);
-		
+		setPosition(1,1,1,1);
+	}
+
+	public WorldObject(Realm realm) {
+		this();
+		initFields(realm);
+	}
+	
+	public void initFields(Realm realm){
+		this.realm = realm;
 		fields = new FieldParser(realm.getVersion());
 	}
 	
@@ -54,20 +66,36 @@ public abstract class WorldObject {
 	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type) {
 		this.setUpdateField(field, name, value, type, (byte) 0);
 	}
+	
+	/**
+	 * Set a new update field
+	 * @added value added to the generated index
+	 */
+	public <T extends Number> void setUpdateField(String field, String name, int added, T value, Class<T> type) {
+		int index = getIndex(field, name);
+		if(index == -1)
+			return;
+		
+		this.setUpdateField(index + added, value, type, (byte) 0);
+	}
 
 	/**
 	 * Set a new update field
 	 * 
-	 * @param field For example: UnitFields
-	 * @param name For example: MaxHealth
-	 * @param index The index of the updatefield, i.e.: Mana regeneration
-	 * @param value The value of the updatefield, i.e.: 235.32f
-	 * @param type The type of the given value, i.e.: Float
+	 * @param field For example: UnitFields, used to generate index
+	 * @param name For example: MaxHealth, used to generate index
+	 * @param value The value of the updatefield, For example: 235.32f
+	 * @param type The type of the given value, For example: Float
 	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed apart on the same index
 	 */
 	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type, byte offset) {
-		int index = fields.get(field, name);
-		
+		int index = getIndex(field, name);
+		if(index == -1)
+			return;
+		setUpdateField(index, value, type, offset);
+	}
+	
+	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset){
 		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
 			mask.set(index);
 			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();
@@ -93,6 +121,15 @@ public abstract class WorldObject {
 			Log.log("Datatype not supported");
 		}
 	}
+	
+	private int getIndex(String field, String name){
+		Integer index = fields.get(field, name);
+		if(index == null){
+			Log.log("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realm.getVersion() + ")");
+			return -1;
+		}
+		return index;
+	}
 
 	/**
 	 * Write the update hashtable to the update packet.
@@ -100,7 +137,7 @@ public abstract class WorldObject {
 	 */
 	public void writeUpdateFields(Packet p) {
 		p.put((byte) maskSize);
-
+		Log.log("mask size: " + maskSize);
 		byte[] b = new byte[((mask.size() + 8) / 8) + 1];
 		byte[] maskB = mask.toByteArray();
 		for (int i = 0; i < maskB.length; i++)

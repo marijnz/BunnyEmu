@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import bunnyEmu.main.entities.ClientPacket;
-import bunnyEmu.main.entities.Packet;
+import bunnyEmu.main.entities.packet.ClientPacket;
+import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.logon.LogonAuth;
 import bunnyEmu.main.utils.Log;
 

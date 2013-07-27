@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import bunnyEmu.main.entities.AuthServerPacket;
 import bunnyEmu.main.entities.Client;
-import bunnyEmu.main.entities.ClientPacket;
+import bunnyEmu.main.entities.packet.AuthPacket;
+import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Versions;
 
     /**
      * 
@@ -86,9 +86,9 @@ import bunnyEmu.main.utils.Log;
             byte[] accountHash = md.digest();
             Log.log("AccountHash: " + new BigNumber(accountHash).toHexString());
             String username = new String(I);
+            Log.log("USERNAME: " + username);
             client = new Client(username, Integer.parseInt(version));
-            client.attachLogon((LogonConnection) connection);
-
+            client.attachLogon(connection);
             // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = ClientHandler.findClient(username);
             if(existingClient != null)
@@ -109,7 +109,7 @@ import bunnyEmu.main.utils.Log;
             gmod = g.modPow(b, N);
             B = (v.multiply(k).add(gmod)).remainder(N);
             
-            AuthServerPacket serverLogonChallenge = new AuthServerPacket((short) 119);
+            AuthPacket serverLogonChallenge = new AuthPacket((short) 119);
             serverLogonChallenge.put((byte) 0); // opcode
             serverLogonChallenge.put((byte) 0); // unk
             serverLogonChallenge.put((byte) 0); // WoW_SUCCES
@@ -229,7 +229,7 @@ import bunnyEmu.main.utils.Log;
             if(client.getVersion() <= Versions.VERSION_VANILLA)
             	size = 26;
             
-	        AuthServerPacket serverLogonAuth = new AuthServerPacket((short) size);
+	        AuthPacket serverLogonAuth = new AuthPacket((short) size);
 	        serverLogonAuth.put((byte) 1); // cmd
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());

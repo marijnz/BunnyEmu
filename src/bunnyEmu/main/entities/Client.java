@@ -11,8 +11,8 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
 import bunnyEmu.main.utils.crypto.MoPCrypt;
@@ -45,7 +45,7 @@ public class Client {
      * @param version The patch/version of the client i.e.: 335. 
      */
     public Client(String name, int version){
-        name = name.toUpperCase();
+        this.name = name.toUpperCase();
         this.version = version;
         
         if(version <= Versions.VERSION_VANILLA)
@@ -58,7 +58,7 @@ public class Client {
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
-        Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 8,(byte) 7, realm);
+        Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 8,(byte) 7);
 	   	addCharacter(char2);
 	   	//addCharacter(char2);
     }

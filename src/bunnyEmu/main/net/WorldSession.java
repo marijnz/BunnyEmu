@@ -2,28 +2,29 @@ package bunnyEmu.main.net;
 
 import java.nio.ByteOrder;
 
-import bunnyEmu.main.entities.ClientPacket;
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.entities.ServerPacket;
 import bunnyEmu.main.entities.character.Char;
-import bunnyEmu.main.net.ServerPackets.SMSG_ACCOUNT_DATA_TIMES;
-import bunnyEmu.main.net.ServerPackets.SMSG_CHAR_ENUM;
-import bunnyEmu.main.net.ServerPackets.SMSG_KNOWN_SPELLS;
-import bunnyEmu.main.net.ServerPackets.SMSG_LOGIN_VERIFY_WORLD;
-import bunnyEmu.main.net.ServerPackets.SMSG_MESSAGECHAT;
-import bunnyEmu.main.net.ServerPackets.SMSG_MOTD;
-import bunnyEmu.main.net.ServerPackets.SMSG_MOVE_SET_CANFLY;
-import bunnyEmu.main.net.ServerPackets.SMSG_NAME_CACHE;
-import bunnyEmu.main.net.ServerPackets.SMSG_NAME_QUERY_RESPONSE;
-import bunnyEmu.main.net.ServerPackets.SMSG_NEW_WORLD;
-import bunnyEmu.main.net.ServerPackets.SMSG_PONG;
-import bunnyEmu.main.net.ServerPackets.SMSG_REALM_CACHE;
-import bunnyEmu.main.net.ServerPackets.SMSG_UPDATE_OBJECT_CREATE;
+import bunnyEmu.main.entities.packet.ClientPacket;
+import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
+import bunnyEmu.main.net.packets.server.SMSG_ACCOUNT_DATA_TIMES;
+import bunnyEmu.main.net.packets.server.SMSG_CHAR_ENUM;
+import bunnyEmu.main.net.packets.server.SMSG_KNOWN_SPELLS;
+import bunnyEmu.main.net.packets.server.SMSG_LOGIN_VERIFY_WORLD;
+import bunnyEmu.main.net.packets.server.SMSG_MESSAGECHAT;
+import bunnyEmu.main.net.packets.server.SMSG_MOTD;
+import bunnyEmu.main.net.packets.server.SMSG_MOVE_SET_CANFLY;
+import bunnyEmu.main.net.packets.server.SMSG_NAME_CACHE;
+import bunnyEmu.main.net.packets.server.SMSG_NAME_QUERY_RESPONSE;
+import bunnyEmu.main.net.packets.server.SMSG_NEW_WORLD;
+import bunnyEmu.main.net.packets.server.SMSG_PONG;
+import bunnyEmu.main.net.packets.server.SMSG_REALM_CACHE;
+import bunnyEmu.main.net.packets.server.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
+import bunnyEmu.main.utils.Versions;
 
 /**
  * Used after world authentication, handles incoming packets.
@@ -46,7 +47,7 @@ public class WorldSession {
 	 */
 	public void sendCharacters() {
 		Log.log("sending chars");
-		connection.send(new SMSG_CHAR_ENUM(connection.getClientParent()));
+		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
 	/**
@@ -60,41 +61,32 @@ public class WorldSession {
 		byte cClass = p.get();
 		// More left (male/female , style data)
 		Log.log("Created new char with name: " + name);
-		connection.getClientParent().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass, realm));
+		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
 		connection.send(new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
 	}
 
 	/**
 	 * Sends initial packets after world login has been confirmed.
 	 */
-	public void verifyLogin(ClientPacket p) {
-		Char character;
-		if (realm.getVersion() <= Versions.VERSION_CATA) {
-			p.packet.order(ByteOrder.BIG_ENDIAN);
-			character = connection.getClientParent().setCurrentCharacter(p.getLong());
-			connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
-		} else {
-			byte[] guidMask = { 5, 7, 6, 1, 2, 3, 4, 0 };
-			byte[] guidBytes = { 6, 4, 3, 5, 0, 2, 7, 1 };
-			BitUnpack GuidUnpacker = new BitUnpack(p);
-			
-			long guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
-			character = connection.getClientParent().setCurrentCharacter(guid);
-		}
-
+	public void verifyLogin(CMSG_PLAYER_LOGIN p) {
+		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
+		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 		connection.send(new SMSG_KNOWN_SPELLS(character));
 		character.setSpeed(15);
+		
+		// Set the update fields, required for update packets
+		character.setUpdateFields(realm);
 		
 		// Currently only fully supports MoP
 		if (realm.getVersion() <= Versions.VERSION_BC)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
 		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
-			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
 		else if (realm.getVersion() <= Versions.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
-			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
 
 		connection.send(new SMSG_MOVE_SET_CANFLY(character));
 		sendAccountDataTimes(0xEA);
@@ -129,7 +121,7 @@ public class WorldSession {
 	 * Response the name request
 	 */
 	public void sendNameResponse() {
-		connection.send(new SMSG_NAME_QUERY_RESPONSE(connection.clientParent.getCurrentCharacter()));
+		connection.send(new SMSG_NAME_QUERY_RESPONSE(connection.client.getCurrentCharacter()));
 	}
 	
 	/**
@@ -139,7 +131,7 @@ public class WorldSession {
 		long guid = p.getLong();
 		Log.log("GUID: " + guid);
 		
-		connection.send(new SMSG_NAME_CACHE(connection.clientParent.getCurrentCharacter(), realm));
+		connection.send(new SMSG_NAME_CACHE(connection.client.getCurrentCharacter(), realm));
 	}
 	
 	/**
@@ -157,13 +149,13 @@ public class WorldSession {
 	 * Handles a chat message given by the client, checks for commands.
 	 */
 	public void handleChatMessage(ClientPacket p){
-		Char character = connection.clientParent.getCurrentCharacter();
+		Char character = connection.client.getCurrentCharacter();
 		 BitUnpack bitUnpack = new BitUnpack(p);
          int language = p.getInt();
 
          int messageLength = bitUnpack.GetBits((byte) 9);
          String message = p.getString(messageLength);
-         connection.send(new SMSG_MESSAGECHAT(connection.clientParent.getCurrentCharacter(), language, message));
+         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), language, message));
          
          try{
 	         if(message.contains(".tele")){
@@ -189,10 +181,10 @@ public class WorldSession {
 	 * Instantly teleports the client to the given coords
 	 */
 	public void teleportTo(float x, float y, float z, int mapId){
-		Char character = this.connection.getClientParent().getCurrentCharacter();
+		Char character = this.connection.getClient().getCurrentCharacter();
 		character.setPosition(x, y, z, mapId);
 		connection.send(new SMSG_NEW_WORLD(character));
-        connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClientParent()));
+        connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
 
 		connection.send(new SMSG_MOVE_SET_CANFLY(character));
 	}
