@@ -54,7 +54,7 @@ public class Client {
         	crypt = new BCCrypt();
         else if(version <= Versions.VERSION_CATA)
         	crypt = new WotLKCrypt();
-        else if(version <= Versions.VERSION_MOP)
+        else if(version <= Versions.VERSION_MOP3)
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);

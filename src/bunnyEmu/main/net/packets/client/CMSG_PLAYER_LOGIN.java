@@ -3,10 +3,7 @@ package bunnyEmu.main.net.packets.client;
 import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.net.packets.server.SMSG_LOGIN_VERIFY_WORLD;
-import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Log;
 
 /**
  * Received upon world login

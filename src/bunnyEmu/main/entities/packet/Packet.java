@@ -145,6 +145,9 @@ public abstract class Packet{
         return String.format("%0" + (packet.capacity() << 1) + "X", bi);
     }
     
+    /**
+     * A representation of the packet holdings
+     */
     @Override
     public String toString(){
        return this.sOpcode + " " + ("<" +Integer.toHexString( nOpcode).toUpperCase() +  "> " + new BigNumber(header).toHexString() + "  " + new BigNumber(packet.array()).toHexString());

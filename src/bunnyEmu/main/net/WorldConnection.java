@@ -152,6 +152,7 @@ public class WorldConnection extends Connection{
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
     		Log.log(p.sOpcode + " can't be send, it has no opcode linked");
+    		Log.log(p.toString());
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));

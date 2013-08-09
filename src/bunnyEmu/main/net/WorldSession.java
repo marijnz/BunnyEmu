@@ -1,7 +1,5 @@
 package bunnyEmu.main.net;
 
-import java.nio.ByteOrder;
-
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
