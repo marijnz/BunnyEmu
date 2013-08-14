@@ -29,7 +29,9 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		this.writePackedGuid(character.getGUID());
 		this.put((byte) 0);
 		this.putString(character.getName());
+		
 		Log.log("realm id: " + realm.id);
+		
 		this.putInt(realm.id);
 		
 		this.put((byte) character.getCharRace());
