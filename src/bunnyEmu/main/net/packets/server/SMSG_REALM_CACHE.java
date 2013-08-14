@@ -2,6 +2,7 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
@@ -22,12 +23,20 @@ public class SMSG_REALM_CACHE extends ServerPacket {
 	@Override
 	public boolean writeMoP() {
 
-		this.putInt(realm.id);
-		this.put((byte) 0); // unknown
-		this.put((byte) 1); // unknown
-		this.putString(realm.name);
-		this.putString(realm.name);
+		BitPack bitPack = new BitPack(this);
 
+		this.putInt(realm.id);
+		this.putInt(0); // unknown
+		
+		bitPack.write(realm.name.length(), 8);
+		bitPack.write(realm.name.length(), 8);
+		bitPack.write(1);
+		
+		bitPack.flush();
+		
+		this.putString(realm.name);
+		this.putString(realm.name);
+		
 		this.wrap();
 		return true;
 	}
