@@ -23,11 +23,16 @@ public class SMSG_REALM_CACHE extends ServerPacket {
 	public boolean writeMoP() {
 
 		this.putInt(realm.id);
-		this.put((byte) 0); // unknown
+		this.putInt(0); // unknown
+		
+		this.put((byte)realm.name.length());
+		this.put((byte)realm.name.length());
+		
 		this.put((byte) 1); // unknown
+		
 		this.putString(realm.name);
 		this.putString(realm.name);
-
+		
 		this.wrap();
 		return true;
 	}

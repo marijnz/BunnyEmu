@@ -25,15 +25,19 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 	
 	@Override
 	public boolean writeMoP(){
+		this.put((byte) 0);
 		this.writePackedGuid(character.getGUID());
 		this.put((byte) 0);
 		this.putString(character.getName());
 		Log.log("realm id: " + realm.id);
 		this.putInt(realm.id);
+		
 		this.put((byte) character.getCharRace());
+		this.put((byte) 0); // ?
 		this.put((byte) 1); // gender
 		this.put((byte) character.getCharClass());
-		this.put((byte) 0); // ?
+		
+		this.put((byte) 1);
 		
 		this.wrap();
 		return true;
