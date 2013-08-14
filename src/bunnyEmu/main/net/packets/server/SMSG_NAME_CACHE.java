@@ -3,6 +3,7 @@ package bunnyEmu.main.net.packets.server;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
@@ -25,22 +26,37 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 	
 	@Override
 	public boolean writeMoP(){
-		this.put((byte) 0);
-		this.writePackedGuid(character.getGUID());
-		this.put((byte) 0);
+
+		BitPack bitPack = new BitPack(this);
+		
+		bitPack.write(0);
+		bitPack.writeGuidMask(new byte[] {1, 3, 2});
+		bitPack.write(character.getName().length(), 6);
+		bitPack.writeGuidMask(new byte[] {6, 4, 0});
+		bitPack.write(0);
+		bitPack.writeGuidMask(new byte[] {5, 7});	
+
+		bitPack.flush();
+		
+		bitPack.writeGuidBytes(new byte[] {1});
+		
 		this.putString(character.getName());
 		
+		bitPack.writeGuidBytes(new byte[] {0, 7});
+		
+		this.putInt(character.getCharRace());
+		this.putInt(0); // ?
+		this.putInt(1); // gender
+		this.putInt(character.getCharClass());
+		
+		bitPack.writeGuidBytes(new byte[] {4, 6, 5});
+		
+		this.putInt(1);
+		
+		bitPack.writeGuidBytes(new byte[] {3, 2});
+		
 		Log.log("realm id: " + realm.id);
-		
-		this.putInt(realm.id);
-		
-		this.put((byte) character.getCharRace());
-		this.put((byte) 0); // ?
-		this.put((byte) 1); // gender
-		this.put((byte) character.getCharClass());
-		
-		this.put((byte) 1);
-		
+			
 		this.wrap();
 		return true;
 	}
