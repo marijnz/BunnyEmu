@@ -34,7 +34,6 @@ public class Server {
 	
 	
     public void launch() {
-    	System.out.println("test2");
         //RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344, 1));
         //RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3345, 1));
         listenSocket();

@@ -23,6 +23,7 @@ public class Opcodes {
 	public static final String CMSG_UPDATE_ACCOUNT_DATA			= "CMSG_UPDATE_ACCOUNT_DATA";			
 	public static final String CMSG_NAME_CACHE					= "CMSG_NAME_CACHE";					// MoP
 	public static final String CMSG_REALM_CACHE					= "CMSG_REALM_CACHE";					// MoP
+	public static final String CMSG_DISCONNECT					= "CMSG_DISCONNECT";
 	
 	public static final String SMSG_CHAR_CREATE					= "SMSG_CHAR_CREATE";
 	public static final String SMSG_CHAR_ENUM 					= "SMSG_CHAR_ENUM";
@@ -184,22 +185,25 @@ public class Opcodes {
 		packets = new PacketMap();
 		
 		add(CMSG_CHAR_CREATE               		,0x0404); 
-		add(CMSG_CHAR_ENUM               		,0x0B1D); 
+		add(CMSG_CHAR_ENUM                		,0x0B1D);
+		// character_delete = 0x010C
+		add(CMSG_PLAYER_LOGIN       			,0x0A19);
+		
 		add(CMSG_AUTH_PROOF               		,0x09F1); 
 		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x0755); 	
-		add(CMSG_REALM_SPLIT					,0x0F89); 
-		add(CMSG_PLAYER_LOGIN       			,0x0A19);  
-		add(CMSG_NAME_CACHE       				,0x1EC);  // mop1, gone in mop3?
+		add(CMSG_REALM_SPLIT					,0x0F89);  
+		add(CMSG_NAME_CACHE       				,0x0018);  // aka QueryPlayerName
 		add(CMSG_MESSAGECHAT       				,0x016A); // Named "message say" in mop3
-		add(CMSG_REALM_CACHE       				,0xA4D);  // mop1, gone in mop3?
-		add(CMSG_PING       					,0x08E3);  
+		add(CMSG_REALM_CACHE       				,0x0209);  // aka QueryRealmName
+		add(CMSG_PING       					,0x08E3); 
+		add(CMSG_DISCONNECT                     ,0x09A2);	// player closed client
 		
 		
 		add(SMSG_AUTH_CHALLENGE 				,0x0221);  
 		add(SMSG_AUTH_RESPONSE 					,0x0890); 
 		add(SMSG_CHAR_ENUM						,0x0FDD); // mop3
 		add(SMSG_CHAR_CREATE					,0x1495); 
-		add(SMSG_PONG       					,0x2000); 
+		add(SMSG_PONG       					,0x1121); 
 		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1); // called AccountDataInitialized in Arctium
 		add(SMSG_TIME_SYNC_REQ        			,0x0AD4); 
 		add(SMSG_MOTD        					,0x12DC); 
@@ -207,8 +211,8 @@ public class Opcodes {
 		add(SMSG_UPDATE_OBJECT        			,0x0C65); 
 		add(SMSG_MOVE_SET_CANFLY				,0x0F48); 
 		add(SMSG_KNOWN_SPELLS					,0x173F); 
-		add(SMSG_NAME_CACHE       				,0x30D);  // mop1, gone in mop3?
-		add(SMSG_REALM_CACHE       				,0x1489); // mop1, gone in mop3?
+		add(SMSG_NAME_CACHE       				,0x0BD0);  // aka QueryPlayerNameResponse
+		add(SMSG_REALM_CACHE       				,0x10CC); // aka RealmQueryResponse
 		add(SMSG_MESSAGECHAT					,0x17EF);
 		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x1489);
 		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);

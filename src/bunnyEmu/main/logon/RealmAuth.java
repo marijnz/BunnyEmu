@@ -50,20 +50,22 @@ public class RealmAuth extends Auth {
         ServerPacket authChallenge = new ServerPacket(Opcodes.SMSG_AUTH_CHALLENGE, 50);
         _seed = new SecureRandom().generateSeed(4);
         
-        if(realm.getVersion() < Versions.VERSION_MOP){
-	        if(realm.getVersion() >= Versions.VERSION_CATA){
+        if (realm.getVersion() < Versions.VERSION_MOP) {
+	        if (realm.getVersion() >= Versions.VERSION_CATA) {
 	        	authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
 	        	authChallenge.put((byte) 1);
-	        }  else if(realm.getVersion() > Versions.VERSION_BC && realm.getVersion() < Versions.VERSION_CATA)
+	        } else if(realm.getVersion() > Versions.VERSION_BC && realm.getVersion() < Versions.VERSION_CATA)
 	        	authChallenge.putInt(1);
 	        authChallenge.put(_seed);
 	        authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
-        } else{
-        	authChallenge.putShort((short) 0);
+        } else { // MoP sequence 5.3.0a
+        	
+        	for (int i = 0; i < 8; i++)
+        		authChallenge.putInt(0);
+        	
         	authChallenge.put(_seed);
-        	 for (int i = 0; i < 8; i++)
-                 authChallenge.putInt(0);
-        	 authChallenge.put((byte) 1);
+        	authChallenge.putInt(1);
+
         }
 	        
 	    authChallenge.wrap();
@@ -98,16 +100,16 @@ public class RealmAuth extends Auth {
             if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
             	Log.log("Valid account: " + client.getName());
-                if(realm.getVersion() <= Versions.VERSION_CATA){
+                if (realm.getVersion() <= Versions.VERSION_CATA){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
 	                authResponse.put((byte) 0x30);
 	                authResponse.put((byte) 0x78);
 	                authResponse.putLong(0x02);
 	                connection.send(authResponse);
-                } else{
+                } else {
                 	// MoP sends all classes and races + some other data, packet from Arctium
-                    connection.send(realm.loadPacket("authresponse_mop", 78));
+                    connection.send(realm.loadPacket("authresponse_mop", 78)); // 0x0890 packet
                     connection.send(new ServerPacket(Opcodes.SMSG_UPDATE_CLIENT_CACHE_VERSION, 4));
                     connection.send(new ServerPacket(Opcodes.SMSG_TUTORIAL_FLAGS, 8*4));
                 }
