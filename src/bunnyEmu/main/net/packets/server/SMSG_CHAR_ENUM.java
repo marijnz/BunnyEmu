@@ -106,14 +106,15 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 	}
 
 	@Override
-	public boolean writeMoP() {
+	public boolean writeMoP() { // 5.3.0a
 		int charCount = client.getCharacters().size();
 		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount, null);
 
 		BitPack bitPack = new BitPack(this);
 
-		bitPack.write(0, 23);
-		bitPack.write(charCount, 17);
+		bitPack.write(1);
+		
+		bitPack.write(charCount, 16);
 
 		if (charCount != 0) {
 			for (int c = 0; c < charCount; c++) {
@@ -123,25 +124,29 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.setGuid(currentChar.getGUID());
 				bitPack.setGuildGuid(0);
 
-				bitPack.writeGuidMask(new byte[] { 7, 0, 4 });
-				bitPack.writeGuildGuidMask(new byte[] { 2 });
-				bitPack.writeGuidMask(new byte[] { 5, 3 });
+				bitPack.writeGuidMask(new byte[] { 1 });
+				bitPack.writeGuildGuidMask(new byte[] { 5, 7, 6 });
+				bitPack.writeGuidMask(new byte[] { 5 });
+				bitPack.writeGuildGuidMask(new byte[] { 3 });
+				bitPack.writeGuidMask(new byte[] { 2 });
+				bitPack.writeGuildGuidMask(new byte[] { 4 });
+				bitPack.writeGuidMask(new byte[] { 7 });
+				
 				try {
-					bitPack.write(name.getBytes("US-ASCII").length, 7);
+					bitPack.write(name.getBytes("US-ASCII").length, 6);
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				bitPack.writeGuildGuidMask(new byte[] { 0, 5, 3 });
-				bitPack.write(1); // login cinamatic
-				bitPack.writeGuildGuidMask(new byte[] { 6, 7 });
-				bitPack.writeGuidMask(new byte[] { 1 });
-				bitPack.writeGuildGuidMask(new byte[] { 4, 1 });
-				bitPack.writeGuidMask(new byte[] { 2, 6 });
+				
+				bitPack.write(1); // login cinematic
+				bitPack.writeGuildGuidMask(new byte[] { 1 });
+				bitPack.writeGuidMask(new byte[] { 4 });
+				bitPack.writeGuildGuidMask(new byte[] { 2, 0 });
+				bitPack.writeGuidMask(new byte[] { 6, 3, 0 });
 			}
 
-			bitPack.write(1);
+			bitPack.write(0, 21);
 			bitPack.flush();
-
 
 			for (int c = 0; c < charCount; c++) {
 
@@ -151,78 +156,73 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				Log.log("GUID: " + currentChar.getGUID());
 				bitPack.setGuildGuid(0);
 
-				this.putInt(0); // CharacterFlags
-				this.putInt(0); // pet family
-				this.putFloat(currentChar.getX());
-
-				bitPack.writeGuidBytes(new byte[] { 7 });
+				bitPack.writeGuidBytes(new byte [] { 4 });
+				this.put((byte)currentChar.getCharRace());
+				
+				bitPack.writeGuidBytes(new byte [] { 6 });
+				bitPack.writeGuildGuidBytes(new byte[] { 1 });
+				
+				this.putInt(0);
+				this.put((byte) 0); // hair style
+				
 				bitPack.writeGuildGuidBytes(new byte[] { 6 });
-
-				// Not implanted
-				for (int j = 0; j < 23; j++) {
-					this.putInt(0);
-					this.put((byte) 0);
-					this.putInt(0);
-				}
-
+				bitPack.writeGuidBytes(new byte [] { 3 });
+				
 				this.putFloat(currentChar.getX());
-				this.put(currentChar.getCharClass());
-
-				bitPack.writeGuidBytes(new byte[] { 5 });
+				this.putInt(0); // CharacterFlags
+				
+				bitPack.writeGuildGuidBytes(new byte[] { 0 });
+				
+				this.putInt(0); // pet level
+				this.putInt(currentChar.getMapID()); // map
+				
+				bitPack.writeGuildGuidBytes(new byte[] { 7 });
+				
+				this.putInt(0); // customize flags
+				
+				bitPack.writeGuildGuidBytes(new byte[] { 4 });
+				bitPack.writeGuidBytes(new byte[] { 2, 5 });
 
 				this.putFloat(currentChar.getY());
-
-				bitPack.writeGuildGuidBytes(new byte[] { 3 });
-				bitPack.writeGuidBytes(new byte[] { 6 });
-
-				this.putInt(0); // pet level
-				this.putInt(0); // pet display id
-
-				bitPack.writeGuidBytes(new byte[] { 2 });
-				bitPack.writeGuidBytes(new byte[] { 1 });
-
-				this.put((byte) 0); // hair color
-				this.put((byte) 0); // facial hair
-
-				bitPack.writeGuildGuidBytes(new byte[] { 2 });
-
-				this.putInt(0); // zone
-				this.put((byte) 0);
-
-				bitPack.writeGuidBytes(new byte[] { 0 });
-				bitPack.writeGuildGuidBytes(new byte[] { 1 });
-
-				this.put((byte) 0); // skin
-
-				bitPack.writeGuidBytes(new byte[] { 4 });
-				bitPack.writeGuildGuidBytes(new byte[] { 5 });
-
+				this.putInt(0); // pet family
+		
 				try {
 					this.put(name.getBytes("US-ASCII"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
+				
+				this.putInt(0); // pet display id
+				
+				bitPack.writeGuidBytes(new byte[] { 1 });
+				bitPack.writeGuildGuidBytes(new byte[] { 2 });
 
-				bitPack.writeGuildGuidBytes(new byte[] { 0 });
+				// Not implemented
+				for (int j = 0; j < 23; j++) {
+					this.putInt(0);
+					this.putInt(0);
+					this.putInt(0);
+				}
 
-				this.put((byte) 121); // level
+				this.putFloat(currentChar.getZ());
+				this.putInt(0); // zone
+				this.put((byte) 0); // facial hair				
+				this.put((byte)currentChar.getCharClass());
 
-				bitPack.writeGuidBytes(new byte[] { 3 });
-				bitPack.writeGuildGuidBytes(new byte[] { 7 });
 
-				this.put((byte) 0); // hair style
+				bitPack.writeGuildGuidBytes(new byte[] { 5 });
 
-				bitPack.writeGuildGuidBytes(new byte[] { 4 });
-
-				this.put((byte) 1); // gender
-				this.putInt(currentChar.getMapID());
-				this.putInt(0); // customize flags
+				this.put((byte) 0); // skin
 				this.put(currentChar.getCharRace()); // gender
 				this.put((byte) 0); // face
+			
+				bitPack.writeGuidBytes(new byte[] { 0 });
+
+				this.put((byte) 0); // hair color
 			}
 
 		} else {
-			bitPack.write(1);
+			bitPack.write(0, 21);
 			bitPack.flush();
 		}
 		this.wrap();

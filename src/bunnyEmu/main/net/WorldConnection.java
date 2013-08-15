@@ -46,13 +46,15 @@ public class WorldConnection extends Connection{
         try {
         	packetWriter = IPacketWritable.class.getMethod("write" + realm.getVersionName());
         	packetReader = IPacketReadable.class.getMethod("read" + realm.getVersionName());
-		} catch (Exception e){
 		}
+        catch (Exception e) {;}
+        
         auth = new RealmAuth(this, realm);
         if(realm.getVersion() < Versions.VERSION_MOP)
         	auth.authChallenge();
         else
         	auth.transferInitiate();
+
         worldSession = new WorldSession(this, realm);
         start();
     }
