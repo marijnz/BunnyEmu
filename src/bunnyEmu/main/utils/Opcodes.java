@@ -140,49 +140,12 @@ public class Opcodes {
 		return packets.clone();
 	}
 	
-	//https://github.com/Arctium/Arctium/commit/1ca4767f65b8c5c0f876fd2c61a57631b52964f5
+	/* current patch = 5.3.0a */
+	//https://github.com/Arctium/Arctium/commit/7efcfb57bd3bbb2010c2290720bd6441c5e12dbf
 	public static PacketMap formMoP(){
 		packets = new PacketMap();
 		
-		add(CMSG_CHAR_CREATE               		,0xEB3); 
-		add(CMSG_CHAR_ENUM               		,0x0146); 
-		add(CMSG_AUTH_PROOF               		,0x0C07); // Called AuthSession in Arctium
-		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x5A5); 	
-		add(CMSG_REALM_SPLIT					,0x261); 
-		add(CMSG_PLAYER_LOGIN       			,0xEBA); 
-		add(CMSG_NAME_CACHE       				,0x1EC);  
-		add(CMSG_MESSAGECHAT       				,0x67A);
-		add(CMSG_REALM_CACHE       				,0xA4D);  
-		
-		
-		add(SMSG_AUTH_CHALLENGE 				,0x0CAF);  
-		add(SMSG_AUTH_RESPONSE 					,0x0A15); 
-		add(SMSG_CHAR_ENUM						,0x033D); 
-		add(SMSG_CHAR_CREATE					,0x0F25); 
-		add(SMSG_PONG       					,0x8AE); 
-		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0E48); // called AccountDataInitialized in Arctium
-		add(SMSG_TIME_SYNC_REQ        			,0x0410); 
-		add(SMSG_MOTD        					,0x0849); 
-		add(SMSG_SPELL_GO        				,0x030C0); // cata
-		add(SMSG_UPDATE_OBJECT        			,0x120); 
-		add(SMSG_MOVE_SET_CANFLY				,0x419); 
-		add(SMSG_KNOWN_SPELLS					,0x155); 
-		add(SMSG_NAME_CACHE       				,0x30D); 
-		add(SMSG_REALM_CACHE       				,0xD81); 
-		add(SMSG_MESSAGECHAT					,0x009);
-		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x72D);
-		add(SMSG_TUTORIAL_FLAGS					,0x6A8);
-		add(SMSG_NEW_WORLD						,0x81D);
-		
-		
-		add(MSG_TRANSFER_INITIATE				,0x04F57);
-		
-		return packets.clone();
-	}
-	
-	//https://github.com/Arctium/Arctium/commit/7efcfb57bd3bbb2010c2290720bd6441c5e12dbf
-	public static PacketMap formMoP3(){
-		packets = new PacketMap();
+		/* client side opcodes start */
 		
 		add(CMSG_CHAR_CREATE               		,0x0404); 
 		add(CMSG_CHAR_ENUM                		,0x0B1D);
@@ -192,31 +155,37 @@ public class Opcodes {
 		add(CMSG_AUTH_PROOF               		,0x09F1); 
 		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x0755); 	
 		add(CMSG_REALM_SPLIT					,0x0F89);  
-		add(CMSG_NAME_CACHE       				,0x0018);  // aka QueryPlayerName
-		add(CMSG_MESSAGECHAT       				,0x016A); // Named "message say" in mop3
-		add(CMSG_REALM_CACHE       				,0x0209);  // aka QueryRealmName
+		add(CMSG_NAME_CACHE       				,0x0018);	// aka QueryPlayerName
+		add(CMSG_MESSAGECHAT       				,0x016A);	// aka ChatMessageSay
+		add(CMSG_REALM_CACHE       				,0x0209);	// aka QueryRealmName
 		add(CMSG_PING       					,0x08E3); 
-		add(CMSG_DISCONNECT                     ,0x09A2);	// player closed client
+		add(CMSG_DISCONNECT                     ,0x09A2);	// player canceled login
 		
+		/* client side opcodes end */
+		
+		
+		/* server side opcodes start */
 		
 		add(SMSG_AUTH_CHALLENGE 				,0x0221);  
 		add(SMSG_AUTH_RESPONSE 					,0x0890); 
-		add(SMSG_CHAR_ENUM						,0x0FDD); // mop3
+		add(SMSG_CHAR_ENUM						,0x0FDD);
 		add(SMSG_CHAR_CREATE					,0x1495); 
 		add(SMSG_PONG       					,0x1121); 
-		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1); // called AccountDataInitialized in Arctium
+		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1);
 		add(SMSG_TIME_SYNC_REQ        			,0x0AD4); 
 		add(SMSG_MOTD        					,0x12DC); 
-		add(SMSG_SPELL_GO        				,0x030C0); // cata
-		add(SMSG_UPDATE_OBJECT        			,0x0C65); 
-		add(SMSG_MOVE_SET_CANFLY				,0x0F48); 
-		add(SMSG_KNOWN_SPELLS					,0x173F); 
-		add(SMSG_NAME_CACHE       				,0x0BD0);  // aka QueryPlayerNameResponse
-		add(SMSG_REALM_CACHE       				,0x10CC); // aka RealmQueryResponse
+		add(SMSG_SPELL_GO        				,0x030C0);	// cata
+		add(SMSG_UPDATE_OBJECT        			,0x0C65);
+		add(SMSG_MOVE_SET_CANFLY				,0x0F48);
+		add(SMSG_KNOWN_SPELLS					,0x173F);
+		add(SMSG_NAME_CACHE       				,0x0BD0);	// aka QueryPlayerNameResponse
+		add(SMSG_REALM_CACHE       				,0x10CC);	// aka RealmQueryResponse
 		add(SMSG_MESSAGECHAT					,0x17EF);
 		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x1489);
 		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);
 		add(SMSG_NEW_WORLD						,0x04D9);
+		
+		/* server side opcodes end */
 		
 		
 		add(MSG_TRANSFER_INITIATE				,0x4F57);
@@ -224,10 +193,7 @@ public class Opcodes {
 		return packets.clone();
 	}
 	
-	private static void add(String name, Integer opcode){
+	private static void add(String name, Integer opcode) {
 		packets.add(name, opcode.shortValue());
 	}
-	
-	
-	
 }

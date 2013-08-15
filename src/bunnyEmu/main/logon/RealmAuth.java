@@ -65,7 +65,6 @@ public class RealmAuth extends Auth {
         	
         	authChallenge.put(_seed);
         	authChallenge.putInt(1);
-
         }
 	        
 	    authChallenge.wrap();
@@ -74,10 +73,9 @@ public class RealmAuth extends Auth {
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
         Log.log("authSession");
-       
+
         client = ClientHandler.removeTempClient(authProof.getAccountName());
-       
-        
+
         if (client != null) {
         	client.connect(realm);
             client.attachWorld((WorldConnection) connection);
