@@ -29,7 +29,7 @@ public class LogonConnection extends Connection {
 
     public LogonConnection(Socket clientSocket) {
         super(clientSocket);
-        auth = new LogonAuth(this); // The LogonAuth reads the stream instead of packets
+        auth = new LogonAuth(this); // The LogonAuth reads the stream, not packets like in WorldConnection/RealmAuth
         start();
     }
 
@@ -59,7 +59,6 @@ public class LogonConnection extends Connection {
         	Log.log(LogonConnection.class.getName() + " force closed");
         	e.printStackTrace();
         } finally {
-        	//clientParent.disconnect();
             close();
         }
     }

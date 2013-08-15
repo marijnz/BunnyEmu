@@ -62,7 +62,7 @@ public abstract class Connection extends Thread {
 	 */
 	protected boolean sendPacket(Packet p) {
 		if (p.size < p.packet.capacity()) {
-			Log.log(Log.ERROR, "packet not send: size " + p.size + " <  capacity " + p.packet.capacity());
+			Log.log(Log.ERROR, "packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
 			return false;
 		}
 		return sendBytes(p.getFull());

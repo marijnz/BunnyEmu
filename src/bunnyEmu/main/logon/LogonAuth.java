@@ -58,6 +58,7 @@ import bunnyEmu.main.utils.Versions;
             byte[]  country = new byte[4];	 // 'enUS'
             
             in.get(gamename);                        // gamename
+            Log.log(gamename[0] + " " + gamename[1] + " " + gamename[2] + " " + gamename[3]);
             version += in.get();                	// version 1
             int midVal = in.get();   				 // version 2
             if(midVal >= 10)
@@ -66,6 +67,7 @@ import bunnyEmu.main.utils.Versions;
             version += in.get();                  	// version 3
             in.getShort();                    	 	// build
             in.get(platform);                          	// platform
+            Log.log(platform[0] + " " + platform[1] + " " + platform[2] + " " + platform[3]);
             in.get(os);                                // os
             in.get(country);                           // country
             in.getInt();                               // timezone_bias
@@ -113,7 +115,7 @@ import bunnyEmu.main.utils.Versions;
             serverLogonChallenge.put((byte) 0); // opcode
             serverLogonChallenge.put((byte) 0); // unk
             serverLogonChallenge.put((byte) 0); // WoW_SUCCES
-             serverLogonChallenge.put(B.asByteArray(32));
+            serverLogonChallenge.put(B.asByteArray(32));
             serverLogonChallenge.put((byte) 1);
             serverLogonChallenge.put(g.asByteArray(1));
             serverLogonChallenge.put((byte) 32);
@@ -123,8 +125,7 @@ import bunnyEmu.main.utils.Versions;
             serverLogonChallenge.put((byte) 0); // unk
 
             connection.send(serverLogonChallenge);
-            /*
-            */
+            
             Log.log("send challenge");
         }
 
