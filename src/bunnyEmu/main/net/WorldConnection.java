@@ -16,6 +16,7 @@ import bunnyEmu.main.entities.packet.IPacketReadable;
 import bunnyEmu.main.entities.packet.IPacketWritable;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
@@ -102,6 +103,7 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
                     case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);			break; // MoP only
                     case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage(p);			break;
+                    case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 						break;
                 }
             }
             Log.log("World closed connection from " + clientSocket.toString());
