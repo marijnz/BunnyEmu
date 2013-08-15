@@ -67,8 +67,6 @@ public class Realm extends Thread {
 			packets = Opcodes.formCata();
 		else if(version <= Versions.VERSION_MOP)
 			packets = Opcodes.formMoP();
-		else if(version <= Versions.VERSION_MOP3)
-			packets = Opcodes.formMoP3();
 		start();
 		
 		Log.log("Created new realm: " + this.name);
@@ -147,7 +145,7 @@ public class Realm extends Thread {
 			return "WotLK";
 		if(this.version <= Versions.VERSION_CATA)
 			return "Cata";
-		if(this.version <= Versions.VERSION_MOP3)
+		if(this.version <= Versions.VERSION_MOP)
 			return "MoP";
 		else
 			return null;

@@ -228,5 +228,5 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 		this.wrap();
 		return true;
 	}
-
 }
+
