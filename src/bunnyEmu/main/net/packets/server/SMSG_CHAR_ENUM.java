@@ -138,7 +138,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 					e.printStackTrace();
 				}
 				
-				bitPack.write(1); // login cinematic
+				bitPack.write(false); // login cinematic
 				bitPack.writeGuildGuidMask(new byte[] { 1 });
 				bitPack.writeGuidMask(new byte[] { 4 });
 				bitPack.writeGuildGuidMask(new byte[] { 2, 0 });
@@ -153,10 +153,10 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				Char currentChar = client.getCharacters().get(c);
 				String name = currentChar.getName();
 				bitPack.setGuid(currentChar.getGUID());
-				Log.log("GUID: " + currentChar.getGUID());
 				bitPack.setGuildGuid(0);
 
 				bitPack.writeGuidBytes(new byte [] { 4 });
+				
 				this.put((byte)currentChar.getCharRace());
 				
 				bitPack.writeGuidBytes(new byte [] { 6 });
@@ -169,7 +169,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.writeGuidBytes(new byte [] { 3 });
 				
 				this.putFloat(currentChar.getX());
-				this.putInt(0); // CharacterFlags
+				this.putInt(0); // CharacterFlags TODO: check
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 0 });
 				
@@ -206,7 +206,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				for (int j = 0; j < 23; j++) {
 					this.putInt(0);
 					this.putInt(0);
-					this.putInt(0);
+					this.put((byte) 0);
 				}
 
 				this.putFloat(currentChar.getZ());
