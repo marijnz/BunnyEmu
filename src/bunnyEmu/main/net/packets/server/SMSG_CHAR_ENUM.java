@@ -162,7 +162,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.writeGuidBytes(new byte [] { 6 });
 				bitPack.writeGuildGuidBytes(new byte[] { 1 });
 				
-				this.putInt(0);
+				this.put((byte) 0);
 				this.put((byte) 0); // hair style
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 6 });
@@ -194,9 +194,14 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				
 				this.putInt(0); // pet display id
 				
+				bitPack.writeGuildGuidBytes(new byte[] { 3 });
+				bitPack.writeGuidBytes(new byte[] { 7 });
+
+				this.put((byte) 1);	// level
+				
 				bitPack.writeGuidBytes(new byte[] { 1 });
 				bitPack.writeGuildGuidBytes(new byte[] { 2 });
-
+				
 				// Not implemented
 				for (int j = 0; j < 23; j++) {
 					this.putInt(0);
@@ -207,13 +212,13 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				this.putFloat(currentChar.getZ());
 				this.putInt(0); // zone
 				this.put((byte) 0); // facial hair				
-				this.put((byte)currentChar.getCharClass());
+				this.put((byte) currentChar.getCharClass());
 
 
 				bitPack.writeGuildGuidBytes(new byte[] { 5 });
 
 				this.put((byte) 0); // skin
-				this.put(currentChar.getCharRace()); // gender
+				this.put((byte) currentChar.getCharRace()); // gender
 				this.put((byte) 0); // face
 			
 				bitPack.writeGuidBytes(new byte[] { 0 });

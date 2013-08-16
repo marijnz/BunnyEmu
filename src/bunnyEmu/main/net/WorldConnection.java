@@ -103,7 +103,7 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
                     case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);			break; // MoP only
                     case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage(p);			break;
-                    case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 						break;
+                  //  case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 						break;
                 }
             }
             Log.log("World closed connection from " + clientSocket.toString());
