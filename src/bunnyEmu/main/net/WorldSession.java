@@ -50,17 +50,42 @@ public class WorldSession {
 
 	/**
 	 * Creates a character for the client.
-	 * 
-	 * @param p
+	 *
 	 */
-	public void addCharacter(ClientPacket p) {
-		String name = p.getString();
-		byte cRace = p.get();
-		byte cClass = p.get();
-		// More left (male/female , style data)
+	public void createCharacter(ClientPacket p) {
+		byte sHairStyle = p.get();
+		byte sFaceStyle  = p.get();
+		byte sFacialHair = p.get();
+		byte cHairColor  = p.get();
+		byte cRace      = p.get();
+		byte cClass     = p.get();
+		byte cSkinColor  = p.get();
+		
+		p.get();
+		
+		byte cGender     = p.get();
+		
+		String name = "tester";
+		//String name = p.getString();
+		
+		ServerPacket isCharOkay = new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1);
+		
+		// isNameOkay.put((byte) 0x32) // name is taken or not okay
+		
+		isCharOkay.put((byte) 0x31);	// name is okay to be used
+		connection.send(isCharOkay);
+		
+		/* TODO: need database query for start position and map here */
+		
+		//	isCharOkay.put((byte) 0x2F);	// success in creation
+		//	connection.send(isCharOkay);
+		
+		connection.send(new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
+		
 		Log.log("Created new char with name: " + name);
+		
+		/* this will become database insertion */
 		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
-		connection.send(new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
 	}
 
 	/**
