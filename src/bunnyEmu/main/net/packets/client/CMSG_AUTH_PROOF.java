@@ -2,6 +2,7 @@ package bunnyEmu.main.net.packets.client;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.utils.BigNumber;
+import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Log;
 
 /**
@@ -80,6 +81,44 @@ public class CMSG_AUTH_PROOF extends ClientPacket {
 		int addonSize = getInt();
 		get(new byte[addonSize + 2]); // +2 = 0-byte and "X"?
 		accountName = getString();
+		
+		BitPack bitPack = new BitPack(this);
+		
+		bitPack.write(0); // inqueue
+		bitPack.write(1); // account data
+		
+		bitPack.write(0);
+		bitPack.write(0);
+		bitPack.write(13, 23);	// race count
+		bitPack.write(0);
+		bitPack.write(0, 21);
+		
+		bitPack.write(11, 23);	// class count
+		bitPack.write(0, 22);
+		bitPack.write(0);
+		
+		bitPack.flush();
+		
+		this.put((byte) 0);
+		
+		for (int c = 0; c < 11; c++) {	// activate classes
+			this.put((byte) 0);
+			this.put((byte) (c+1));
+		}
+		
+		for (int c = 0; c < 13; c++) {	// activate races
+			this.put((byte) 0);
+			this.put((byte) (c+1));
+		}
+		
+		this.putInt(0);
+		this.putInt(0);
+		this.putInt(0);
+		
+		this.put((byte) 3);	// expansion
+		this.put((byte) 3);	// expansion
+		
+		
 		return true;
 	}
 

@@ -10,14 +10,17 @@ import bunnyEmu.main.utils.Opcodes;
  * @author Marijn
  *
  */
-public class SMSG_LOGIN_VERIFY_WORLD extends ServerPacket{
+public class SMSG_LOGIN_VERIFY_WORLD extends ServerPacket {
 
-	public SMSG_LOGIN_VERIFY_WORLD(Char character){
+	public SMSG_LOGIN_VERIFY_WORLD(Char character) {
 		super(Opcodes.SMSG_LOGIN_VERIFY_WORLD, 20);
-		putInt(character.getMapID()); 
-		putFloat(character.getX());
-		putFloat(character.getY());
-		putFloat(character.getZ());
-		putFloat(0); // orientation
+		
+		if (character != null) {
+			putInt(character.getMapID());
+			putFloat(character.getX());
+			putFloat(character.getY());
+			putFloat(character.getZ());
+			putFloat(0); // orientation
+		}
 	}
 }

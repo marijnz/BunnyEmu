@@ -186,7 +186,7 @@ public class Opcodes {
 		add(SMSG_NEW_WORLD						,0x04D9);
 		
 		/* server side opcodes end */
-		
+
 		
 		add(MSG_TRANSFER_INITIATE				,0x4F57);
 		

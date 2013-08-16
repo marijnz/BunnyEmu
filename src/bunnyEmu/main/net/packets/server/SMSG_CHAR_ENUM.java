@@ -107,8 +107,18 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 
 	@Override
 	public boolean writeMoP() { // 5.3.0a
+		int charSize = 0;
 		int charCount = client.getCharacters().size();
-		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount, null);
+		
+		// if no characters we still need space to send
+		if (charCount == 0) {
+			charSize = 350;
+		}
+		else {
+			charSize = 350 * charCount;
+		}
+		
+		create(Opcodes.SMSG_CHAR_ENUM, charSize, null);
 
 		BitPack bitPack = new BitPack(this);
 
