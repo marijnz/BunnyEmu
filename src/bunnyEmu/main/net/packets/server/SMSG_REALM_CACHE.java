@@ -26,7 +26,7 @@ public class SMSG_REALM_CACHE extends ServerPacket {
 		BitPack bitPack = new BitPack(this);
 
 		this.putInt(realm.id);
-		this.putInt(0); // unknown
+		this.put((byte) 0); // unknown
 		
 		bitPack.write(realm.name.length(), 8);
 		bitPack.write(realm.name.length(), 8);
