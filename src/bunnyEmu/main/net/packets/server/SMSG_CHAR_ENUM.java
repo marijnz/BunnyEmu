@@ -206,7 +206,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				for (int j = 0; j < 23; j++) {
 					this.putInt(0);
 					this.putInt(0);
-					this.put((byte) 0);
+					this.putInt(0);
 				}
 
 				this.putFloat(currentChar.getZ());
