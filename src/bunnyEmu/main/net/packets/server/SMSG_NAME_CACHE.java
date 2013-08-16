@@ -44,10 +44,10 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		
 		bitPack.writeGuidBytes(new byte[] {0, 7});
 		
-		this.putInt(character.getCharRace());
-		this.putInt(0); // ?
-		this.putInt(1); // gender
-		this.putInt(character.getCharClass());
+		this.put((byte) character.getCharRace());
+		this.put((byte) 0); // ?
+		this.put((byte) 1); // gender
+		this.put((byte) character.getCharClass());
 		
 		bitPack.writeGuidBytes(new byte[] {4, 6, 5});
 		
