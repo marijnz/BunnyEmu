@@ -69,7 +69,6 @@ public class BigNumber{
         return this;
     }
     
-    // Private functions
     
     public String toHexString(){
         return ("(" + asByteArray().length + ") " + bigInteger.toString(16).toUpperCase());

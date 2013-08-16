@@ -185,8 +185,8 @@ public class WorldConnection extends Connection{
         if (client != null){
         	if(realm.getVersion() >= Versions.VERSION_MOP){
         		int totalLength = newSize-2;
-                totalLength <<= 12;
-                totalLength |= (opcode & 0xFFF);
+                totalLength <<= 13;
+                totalLength |= (opcode & 0x1FFF);
                 ByteBuffer buffer = ByteBuffer.allocate(4);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 buffer.putInt(totalLength);
@@ -224,8 +224,8 @@ public class WorldConnection extends Connection{
             	toHeader.put(p.header,0, 4);
             	toHeader.position(0);
             	int header = toHeader.getInt();
-        		int size = ((header >> 12));
-        		int opcode = (header & 0xFFF);
+        		int size = ((header >> 13));
+        		int opcode = (header & 0x1FFF);
 	        	p.header[0] = (byte)(0xFF & size);
 	        	p.header[1] = (byte)(0xFF & (size >> 8));
 	        	p.header[2] = (byte)(0xFF & opcode);

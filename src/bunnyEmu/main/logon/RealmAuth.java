@@ -64,7 +64,7 @@ public class RealmAuth extends Auth {
         		authChallenge.putInt(0);
         	
         	authChallenge.put(_seed);
-        	authChallenge.putInt(1);
+        	authChallenge.put((byte) 0);
         }
 	        
 	    authChallenge.wrap();
@@ -93,7 +93,7 @@ public class RealmAuth extends Auth {
             byte[] digest = md.digest();	
             
             Log.log("authSession " + client.getName());
-            
+           // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
             if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
@@ -107,7 +107,7 @@ public class RealmAuth extends Auth {
 	                connection.send(authResponse);
                 } else {
                 	// MoP sends all classes and races + some other data, packet from Arctium
-                    connection.send(realm.loadPacket("authresponse_mop", 78)); // 0x0890 packet
+                    connection.send(realm.loadPacket("authresponse_mop", 80)); // 0x0890 packet
                     connection.send(new ServerPacket(Opcodes.SMSG_UPDATE_CLIENT_CACHE_VERSION, 4));
                     connection.send(new ServerPacket(Opcodes.SMSG_TUTORIAL_FLAGS, 8*4));
                 }
