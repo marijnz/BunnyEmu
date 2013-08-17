@@ -79,25 +79,41 @@ public class WorldSession {
 		
 		// length/4 is amount of characters in ASCII
 		for (int x = 0; x < nameLength/4; x++) {
-			builder.append(new String(new byte[]{ p.get() }, "US-ASCII"));
+			builder.append(new String(new byte[] { p.get() }, "US-ASCII"));
 		}
 		
-		String name = builder.toString();
+		/* capitalize name */
+		String cName = builder.toString().toLowerCase();
+		char[] chars = cName.toCharArray();
+		chars[0] = Character.toUpperCase(chars[0]);
+		cName = String.valueOf(chars);
 		
 		ServerPacket isCharOkay = new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1);
-		
-		// isNameOkay.put((byte) 0x32) // name is taken or not okay
-		
-		isCharOkay.put((byte) 0x31);	// name is okay to be used
+
+		isCharOkay.put((byte) 0x31);	// name is okay to be used \\ 0x32 means not okay
 		connection.send(isCharOkay);
 
-		/* TODO: need database query to insert and for start position and map here */
-		
-		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
-		
+		/* this needs to be sent immediately after previous packet otherwise client fails */
 		connection.send(new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
+
+
+		/* TODO: need database query to insert and for start position and map here */
+
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
 		
-		Log.log("Created new char with name: " + name);
+		int mapID = 0;
+		
+		/* this value will come from a configuration file */
+		int cStartLevel = 1;
+		
+		connection.getClient().addCharacter(new Char(cName, x, y, z, mapID, cHairStyle, 
+														cFaceStyle, cFacialHair, cHairColor,
+														cSkinColor, cRace, cClass, cGender,
+														cStartLevel));
+
+		Log.log("Created new char with name: " + cName);
 	}
 
 	/* (TODO: actually) delete the specified character */
@@ -124,7 +140,7 @@ public class WorldSession {
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 		connection.send(new SMSG_KNOWN_SPELLS(character));
-		character.setSpeed(15);
+		character.setCharSpeed(15);
 		
 		// Set the update fields, required for update packets
 		character.setUpdateFields(realm);
@@ -221,7 +237,7 @@ public class WorldSession {
 	         if (message.contains(".speed")) {
 	        	 String[] coords = message.split("\\s");
 	        	 int speed = Integer.parseInt(coords[1]);
-	        	 character.setSpeed((speed > 0) ? speed : 0);
+	        	 character.setCharSpeed((speed > 0) ? speed : 0);
 	        	 this.sendMOTD("Modifying the multiplying speed requires a teleport to be applied.");
 	         }
          } catch (Exception e) {

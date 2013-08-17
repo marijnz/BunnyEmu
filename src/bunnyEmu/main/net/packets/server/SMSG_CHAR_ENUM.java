@@ -39,7 +39,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			packet.order(ByteOrder.BIG_ENDIAN);
 			putLong(currentChar.getGUID()); // PlayerGuid;
 			packet.order(ByteOrder.LITTLE_ENDIAN);
-			putString(currentChar.getName()); // name
+			putString(currentChar.getCharName()); // name
 			put((byte) currentChar.getCharRace()); // Race;
 			put((byte) currentChar.getCharClass()); // Class;
 			put((byte) 1); // Gender;
@@ -131,7 +131,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 		if (charCount != 0) {
 			for (int c = 0; c < charCount; c++) {
 				Char currentChar = client.getCharacters().get(c);
-				String name = currentChar.getName();
+				String name = currentChar.getCharName();
 
 				bitPack.setGuid(currentChar.getGUID());
 				bitPack.setGuildGuid(0);
@@ -163,7 +163,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			for (int c = 0; c < charCount; c++) {
 
 				Char currentChar = client.getCharacters().get(c);
-				String name = currentChar.getName();
+				String name = currentChar.getCharName();
 				bitPack.setGuid(currentChar.getGUID());
 				bitPack.setGuildGuid(0);
 
@@ -175,28 +175,28 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.writeGuildGuidBytes(new byte[] { 1 });
 				
 				this.put((byte) 0);
-				this.put((byte) 0); // hair style
+				this.put(currentChar.getCharHairStyle());	// hair style
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 6 });
 				bitPack.writeGuidBytes(new byte [] { 3 });
 				
 				this.putFloat(currentChar.getX());
-				this.putInt(0); // CharacterFlags TODO: check
+				this.putInt(0);								// CharacterFlags TODO: check
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 0 });
 				
-				this.putInt(0); // pet level
-				this.putInt(currentChar.getMapID()); // map
+				this.putInt(0);								// pet level
+				this.putInt(currentChar.getMapID());		// map
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 7 });
 				
-				this.putInt(0); // customize flags
+				this.putInt(0);								// customize flags
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 4 });
 				bitPack.writeGuidBytes(new byte[] { 2, 5 });
 
 				this.putFloat(currentChar.getY());
-				this.putInt(0); // pet family
+				this.putInt(0);								// pet family
 		
 				try {
 					this.put(name.getBytes("US-ASCII"));
@@ -204,12 +204,12 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 					e.printStackTrace();
 				}
 				
-				this.putInt(0); // pet display id
+				this.putInt(0);								// pet display id
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 3 });
 				bitPack.writeGuidBytes(new byte[] { 7 });
 
-				this.put((byte) 1);	// level
+				this.put(currentChar.getCharLevel());		// level
 				
 				bitPack.writeGuidBytes(new byte[] { 1 });
 				bitPack.writeGuildGuidBytes(new byte[] { 2 });
@@ -222,28 +222,29 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				}
 
 				this.putFloat(currentChar.getZ());
-				this.putInt(0); // zone
-				this.put((byte) 0); // facial hair				
-				this.put((byte) currentChar.getCharClass());
+				this.putInt(0);								// zone
+				this.put(currentChar.getCharFacialHair());	// facial hair
+				this.put(currentChar.getCharClass());
 
 
 				bitPack.writeGuildGuidBytes(new byte[] { 5 });
 
-				this.put((byte) 0); // skin
-				this.put((byte) currentChar.getCharRace()); // gender
-				this.put((byte) 0); // face
-			
+				this.put(currentChar.getCharSkinColor());	// skin
+				this.put(currentChar.getCharGender());		// gender
+				this.put(currentChar.getCharFaceStyle());	// face
+
 				bitPack.writeGuidBytes(new byte[] { 0 });
 
-				this.put((byte) 0); // hair color
+				this.put(currentChar.getCharHairColor());	// hair color
 			}
 
 		} else {
 			bitPack.write(0, 21);
 			bitPack.flush();
 		}
+		
 		this.wrap();
+
 		return true;
 	}
 }
-
