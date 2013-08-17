@@ -59,8 +59,8 @@ public class Client {
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
         Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 1,(byte) 7);
-	   //	addCharacter(char2);
 	   	addCharacter(char2);
+	   //	addCharacter(char2);
     }
 
     /**

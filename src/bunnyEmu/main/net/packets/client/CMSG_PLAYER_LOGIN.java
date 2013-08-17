@@ -35,10 +35,11 @@ public class CMSG_PLAYER_LOGIN extends ClientPacket {
 	}
 
 	public boolean readMoP() {
-		byte[] guidMask = { 5, 7, 6, 1, 2, 3, 4, 0 };
-		byte[] guidBytes = { 6, 4, 3, 5, 0, 2, 7, 1 };
-		BitUnpack GuidUnpacker = new BitUnpack(this);
+		byte[] guidMask = { 2, 0, 4, 3, 5, 6, 1, 7 };
+		byte[] guidBytes = { 0, 3, 7, 6, 1, 2, 4, 5 };
 		
+		BitUnpack GuidUnpacker = new BitUnpack(this);
+
 		guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
 		return true;
 	}

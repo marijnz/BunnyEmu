@@ -96,14 +96,16 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_AUTH_PROOF:  						auth.authSession((CMSG_AUTH_PROOF) p);		break;
                     case Opcodes.CMSG_READY_FOR_ACCOUNT_DATA_TIMES:		worldSession.sendAccountDataTimes(0x15);	break;
                     case Opcodes.CMSG_CHAR_ENUM:						worldSession.sendCharacters();				break;
-                    case Opcodes.CMSG_CHAR_CREATE:						worldSession.createCharacter(p); 				break;
+                    case Opcodes.CMSG_RANDOM_NAME:						worldSession.sendRandomName();				break;
+                    case Opcodes.CMSG_CHAR_CREATE:						worldSession.createCharacter(p); 			break;
+                    case Opcodes.CMSG_CHAR_DELETE:						worldSession.deleteCharacter(p); 			break;
                     case Opcodes.CMSG_PLAYER_LOGIN:						worldSession.verifyLogin((CMSG_PLAYER_LOGIN) p); 				break;
                     case Opcodes.CMSG_PING:								worldSession.sendPong(); 					break;
                     case Opcodes.CMSG_NAME_QUERY:						worldSession.sendNameResponse(); 			break;
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);			break; // MoP only
                     case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);			break; // MoP only
                     case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage(p);			break;
-                  //  case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 						break;
+                    case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 					break;
                 }
             }
             Log.log("World closed connection from " + clientSocket.toString());

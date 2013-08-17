@@ -9,23 +9,30 @@ package bunnyEmu.main.utils;
  */
 
 public class Opcodes {
-	public static final String CMSG_CHAR_CREATE					= "CMSG_CHAR_CREATE";;
+	public static final String CMSG_CHAR_CREATE					= "CMSG_CHAR_CREATE";
+	public static final String CMSG_CHAR_DELETE 				= "CMSG_CHAR_DELETE";
 	public static final String CMSG_CHAR_ENUM 					= "CMSG_CHAR_ENUM";
+	public static final String CMSG_MESSAGECHAT					= "CMSG_MESSAGECHAT";
+	public static final String CMSG_RANDOM_NAME					= "CMSG_RANDOM_NAME";
+	public static final String CMSG_PLAYER_LOGIN				= "CMSG_PLAYER_LOGIN";
+	public static final String CMSG_AUTH_PROOF					= "CMSG_AUTH_PROOF";
+	public static final String CMSG_VIOLENCE_LEVEL 				= "CMSG_VIOLENCE_LEVEL";
+	
 	public static final String CMSG_PING          				= "CMSG_PING";
 	public static final String CMSG_REALM_SPLIT					= "CMSG_REALM_SPLIT";
-	public static final String CMSG_AUTH_PROOF					= "CMSG_AUTH_PROOF";
-	public static final String CMSG_PLAYER_LOGIN				= "CMSG_PLAYER_LOGIN";
 	public static final String CMSG_NAME_QUERY					= "CMSG_NAME_QUERY";
-	public static final String CMSG_MESSAGECHAT					= "CMSG_MESSAGECHAT";
-	
 	public static final String CMSG_READY_FOR_ACCOUNT_DATA_TIMES= "CMSG_READY_FOR_ACCOUNT_DATA_TIMES";  
 	public static final String CMSG_WORLD_LOGIN					= "CMSG_WORLD_LOGIN"; 					
 	public static final String CMSG_UPDATE_ACCOUNT_DATA			= "CMSG_UPDATE_ACCOUNT_DATA";			
 	public static final String CMSG_NAME_CACHE					= "CMSG_NAME_CACHE";					// MoP
 	public static final String CMSG_REALM_CACHE					= "CMSG_REALM_CACHE";					// MoP
 	public static final String CMSG_DISCONNECT					= "CMSG_DISCONNECT";
+	public static final String CMSG_LOADING_SCREEN 				= "CMSG_LOADING_SCREEN";
+	public static final String CMSG_BULK_DB_QUERY 				= "CMSG_BULK_DB_QUERY";
+	
 	
 	public static final String SMSG_CHAR_CREATE					= "SMSG_CHAR_CREATE";
+	public static final String SMSG_CHAR_DELETE 				= "SMSG_CHAR_DELETE";
 	public static final String SMSG_CHAR_ENUM 					= "SMSG_CHAR_ENUM";
 	public static final String SMSG_AUTH_CHALLENGE 				= "SMSG_AUTH_CHALLENGE";
 	public static final String SMSG_AUTH_RESPONSE 				= "SMSG_AUTH_RESPONSE";
@@ -55,16 +62,17 @@ public class Opcodes {
 	public static final String SMSG_REALM_CACHE					= "SMSG_REALM_CACHE";					// MoP
 	public static final String SMSG_UPDATE_CLIENT_CACHE_VERSION = "SMSG_UPDATE_CLIENT_CACHE_VERSION";	// MoP
 	public static final String SMSG_TUTORIAL_FLAGS				= "SMSG_TUTORIAL_FLAGS";				// MoP
-	
+	public static final String SMSG_RANDOM_NAME_RESULT 			= "SMSG_RANDOM_NAME_RESULT";			
+	public static final String SMSG_REALM_SPLIT					= "SMSG_REALM_SPLIT";
+
 	public static final String MSG_SET_DUNGEON_DIFFICULTY 		= "MSG_SET_DUNGEON_DIFFICULTY";
 	public static final String MSG_SET_RAID_DIFFICULTY 			= "MSG_SET_RAID_DIFFICULTY";
 	public static final String MSG_MOVE_SET_RUN_SPEED			= "MSG_MOVE_SET_RUN_SPEED";
-	public static final String MSG_TRANSFER_INITIATE			= "MSG_TRANSFER_INITIATE";			
-	
+	public static final String MSG_TRANSFER_INITIATE			= "MSG_TRANSFER_INITIATE";
 	
 	private static PacketMap packets;
 	
-	public static PacketMap formWotLK(){
+	public static PacketMap formWotLK() {
 
 		packets = new PacketMap();
 		add(CMSG_CHAR_CREATE 				,0x036);
@@ -75,10 +83,10 @@ public class Opcodes {
 		add(CMSG_PLAYER_LOGIN				,0x003D);
 		add(CMSG_NAME_QUERY					,0x0050);
 		
-		add(SMSG_CHAR_CREATE				,0x03A);
-		add(SMSG_CHAR_ENUM 					,0x003B);
 		add(SMSG_AUTH_CHALLENGE 			,0x01EC);
 		add(SMSG_AUTH_RESPONSE 				,0x01EE);
+		add(SMSG_CHAR_CREATE				,0x03A);
+		add(SMSG_CHAR_ENUM 					,0x003B);
 		add(SMSG_LOGIN_VERIFY_WORLD 		,0x0236);
 		add(SMSG_FEATURE_SYSTEM_STATUS 		,0x03C9);
 		add(SMSG_LEARNED_DANCE_MOVES 		,0x0455);
@@ -148,18 +156,23 @@ public class Opcodes {
 		/* client side opcodes start */
 		
 		add(CMSG_CHAR_CREATE               		,0x0404); 
+		add(CMSG_CHAR_DELETE					,0x010C);
 		add(CMSG_CHAR_ENUM                		,0x0B1D);
 		// character_delete = 0x010C
 		add(CMSG_PLAYER_LOGIN       			,0x0A19);
+		add(CMSG_RANDOM_NAME					,0x091D);
+		add(CMSG_LOADING_SCREEN					,0x0341);
+		add(CMSG_VIOLENCE_LEVEL					,0x054B);
 		
 		add(CMSG_AUTH_PROOF               		,0x09F1); 
 		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x0755); 	
-		add(CMSG_REALM_SPLIT					,0x0F89);  
+		add(CMSG_REALM_SPLIT					,0x0B48);  
 		add(CMSG_NAME_CACHE       				,0x0018);	// aka QueryPlayerName
 		add(CMSG_MESSAGECHAT       				,0x016A);	// aka ChatMessageSay
 		add(CMSG_REALM_CACHE       				,0x0209);	// aka QueryRealmName
 		add(CMSG_PING       					,0x08E3); 
 		add(CMSG_DISCONNECT                     ,0x09A2);	// player canceled login
+		add(CMSG_BULK_DB_QUERY					,0x0149);
 		
 		/* client side opcodes end */
 		
@@ -169,8 +182,11 @@ public class Opcodes {
 		add(SMSG_AUTH_CHALLENGE 				,0x0221);  
 		add(SMSG_AUTH_RESPONSE 					,0x0890); 
 		add(SMSG_CHAR_ENUM						,0x0FDD);
-		add(SMSG_CHAR_CREATE					,0x1495); 
-		add(SMSG_PONG       					,0x1121); 
+		add(SMSG_CHAR_CREATE					,0x1495);
+		add(SMSG_CHAR_DELETE					,0x14C1);
+		add(SMSG_RANDOM_NAME_RESULT				,0x0AD9);
+		
+		add(SMSG_PONG       					,0x1121);
 		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1);
 		add(SMSG_TIME_SYNC_REQ        			,0x0AD4); 
 		add(SMSG_MOTD        					,0x12DC); 
@@ -184,6 +200,7 @@ public class Opcodes {
 		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x1489);
 		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);
 		add(SMSG_NEW_WORLD						,0x04D9);
+		add(SMSG_REALM_SPLIT					,0x0F89);
 		
 		/* server side opcodes end */
 
