@@ -19,6 +19,7 @@ import bunnyEmu.main.net.packets.server.SMSG_PONG;
 import bunnyEmu.main.net.packets.server.SMSG_REALM_CACHE;
 import bunnyEmu.main.net.packets.server.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
+import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.BitUnpack;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
@@ -31,9 +32,13 @@ import bunnyEmu.main.utils.Versions;
  * @author Marijn
  *
  */
+
 public class WorldSession {
 	private WorldConnection connection;
 	private Realm realm;
+	
+	final String randomNameLexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	final java.util.Random rand = new java.util.Random();
 
 	public WorldSession(WorldConnection c, Realm realm) {
 		connection = c;
@@ -53,9 +58,9 @@ public class WorldSession {
 	 *
 	 */
 	public void createCharacter(ClientPacket p) {
-		byte sHairStyle = p.get();
-		byte sFaceStyle  = p.get();
-		byte sFacialHair = p.get();
+		byte cHairStyle = p.get();
+		byte cFaceStyle  = p.get();
+		byte cFacialHair = p.get();
 		byte cHairColor  = p.get();
 		byte cRace      = p.get();
 		byte cClass     = p.get();
@@ -88,11 +93,26 @@ public class WorldSession {
 		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
 	}
 
+	/* (TODO: actually) delete the specified character */
+	public void deleteCharacter(ClientPacket p) {
+		
+		/* NYI: need to get guid here from packet */
+		 ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
+         charDeleteOkay.put((byte) 0x47);	// success
+         
+         connection.send(charDeleteOkay);
+	}
+	
 	/**
 	 * Sends initial packets after world login has been confirmed.
 	 */
 	public void verifyLogin(CMSG_PLAYER_LOGIN p) {
 		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
+		
+		if (character == null) { 
+			System.out.println("\nPROBLEM: Character is null at login to world..\n");
+		}
+		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
 		connection.send(new SMSG_KNOWN_SPELLS(character));
 		character.setSpeed(15);
@@ -160,7 +180,7 @@ public class WorldSession {
 	/**
 	 * Realm data? Required for MoP
 	 */
-	public void handleRealmCache(ClientPacket p){
+	public void handleRealmCache(ClientPacket p) {
 		int realmId = p.getInt();
 		if(realm.id != realmId)
 			return;
@@ -171,7 +191,7 @@ public class WorldSession {
 	/**
 	 * Handles a chat message given by the client, checks for commands.
 	 */
-	public void handleChatMessage(ClientPacket p){
+	public void handleChatMessage(ClientPacket p) {
 		Char character = connection.client.getCurrentCharacter();
 		 BitUnpack bitUnpack = new BitUnpack(p);
          int language = p.getInt();
@@ -180,8 +200,8 @@ public class WorldSession {
          String message = p.getString(messageLength);
          connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), language, message));
          
-         try{
-	         if(message.contains(".tele")){
+         try {
+	         if (message.contains(".tele")) {
 	        	 String[] coords = message.split("\\s");
 	        	 int mapId = Integer.parseInt(coords[1]);
 	        	 float x = Float.parseFloat(coords[2]);
@@ -189,13 +209,13 @@ public class WorldSession {
 	        	 float z = Float.parseFloat(coords[4]);
 	        	 teleportTo(-x, -y, z, mapId);
 	         }
-	         if(message.contains(".speed")){
+	         if (message.contains(".speed")) {
 	        	 String[] coords = message.split("\\s");
 	        	 int speed = Integer.parseInt(coords[1]);
 	        	 character.setSpeed((speed > 0) ? speed : 0);
 	        	 this.sendMOTD("Modifying the multiplying speed requires a teleport to be applied.");
 	         }
-         } catch (Exception e){
+         } catch (Exception e) {
         	 this.sendMOTD("Invalid command!");
          }
 	}
@@ -203,7 +223,7 @@ public class WorldSession {
 	/**
 	 * Instantly teleports the client to the given coords
 	 */
-	public void teleportTo(float x, float y, float z, int mapId){
+	public void teleportTo(float x, float y, float z, int mapId) {
 		Char character = this.connection.getClient().getCurrentCharacter();
 		character.setPosition(x, y, z, mapId);
 		connection.send(new SMSG_NEW_WORLD(character));
@@ -223,7 +243,41 @@ public class WorldSession {
 				0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x44, (byte) 0xC8, 0x00,
 				0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 				0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x01 });
-		connection.send(new ServerPacket(Opcodes.SMSG_SPELL_GO, data.length,
-				data));
+		
+		connection.send(new ServerPacket(Opcodes.SMSG_SPELL_GO, data.length, data));
+	}
+	
+	/* temporary proof of concept */
+	private String randomName() {
+	    StringBuilder builder = new StringBuilder();
+	    while (builder.toString().length() == 0) {
+	        int length = rand.nextInt(5) + 5;
+	        for(int i = 0; i < length; i++) {
+	            builder.append(randomNameLexicon.charAt(rand.nextInt(randomNameLexicon.length())));
+	        }
+	    }
+	    return builder.toString();
+	}
+	
+	public void sendRandomName() {
+		/* this is temp and should actually come from the client db */
+		String generatedName = randomName();
+		
+		// char name must min size 3 and max size 12
+		while ((generatedName.length() < 3) && (generatedName.length() > 12)) {
+			generatedName = randomName();
+		}
+		
+		ServerPacket randomCharName = new ServerPacket(Opcodes.SMSG_RANDOM_NAME_RESULT, 14);
+		BitPack bitPack = new BitPack(randomCharName);
+		
+		bitPack.write(generatedName.length(), 6);
+		bitPack.write(1);
+		
+		bitPack.flush();
+		
+		randomCharName.putString(generatedName);
+		
+		connection.send(randomCharName);
 	}
 }
