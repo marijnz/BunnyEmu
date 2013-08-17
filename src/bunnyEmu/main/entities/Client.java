@@ -199,7 +199,7 @@ public class Client {
      * @return The Character this client is currently playing with (possibly null if the player didn't get past the character selection screen yet).
      */
     
-    public Char getCurrentCharacter(){
+    public Char getCurrentCharacter() {
     	return currentCharacter;
     }
     

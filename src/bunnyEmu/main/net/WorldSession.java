@@ -1,5 +1,7 @@
 package bunnyEmu.main.net;
 
+import java.io.UnsupportedEncodingException;
+
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
@@ -54,10 +56,12 @@ public class WorldSession {
 	}
 
 	/**
-	 * Creates a character for the client.
+	 * Creates a character for the client and sets attributes.
+	 * @throws UnsupportedEncodingException 
+	 *
 	 *
 	 */
-	public void createCharacter(ClientPacket p) {
+	public void createCharacter(ClientPacket p) throws UnsupportedEncodingException {
 		byte cHairStyle = p.get();
 		byte cFaceStyle  = p.get();
 		byte cFacialHair = p.get();
@@ -70,8 +74,15 @@ public class WorldSession {
 		
 		byte cGender     = p.get();
 		
-		String name = "tester";
-		//String name = p.getString();
+		byte nameLength = p.get();
+	    StringBuilder builder = new StringBuilder();
+		
+		// length/4 is amount of characters in ASCII
+		for (int x = 0; x < nameLength/4; x++) {
+			builder.append(new String(new byte[]{ p.get() }, "US-ASCII"));
+		}
+		
+		String name = builder.toString();
 		
 		ServerPacket isCharOkay = new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1);
 		
@@ -79,18 +90,14 @@ public class WorldSession {
 		
 		isCharOkay.put((byte) 0x31);	// name is okay to be used
 		connection.send(isCharOkay);
+
+		/* TODO: need database query to insert and for start position and map here */
 		
-		/* TODO: need database query for start position and map here */
-		
-		//	isCharOkay.put((byte) 0x2F);	// success in creation
-		//	connection.send(isCharOkay);
+		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
 		
 		connection.send(new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1, AuthCodes.CHAR_CREATE_SUCCESS));
 		
 		Log.log("Created new char with name: " + name);
-		
-		/* this will become database insertion */
-		connection.getClient().addCharacter(new Char(name, 0, 0, 0, 0, cRace, cClass));
 	}
 
 	/* (TODO: actually) delete the specified character */
@@ -108,6 +115,8 @@ public class WorldSession {
 	 */
 	public void verifyLogin(CMSG_PLAYER_LOGIN p) {
 		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
+
+		System.out.println(p.getGuid());
 		
 		if (character == null) { 
 			System.out.println("\nPROBLEM: Character is null at login to world..\n");

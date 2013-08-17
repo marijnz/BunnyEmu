@@ -29,7 +29,7 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 	}
 	
 	@Override
-	public boolean writeMoP(){
+	public boolean writeMoP() {
 		this.putShort((short) character.getMapID());
 		this.putInt(1);
 		this.put(UpdateType.CreateObject);
@@ -40,14 +40,12 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 		writeUpdateObjectMovementMoP(character, updateFlags);
 		character.writeUpdateFields(this);
 		
-		this.put((byte) 0);
-		
 		this.wrap();
 		return true;
 	}
 	
 	@Override
-	public boolean writeCata(){
+	public boolean writeCata() {
 		// Default on update packet
 		this.putShort((short) character.getMapID());
 		this.putInt(1); // update count
@@ -71,7 +69,7 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 	
 	
 	@Override
-	public boolean writeWotLK(){
+	public boolean writeWotLK() {
 		this.putInt(1); // update count
 		
 		//Create update packet
