@@ -12,34 +12,57 @@ import bunnyEmu.main.utils.types.MovementSpeed;
  * @author Marijn
  *
  */
-public class Char extends Unit{
+public class Char extends Unit {
 
-	private String name;
-	private byte charRace;
-	private byte charClass;
-	private byte charGender;
-	private float speed = 1;
+	private String cName;
+	
+	private byte cHairStyle; 
+	private byte cFaceStyle; 
+	private byte cFacialHair;
+	private byte cHairColor; 
+	private byte cSkinColor;
+	
+	private byte cRace;
+	private byte cClass;
+	private byte cGender;
+	
+	private int cLevel;
+	private float cSpeed = 1;
+	
 	private ArrayList<Spell> spells = new ArrayList<Spell>();
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
-	
-	
-	public Char(String name, float x, float y, float z, int mapID, byte charRace, byte charClass){
-		this.setName(name);
+
+
+	public Char(String cName, float x, float y, float z, int mapID, byte cHairStyle, 
+				byte cFaceStyle, byte cFacialHair, byte cHairColor, byte cSkinColor, 
+				byte cRace, byte cClass, byte cGender, int cLevel) {
+		
+		this.setCharName(cName);
+		
 		this.setX(x);
 		this.setY(y);
 		this.setZ(z);
 		this.setMapID(mapID);
-		this.setCharRace(charRace);
-		this.setCharClass(charClass);
-		this.charGender = 0;
+
+		this.setCharHairStyle(cHairStyle);
+		this.setCharFaceStyle(cFaceStyle);
+		this.setCharFacialHair(cFacialHair);
+		this.setCharHairColor(cHairColor);
+		this.setCharSkinColor(cSkinColor);
+
+		this.setCharRace(cRace);
+		this.setCharClass(cClass);
+		this.setCharGender(cGender);
 		
+		this.setCharLevel(cLevel);
+
 		spells.add(new Spell(669)); // orcish
 		skills.add(new Skill(109)); // language 1
 		//skills.add(new Skill(315)); // language 2
-		
+
 		movement = new MovementSpeed();
 	}
-	
+
 
 	/**
 	 * Prepare for initial update packet
@@ -61,9 +84,9 @@ public class Char extends Unit{
          
          setUpdateField("UnitFields", "FactionTemplate", 0x74, Integer.class);
          
-         setUpdateField("UnitFields", "Bytes0", this.charRace, Byte.class, (byte) 0);
-         setUpdateField("UnitFields", "Bytes0", this.charClass, Byte.class, (byte) 1);
-         setUpdateField("UnitFields", "Bytes0", this.charGender, Byte.class, (byte) 2);
+         setUpdateField("UnitFields", "Bytes0", this.cRace, Byte.class, (byte) 0);
+         setUpdateField("UnitFields", "Bytes0", this.cClass, Byte.class, (byte) 1);
+         setUpdateField("UnitFields", "Bytes0", this.cGender, Byte.class, (byte) 2);
          setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, (byte) 3); // powertype (mana etc.)
 
          // PlayerFields
@@ -98,42 +121,99 @@ public class Char extends Unit{
          setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
          
 	}
+
+	public String getCharName() {
+		return cName;
+	}
+
+	public byte getCharHairStyle() {
+		return cHairStyle;
+	}
+
+	public byte getCharFaceStyle() {
+		return cFaceStyle;
+	}
+
+	public byte getCharFacialHair() {
+		return cFacialHair;
+	}
+	
+	public byte getCharHairColor() {
+		return cHairColor;
+	}
+	
+	public byte getCharSkinColor() {
+		return cSkinColor;
+	}
 	
 	public byte getCharRace() {
-		return charRace;
-	}
-
-	public void setCharRace(byte charRace) {
-		this.charRace = charRace;
-	}
-
-	public byte getCharClass() {
-		return charClass;
-	}
-
-	public void setCharClass(byte charClass) {
-		this.charClass = charClass;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return cRace;
 	}
 	
-	public ArrayList<Spell> getSpells(){
+	public byte getCharClass() {
+		return cClass;
+	}
+	
+	public byte getCharGender() {
+		return cGender;
+	}
+	
+	public ArrayList<Spell> getCharSpells(){
 		return spells;
 	}
 
-	public float getSpeed() {
-		return speed;
+	public float getCharSpeed() {
+		return cSpeed;
 	}
 
-	public void setSpeed(float speed) {
-		this.speed = speed;
+	public byte getCharLevel() {
+		return ((byte) cLevel);
+	}
+
+	public void setCharSpeed(float speed) {
+		this.cSpeed = speed;
 	}
 	
+	public void setCharLevel(int level) {
+		this.cLevel = level;
+	}
+
+
+	/* these attributes should only be set on creation (for now) */
 	
+	private void setCharName(String name) {
+		this.cName = name;
+	}
+
+	private void setCharHairStyle(byte cHairStyle) {
+		this.cHairStyle = cHairStyle;
+	}
+
+	private void setCharFaceStyle(byte cFaceStyle) {
+		this.cFaceStyle = cFaceStyle;
+	}
+
+	private void setCharFacialHair(byte cFacialHair) {
+		this.cFacialHair = cFacialHair;
+	}
+
+	private void setCharHairColor(byte cHairColor) {
+		this.cHairColor = cHairColor;
+	}
+
+	private void setCharSkinColor(byte cSkinColor) {
+		this.cSkinColor = cSkinColor;
+	}
+
+	private void setCharRace(byte charRace) {
+		this.cRace = charRace;
+	}
+
+	private void setCharClass(byte charClass) {
+		this.cClass = charClass;
+	}
+
+	private void setCharGender(byte cGender) {
+		this.cGender = cGender;
+	}
 }

@@ -19,7 +19,7 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 	private Char character;
 
 	public SMSG_KNOWN_SPELLS(Char character) {
-		super(Opcodes.SMSG_KNOWN_SPELLS, 50 + character.getSpells().size() * 4 );
+		super(Opcodes.SMSG_KNOWN_SPELLS, 50 + character.getCharSpells().size() * 4 );
 		this.character = character;
 
 	}
@@ -29,7 +29,7 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 
 		BitPack bitPack = new BitPack(this);
 
-		ArrayList<Spell> spells = character.getSpells();
+		ArrayList<Spell> spells = character.getCharSpells();
 		
 		bitPack.write(spells.size(), 24);
 		bitPack.write(1);

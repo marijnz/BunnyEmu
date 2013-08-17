@@ -58,8 +58,8 @@ public class Client {
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
-        Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 1,(byte) 7);
-	   	addCharacter(char2);
+       // Char char2 = new Char("Test", 2, 3, 4, 1, (byte) 1,(byte) 7);
+	   	//addCharacter(char2);
 	   //	addCharacter(char2);
     }
 
@@ -199,7 +199,7 @@ public class Client {
      * @return The Character this client is currently playing with (possibly null if the player didn't get past the character selection screen yet).
      */
     
-    public Char getCurrentCharacter(){
+    public Char getCurrentCharacter() {
     	return currentCharacter;
     }
     

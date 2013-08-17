@@ -74,7 +74,7 @@ public class UpdatePacket extends ServerPacket {
 			packet.putFloat((float) movementSpeed.FlyBackSpeed);
 			packet.putFloat((float) movementSpeed.SwimSpeed);
 
-			float speed = character.getSpeed(); // Speed multiplier
+			float speed = character.getCharSpeed(); // Speed multiplier
 			bitPack.writeGuidBytes(new byte[] { 1 });
 			packet.putFloat((float) movementSpeed.TurnSpeed);
 			packet.putFloat(character.getX());

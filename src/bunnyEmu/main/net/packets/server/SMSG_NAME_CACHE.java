@@ -31,7 +31,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		
 		bitPack.write(0);
 		bitPack.writeGuidMask(new byte[] {1, 3, 2});
-		bitPack.write(character.getName().length(), 6);
+		bitPack.write(character.getCharName().length(), 6);
 		bitPack.writeGuidMask(new byte[] {6, 4, 0});
 		bitPack.write(0);
 		bitPack.writeGuidMask(new byte[] {5, 7});	
@@ -40,7 +40,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		
 		bitPack.writeGuidBytes(new byte[] {1});
 		
-		this.putString(character.getName());
+		this.putString(character.getCharName());
 		
 		bitPack.writeGuidBytes(new byte[] {0, 7});
 		
