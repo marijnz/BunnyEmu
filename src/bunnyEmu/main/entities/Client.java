@@ -185,13 +185,18 @@ public class Client {
     /**
      * @return The character that belongs to the guid, null if doesn't exist.
      */
-    public Char setCurrentCharacter(long GUID){
+    public Char setCurrentCharacter(long GUID) {
+    	GUID++; // guid starts at 1 not 0
+    	
     	Log.log("setting cur char with GUID " + GUID);
-    	for(Char cChar : characters)
-    		if(cChar.getGUID() == GUID){
+    	
+    	for (Char cChar : characters) {
+    		if (cChar.getGUID() == GUID) {
+    			System.out.println("FOUND");
     			currentCharacter = cChar;
     			return cChar;
     		}
+    	}
     	return null;
     }
     
