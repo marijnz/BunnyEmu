@@ -1,6 +1,8 @@
 package bunnyEmu.main.net;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
@@ -116,12 +118,68 @@ public class WorldSession {
 		Log.log("Created new char with name: " + cName);
 	}
 
-	/* (TODO: actually) delete the specified character */
+	/* delete the specified character */
 	public void deleteCharacter(ClientPacket p) {
+	
+		/* determine guid here from packet then respond okay */
+		boolean[] guidMask = new boolean[8];
+		byte[] guidBytes = new byte[8];
 		
-		/* NYI: need to get guid here from packet */
-		 ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
-         charDeleteOkay.put((byte) 0x47);	// success
+		BitUnpack bitUnpack = new BitUnpack(p);
+
+		guidMask[2] = bitUnpack.getBit();
+		guidMask[1] = bitUnpack.getBit();
+		guidMask[5] = bitUnpack.getBit();
+		guidMask[7] = bitUnpack.getBit();
+		guidMask[6] = bitUnpack.getBit();
+
+		bitUnpack.getBit();
+
+		guidMask[3] = bitUnpack.getBit();
+		guidMask[0] = bitUnpack.getBit();
+		guidMask[4] = bitUnpack.getBit();
+
+        if (guidMask[1]) 
+        	guidBytes[1] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[3]) 
+        	guidBytes[3] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[4])
+        	guidBytes[4] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[0])
+        	guidBytes[0] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[7])
+        	guidBytes[7] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[2])
+        	guidBytes[2] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[5])
+        	guidBytes[5] = (byte) (p.get() ^ 1);
+        
+        if (guidMask[6])
+        	guidBytes[6] = (byte) (p.get() ^ 1);
+        
+        
+        ByteBuffer buffer = ByteBuffer.wrap(guidBytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        int guid = buffer.getInt();
+        
+        boolean charDeletion = connection.getClient().removeCharacter(guid);
+        
+        if (charDeletion) {
+        	System.out.println("Deleted character with GUID = " + guid);
+        }
+        else {
+        	System.out.println("Failed to delete character with GUID = " + guid);
+        }
+        
+        ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
+        charDeleteOkay.put((byte) 0x47);	// success
          
          connection.send(charDeleteOkay);
 	}

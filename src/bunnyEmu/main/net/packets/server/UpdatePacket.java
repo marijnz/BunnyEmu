@@ -151,7 +151,7 @@ public class UpdatePacket extends ServerPacket {
 	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
 		this.putShort(updateFlags);  // update flags              
-		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+		//ObjectMovementValues values = new ObjectMovementValues(updateFlags);
 		
 	    //if (values.IsAlive){
 	    	// Build Movement

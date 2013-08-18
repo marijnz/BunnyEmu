@@ -16,7 +16,6 @@ import bunnyEmu.main.entities.packet.IPacketReadable;
 import bunnyEmu.main.entities.packet.IPacketWritable;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
-import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;

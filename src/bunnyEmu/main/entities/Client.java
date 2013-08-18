@@ -178,6 +178,19 @@ public class Client {
     	return characters.size();
     }
     
+    /* searches for matching guid -- probably need different way of doing this */
+    			/* runtime of O(n) where n is amount of players */
+    public boolean removeCharacter(int GUID) {
+    	for (int i = 0; i < characters.size(); i++) {
+    		if (characters.get(i).getGUID() == GUID) {
+    			/* need DB query here */
+    			characters.remove(i);
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
     public void setCurrentCharacter(Char currentCharacter){
     	this.currentCharacter = currentCharacter;
     }

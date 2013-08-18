@@ -83,7 +83,7 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 		
 		
 		// 0x071 = arcemu OK
-		byte updateFlags = 0x021;
+		//byte updateFlags = 0x021;
 		Log.log("SIZE1: " + this.position());
 		//writeUpdateObjectMovementWotLK(character, updateFlags);
 		//this.put("000020400000E04000009040711C97400000");
