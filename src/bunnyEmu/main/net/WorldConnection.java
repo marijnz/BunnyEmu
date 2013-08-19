@@ -16,7 +16,6 @@ import bunnyEmu.main.entities.packet.IPacketReadable;
 import bunnyEmu.main.entities.packet.IPacketWritable;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
-import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
@@ -91,7 +90,7 @@ public class WorldConnection extends Connection{
 					Log.log("Received known packet without implementation: " + p.toString());
 				}
                 
-                switch(p.sOpcode){
+                switch(p.sOpcode) {
                 	case Opcodes.MSG_TRANSFER_INITIATE:					auth.authChallenge(); 						break; // MoP only
                     case Opcodes.CMSG_AUTH_PROOF:  						auth.authSession((CMSG_AUTH_PROOF) p);		break;
                     case Opcodes.CMSG_READY_FOR_ACCOUNT_DATA_TIMES:		worldSession.sendAccountDataTimes(0x15);	break;
@@ -111,7 +110,7 @@ public class WorldConnection extends Connection{
             Log.log("World closed connection from " + clientSocket.toString());
         } catch (IOException ex) {
         	Log.log(WorldConnection.class.getName() + " force closed");
-        } finally{
+        } finally {
         	// The client parent might be null if the realm authentication hasn't been completed yet
         	if(client != null)
         		client.disconnectFromRealm();

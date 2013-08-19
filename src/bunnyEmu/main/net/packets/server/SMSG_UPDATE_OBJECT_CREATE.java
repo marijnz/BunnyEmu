@@ -18,11 +18,11 @@ import bunnyEmu.main.utils.types.UpdateType;
  * @author Marijn
  *
  */
-public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
+public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket {
 
 	private Char character;
 	
-	public SMSG_UPDATE_OBJECT_CREATE(Client client){
+	public SMSG_UPDATE_OBJECT_CREATE(Client client) {
 		super(Opcodes.SMSG_UPDATE_OBJECT, 3000);
 		
 		character = client.getCurrentCharacter();
@@ -35,12 +35,14 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 		this.put(UpdateType.CreateObject);
 		this.writePackedGuid(character.getGUID());
 		this.put(ObjectType.Player);
-		
+
 		byte updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation | UpdateFlag.Self;
 		writeUpdateObjectMovementMoP(character, updateFlags);
+
 		character.writeUpdateFields(this);
-		
+
 		this.wrap();
+
 		return true;
 	}
 	
@@ -83,7 +85,7 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 		
 		
 		// 0x071 = arcemu OK
-		byte updateFlags = 0x021;
+		//byte updateFlags = 0x021;
 		Log.log("SIZE1: " + this.position());
 		//writeUpdateObjectMovementWotLK(character, updateFlags);
 		//this.put("000020400000E04000009040711C97400000");

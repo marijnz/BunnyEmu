@@ -7,7 +7,6 @@ import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.Versions;
 

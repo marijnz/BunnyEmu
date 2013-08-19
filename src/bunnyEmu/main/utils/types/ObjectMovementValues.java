@@ -5,7 +5,7 @@ public class ObjectMovementValues
     // Bits
     public boolean HasAnimKits               = false;
     public boolean HasUnknown                = false;
-    public int BitCounter                	 = 0;		//unsiged
+    public int BitCounter                	 = 0;		//unsigned
     public boolean Bit0                      = false;
     public boolean HasUnknown2               = false;
     public boolean IsVehicle                 = false;
@@ -15,7 +15,7 @@ public class ObjectMovementValues
     public boolean HasGoTransportPosition    = false;
     public boolean IsSelf                    = false;
     public boolean IsAlive                   = false;
-    public int BitCounter2               	 = 0;		//unsiged
+    public int BitCounter2               	 = 0;		//unsigned
     public boolean Bit3                      = false;
     public boolean HasUnknown4               = false;
     public boolean HasTarget                 = false;
@@ -33,7 +33,7 @@ public class ObjectMovementValues
     //public uint Time                      = 0;
 
     public ObjectMovementValues() { }
-    public ObjectMovementValues(int updateflags){
+    public ObjectMovementValues(int updateflags) {
         IsSelf                 = (updateflags & UpdateFlag.Self)                != 0;
         IsAlive                = (updateflags & UpdateFlag.Alive)               != 0;
         HasRotation            = (updateflags & UpdateFlag.Rotation)            != 0;

@@ -72,54 +72,53 @@ public class Char extends Unit {
 	public void setUpdateFields(Realm realm) {
 		this.initFields(realm);
 		 // ObjectFields
-		 setUpdateField("ObjectFields", "Guid", guid, Long.class);
-		 setUpdateField("ObjectFields", "Data", (long) 0, Long.class);
-		 setUpdateField("ObjectFields", "Type", 0x19, Integer.class);
-		 setUpdateField("ObjectFields", "Scale", 2.0f, Float.class);
-		 
-		 setUpdateField("UnitFields", "Health", 13377, Integer.class);
-         setUpdateField("UnitFields", "MaxHealth", 13377, Integer.class);
+		setUpdateField("ObjectFields", "Guid", guid, Long.class);
+		setUpdateField("ObjectFields", "Data", (long) 0, Long.class);
+		setUpdateField("ObjectFields", "Type", 0x19, Integer.class);
+		setUpdateField("ObjectFields", "Scale", 1.0f, Float.class);
+		
+		setUpdateField("UnitFields", "Health", 13377, Integer.class);
+        setUpdateField("UnitFields", "MaxHealth", 13377, Integer.class);
           
-         setUpdateField("UnitFields", "Level", 240, Integer.class);
+        setUpdateField("UnitFields", "Level", 1, Integer.class);
          
-         setUpdateField("UnitFields", "FactionTemplate", 0x74, Integer.class);
+        setUpdateField("UnitFields", "FactionTemplate", 0x74, Integer.class);
          
-         setUpdateField("UnitFields", "Bytes0", this.cRace, Byte.class, (byte) 0);
-         setUpdateField("UnitFields", "Bytes0", this.cClass, Byte.class, (byte) 1);
-         setUpdateField("UnitFields", "Bytes0", this.cGender, Byte.class, (byte) 2);
-         setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, (byte) 3); // powertype (mana etc.)
+        setUpdateField("UnitFields", "Bytes0", this.cRace, Byte.class, (byte) 0);
+        setUpdateField("UnitFields", "Bytes0", this.cClass, Byte.class, (byte) 1);
+        setUpdateField("UnitFields", "Bytes0", this.cGender, Byte.class, (byte) 2);
+        setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, (byte) 3); // powertype (mana etc.)
 
-         // PlayerFields
-         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 0); // skin
-         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 1); // face
-         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 2); // hairstyle
-         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 3); // haircolor
-         setUpdateField("PlayerFields", "Bytes2", (byte) 1, Byte.class, (byte) 0); 	// facial hair
-         setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 1); // PB2_2
-         setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 2); // Bankbag Slots
-         setUpdateField("PlayerFields", "Bytes2", (byte) 2, Byte.class, (byte) 3); // Reststate
-         
-         setUpdateField("PlayerFields", "Bytes3", (byte) 1, Byte.class, (byte) 0); // gender
-         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 1); // drunkness
-         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 2); // PB3_3?
-         setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 3); // PvPRank
-         setUpdateField("PlayerFields", "WatchedFactionIndex", -1, Integer.class); // ?
-         
-         setUpdateField("PlayerFields", "XP", 0, Integer.class);
-         setUpdateField("PlayerFields", "NextLevelXP", 400, Integer.class);
-         setUpdateField("PlayerFields", "CurrentSpecID", 0, Integer.class);
-         
-         // 2457 = panda?
-         int displayID = 55 ;
-         
-         setUpdateField("UnitFields", "DisplayID", displayID, Integer.class);
-         setUpdateField("UnitFields", "NativeDisplayID", displayID, Integer.class);
-         
-         for(int i = 0; i < skills.size(); i++)
-        	 setUpdateField("PlayerFields", "Skill", i, skills.get(i).getId(), Integer.class);
-         
-         setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
-         
+        // PlayerFields
+        setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 0); // skin
+        setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 1); // face
+        setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 2); // hairstyle
+        setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 3); // haircolor
+        setUpdateField("PlayerFields", "Bytes2", (byte) 1, Byte.class, (byte) 0); 	// facial hair
+        setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 1); // PB2_2
+        setUpdateField("PlayerFields", "Bytes2", (byte) 0, Byte.class, (byte) 2); // Bankbag Slots
+        setUpdateField("PlayerFields", "Bytes2", (byte) 2, Byte.class, (byte) 3); // Reststate
+        
+        setUpdateField("PlayerFields", "Bytes3", (byte) 1, Byte.class, (byte) 0); // gender
+        setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 1); // drunkness
+        setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 2); // PB3_3?
+        setUpdateField("PlayerFields", "Bytes3", (byte) 0, Byte.class, (byte) 3); // PvPRank
+        setUpdateField("PlayerFields", "WatchedFactionIndex", -1, Integer.class); // ?
+        
+        setUpdateField("PlayerFields", "XP", 0, Integer.class);
+        setUpdateField("PlayerFields", "NextLevelXP", 400, Integer.class);
+        setUpdateField("PlayerFields", "CurrentSpecID", 0, Integer.class);
+        
+        // 2457 = panda?
+        int displayID = 55;
+        
+        setUpdateField("UnitFields", "DisplayID", displayID, Integer.class);
+        setUpdateField("UnitFields", "NativeDisplayID", displayID, Integer.class);
+        
+        for (int i = 0; i < skills.size(); i++) {
+        	setUpdateField("PlayerFields", "Skill", i, skills.get(i).getId(), Integer.class);
+        }
+        	setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
 	}
 
 	public String getCharName() {

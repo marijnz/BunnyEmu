@@ -25,7 +25,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 	}
 	
 	@Override
-	public boolean writeMoP(){
+	public boolean writeMoP() {
 
 		BitPack bitPack = new BitPack(this);
 		
@@ -38,7 +38,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 
 		bitPack.flush();
 		
-		bitPack.writeGuidBytes(new byte[] {1});
+		bitPack.writeGuidBytes(new byte[] { 1 });
 		
 		this.putString(character.getCharName());
 		
@@ -46,7 +46,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		
 		this.put((byte) character.getCharRace());
 		this.put((byte) 0); // ?
-		this.put((byte) 1); // gender
+		this.put((byte) character.getCharGender()); // gender
 		this.put((byte) character.getCharClass());
 		
 		bitPack.writeGuidBytes(new byte[] {4, 6, 5});
