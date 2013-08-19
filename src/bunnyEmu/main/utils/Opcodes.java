@@ -17,6 +17,7 @@ public class Opcodes {
 	public static final String CMSG_PLAYER_LOGIN				= "CMSG_PLAYER_LOGIN";
 	public static final String CMSG_AUTH_PROOF					= "CMSG_AUTH_PROOF";
 	public static final String CMSG_VIOLENCE_LEVEL 				= "CMSG_VIOLENCE_LEVEL";
+	public static final String CMSG_HEARTBEAT	 				= "CMSG_HEARTBEAT";
 	
 	public static final String CMSG_PING          				= "CMSG_PING";
 	public static final String CMSG_REALM_SPLIT					= "CMSG_REALM_SPLIT";
@@ -154,15 +155,16 @@ public class Opcodes {
 		packets = new PacketMap();
 		
 		/* client side opcodes start */
-		
+
+		add(CMSG_CHAR_ENUM                		,0x0B1D);
 		add(CMSG_CHAR_CREATE               		,0x0404); 
 		add(CMSG_CHAR_DELETE					,0x010C);
-		add(CMSG_CHAR_ENUM                		,0x0B1D);
-		// character_delete = 0x010C
+
 		add(CMSG_PLAYER_LOGIN       			,0x0A19);
 		add(CMSG_RANDOM_NAME					,0x091D);
 		add(CMSG_LOADING_SCREEN					,0x0341);
 		add(CMSG_VIOLENCE_LEVEL					,0x054B);
+		add(CMSG_HEARTBEAT						,0x0E0B);
 		
 		add(CMSG_AUTH_PROOF               		,0x09F1); 
 		add(CMSG_READY_FOR_ACCOUNT_DATA_TIMES	,0x0755); 	

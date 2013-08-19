@@ -205,7 +205,6 @@ public class Client {
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {
-    			System.out.println("FOUND");
     			currentCharacter = cChar;
     			return cChar;
     		}

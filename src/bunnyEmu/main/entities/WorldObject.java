@@ -32,7 +32,7 @@ public abstract class WorldObject {
 	
 	private FieldParser fields; // UpdateFields, version dependable
 	
-	public WorldObject(){
+	public WorldObject() {
 		Log.log("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
 		// 1973 in MoP? Seems 1326 in wotlk
@@ -48,12 +48,12 @@ public abstract class WorldObject {
 		initFields(realm);
 	}
 	
-	public void initFields(Realm realm){
+	public void initFields(Realm realm) {
 		this.realm = realm;
 		fields = new FieldParser(realm.getVersion());
 	}
 	
-	public void setPosition(float x, float y, float z, int mapId){
+	public void setPosition(float x, float y, float z, int mapId) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -95,7 +95,7 @@ public abstract class WorldObject {
 		setUpdateField(index, value, type, offset);
 	}
 	
-	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset){
+	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset) {
 		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
 			mask.set(index);
 			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();
@@ -105,26 +105,26 @@ public abstract class WorldObject {
             else
             	updateData.put(index, (int)(tmpValue << multipliedOffset));
 
-		} else if (type.isAssignableFrom(Long.class)){
+		} else if (type.isAssignableFrom(Long.class)) {
 			 mask.set(index);
 			 mask.set(index + 1, true);
              long tmpValue = value.longValue();
              updateData.put(index, (int) (tmpValue & Integer.MAX_VALUE));
              updateData.put(index+1, (int) ((tmpValue >> 32) & Integer.MAX_VALUE));     
-		} else if (type.isAssignableFrom(Float.class)){
+		} else if (type.isAssignableFrom(Float.class)) {
 			mask.set(index);
 			updateData.put(index, Float.floatToIntBits(value.floatValue()));
-		} else if (type.isAssignableFrom(Integer.class)){
+		} else if (type.isAssignableFrom(Integer.class)) {
 			mask.set(index);
 			updateData.put(index, value.intValue());
-		} else{
+		} else {
 			Log.log("Datatype not supported");
 		}
 	}
 	
-	private int getIndex(String field, String name){
+	private int getIndex(String field, String name) {
 		Integer index = fields.get(field, name);
-		if(index == null){
+		if(index == null) {
 			Log.log("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realm.getVersion() + ")");
 			return -1;
 		}

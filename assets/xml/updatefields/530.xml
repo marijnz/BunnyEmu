@@ -3,11 +3,11 @@
 	<type name = "ObjectFields">
 		<field>
 			<name>Guid</name>
-			<value>0</value>
+			<value>1</value>
 		</field>
 		<field>
 			<name>Data</name>
-			<value>2</value>
+			<value>0</value>
 		</field>
 		<field>
 			<name>Type</name>
@@ -15,7 +15,7 @@
 		</field>
 		<field>
 			<name>Scale</name>
-			<value>7</value>
+			<value>1</value>
 		</field>
 	</type>
 
@@ -34,7 +34,7 @@
 		</field>
 		<field>
 			<name>Level</name>
-			<value>52</value>
+			<value>1</value>
 		</field>
 		<field>
 			<name>FactionTemplate</name>

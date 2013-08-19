@@ -18,11 +18,11 @@ import bunnyEmu.main.utils.types.UpdateType;
  * @author Marijn
  *
  */
-public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
+public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket {
 
 	private Char character;
 	
-	public SMSG_UPDATE_OBJECT_CREATE(Client client){
+	public SMSG_UPDATE_OBJECT_CREATE(Client client) {
 		super(Opcodes.SMSG_UPDATE_OBJECT, 3000);
 		
 		character = client.getCurrentCharacter();
@@ -35,12 +35,14 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket{
 		this.put(UpdateType.CreateObject);
 		this.writePackedGuid(character.getGUID());
 		this.put(ObjectType.Player);
-		
+
 		byte updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation | UpdateFlag.Self;
 		writeUpdateObjectMovementMoP(character, updateFlags);
+
 		character.writeUpdateFields(this);
-		
+
 		this.wrap();
+
 		return true;
 	}
 	

@@ -41,8 +41,8 @@ public class WorldSession {
 	private WorldConnection connection;
 	private Realm realm;
 	
-	final String randomNameLexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	final java.util.Random rand = new java.util.Random();
+	private final String randomNameLexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private final java.util.Random rand = new java.util.Random();
 
 	public WorldSession(WorldConnection c, Realm realm) {
 		connection = c;
@@ -64,6 +64,7 @@ public class WorldSession {
 	 *
 	 */
 	public void createCharacter(ClientPacket p) throws UnsupportedEncodingException {
+
 		byte cHairStyle = p.get();
 		byte cFaceStyle  = p.get();
 		byte cFacialHair = p.get();
@@ -180,17 +181,16 @@ public class WorldSession {
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
         charDeleteOkay.put((byte) 0x47);	// success
-         
-         connection.send(charDeleteOkay);
+
+        connection.send(charDeleteOkay);
 	}
 	
 	/**
 	 * Sends initial packets after world login has been confirmed.
 	 */
 	public void verifyLogin(CMSG_PLAYER_LOGIN p) {
-		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 
-		System.out.println(p.getGuid());
+		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
 			System.out.println("\nPROBLEM: Character is null at login to world..\n");
@@ -202,7 +202,7 @@ public class WorldSession {
 		
 		// Set the update fields, required for update packets
 		character.setUpdateFields(realm);
-		
+
 		// Currently only fully supports MoP
 		if (realm.getVersion() <= Versions.VERSION_BC)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
@@ -214,10 +214,12 @@ public class WorldSession {
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
 
-		connection.send(new SMSG_MOVE_SET_CANFLY(character));
-		sendAccountDataTimes(0xEA);
+		//connection.send(new SMSG_MOVE_SET_CANFLY(character));
+
+		sendAccountDataTimes(0xAA);
 		sendMOTD("Welcome to BunnyEmu, have fun exploring!");
-		sendSpellGo(); // Shiny start
+		
+		//sendSpellGo(); // Shiny start
 	}
 
 	/**
@@ -254,8 +256,8 @@ public class WorldSession {
 	 * Character data? Required for MoP
 	 */
 	public void handleNameCache(ClientPacket p){
-		long guid = p.getLong();
-		Log.log("GUID: " + guid);
+		//long guid = p.getLong();
+		//Log.log("GUID: " + guid);
 		
 		connection.send(new SMSG_NAME_CACHE(connection.client.getCurrentCharacter(), realm));
 	}
