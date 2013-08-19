@@ -4,6 +4,7 @@ import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.utils.BitUnpack;
+import bunnyEmu.main.utils.Log;
 
 /**
  * Received upon world login
@@ -37,10 +38,11 @@ public class CMSG_PLAYER_LOGIN extends ClientPacket {
 	public boolean readMoP() {
 		byte[] guidMask = { 2, 0, 4, 3, 5, 6, 1, 7 };
 		byte[] guidBytes = { 0, 3, 7, 6, 1, 2, 4, 5 };
-		
 		BitUnpack GuidUnpacker = new BitUnpack(this);
-
+		
+		this.getInt(); // Unknown
 		guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
+		Log.log(guid);
 		return true;
 	}
 

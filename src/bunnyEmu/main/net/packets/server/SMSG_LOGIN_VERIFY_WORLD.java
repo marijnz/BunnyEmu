@@ -15,12 +15,10 @@ public class SMSG_LOGIN_VERIFY_WORLD extends ServerPacket {
 	public SMSG_LOGIN_VERIFY_WORLD(Char character) {
 		super(Opcodes.SMSG_LOGIN_VERIFY_WORLD, 20);
 		
-		if (character != null) {
-			putInt(character.getMapID());
-			putFloat(character.getX());
-			putFloat(character.getY());
-			putFloat(character.getZ());
-			putFloat(0); // orientation
-		}
+		putInt(character.getMapID());
+		putFloat(character.getX());
+		putFloat(character.getY());
+		putFloat(character.getZ());
+		putFloat(0); // orientation
 	}
 }

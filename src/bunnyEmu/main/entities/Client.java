@@ -199,8 +199,6 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	GUID++; // guid starts at 1 not 0
-    	
     	Log.log("setting cur char with GUID " + GUID);
     	
     	for (Char cChar : characters) {

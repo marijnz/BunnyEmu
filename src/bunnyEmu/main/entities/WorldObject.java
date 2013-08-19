@@ -16,7 +16,7 @@ import bunnyEmu.main.utils.xml.FieldParser;
 public abstract class WorldObject {
 
 	// TODO, fix for other values than 1 for UpdatePackets
-	private static int countGUID = 1;
+	private static int countGUID = 4;
 
 	protected float x;
 	protected float y;
