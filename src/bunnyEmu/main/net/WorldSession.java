@@ -213,6 +213,7 @@ public class WorldSession {
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
+			//connection.send(realm.loadPacket("updatepacket_mop", 500));
 
 		//connection.send(new SMSG_MOVE_SET_CANFLY(character));
 

@@ -7,7 +7,7 @@
 		</field>
 		<field>
 			<name>Data</name>
-			<value>0</value>
+			<value>2</value>
 		</field>
 		<field>
 			<name>Type</name>
@@ -15,26 +15,26 @@
 		</field>
 		<field>
 			<name>Scale</name>
-			<value>1</value>
+			<value>7</value>
 		</field>
 	</type>
 
 	<type name = "UnitFields">
 		<field>
 			<name>Bytes0</name>
-			<value>22</value>
+			<value>28</value>
 		</field>
 		<field>
 			<name>Health</name>
-			<value>24</value>
+			<value>30</value>
 		</field>
 		<field>
 			<name>MaxHealth</name>
-			<value>26</value>
+			<value>36</value>
 		</field>
 		<field>
 			<name>Level</name>
-			<value>1</value>
+			<value>52</value>
 		</field>
 		<field>
 			<name>FactionTemplate</name>
@@ -50,7 +50,7 @@
 		</field>
 		
 	</type>
-
+	<!-- Bytes = HaircolorID, Reststate and ArenaFaction -->
 	<type name = "PlayerFields">
 		<field>
 			<name>Bytes1</name>
@@ -86,7 +86,7 @@
 		</field>
 		<field>
 			<name>WatchedFactionIndex</name>
-			<value>1884</value>
+			<value>1883</value>
 		</field>
 	</type>
 </types>
