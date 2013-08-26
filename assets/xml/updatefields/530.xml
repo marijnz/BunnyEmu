@@ -3,7 +3,7 @@
 	<type name = "ObjectFields">
 		<field>
 			<name>Guid</name>
-			<value>1</value>
+			<value>0</value>
 		</field>
 		<field>
 			<name>Data</name>

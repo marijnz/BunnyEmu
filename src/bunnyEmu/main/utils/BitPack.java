@@ -2,6 +2,7 @@ package bunnyEmu.main.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -15,17 +16,17 @@ public class BitPack {
 	
 	Packet packet;
 
-    byte[] GuidBytes = new byte[8];
-    byte[] GuildGuidBytes = new byte[8];
-    byte[] TransportGuidBytes = new byte[8];
-    byte[] TargetGuidBytes = new byte[8];
+    byte[] guidBytes = new byte[8];
+    byte[] guildGuidBytes = new byte[8];
+    byte[] transportGuidBytes = new byte[8];
+    byte[] targetGuidBytes = new byte[8];
 
-    public byte BitPosition;
-    public byte BitValue;
+    public byte bitPosition;
+    public byte bitValue;
 
 	public BitPack(Packet packet) {
         this.packet = packet;
-        BitPosition = 8;
+        bitPosition = 8;
     }
 	
 	public void write(boolean bit){
@@ -33,14 +34,14 @@ public class BitPack {
 	}
 
     public void write(int bit){
-        --BitPosition;
+        --bitPosition;
         if (bit != 0)
-            BitValue |= (byte)(1 << (BitPosition));
+            bitValue |= (byte)(1 << (bitPosition));
 
-        if (BitPosition == 0){
-            BitPosition = 8;
-            packet.put(BitValue);
-            BitValue = 0;
+        if (bitPosition == 0){
+            bitPosition = 8;
+            packet.put(bitValue);
+            bitValue = 0;
         }
     }
 
@@ -62,65 +63,68 @@ public class BitPack {
 
     public void writeGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            write(GuidBytes[order[i]]);
+            write(guidBytes[order[i]]);
     }
 
     public void writeGuildGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            write(GuildGuidBytes[order[i]]);
+            write(guildGuidBytes[order[i]]);
     }
 
     public void writeTargetGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            write(TargetGuidBytes[order[i]]);
+            write(targetGuidBytes[order[i]]);
     }
 
     public void writeTransportGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            write(TransportGuidBytes[order[i]]);
+            write(transportGuidBytes[order[i]]);
     }
 
     public void writeGuidBytes(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            if (GuidBytes[order[i]] != 0)
-                packet.put((byte)(GuidBytes[order[i]] ^ 1));
+            if (guidBytes[order[i]] != 0)
+                packet.put((byte)(guidBytes[order[i]] ^ 1));
+            
     }
 
     public void writeGuildGuidBytes(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            if (GuildGuidBytes[order[i]] != 0)
-                packet.put((byte)(GuildGuidBytes[order[i]] ^ 1));
+            if (guildGuidBytes[order[i]] != 0)
+                packet.put((byte)(guildGuidBytes[order[i]] ^ 1));
     }
 
     public void writeTargetGuidBytes(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            if (TargetGuidBytes[order[i]] != 0)
-                packet.put((byte)(TargetGuidBytes[order[i]] ^ 1));
+            if (targetGuidBytes[order[i]] != 0)
+                packet.put((byte)(targetGuidBytes[order[i]] ^ 1));
     }
 
     public void writeTransportGuidBytes(byte[] order){
         for (byte i = 0; i < order.length; i++)
-            if (TransportGuidBytes[order[i]] != 0)
-                packet.put((byte)(TransportGuidBytes[order[i]] ^ 1));
+            if (transportGuidBytes[order[i]] != 0)
+                packet.put((byte)(transportGuidBytes[order[i]] ^ 1));
     }
 
     public void flush() {
-        if (BitPosition == 8)
+        if (bitPosition == 8)
             return;
-        packet.put(BitValue);
-        BitValue = 0;
-        BitPosition = 8;
+        packet.put(bitValue);
+        bitValue = 0;
+        bitPosition = 8;
     }
     
+    private long guid;
     public void setGuid(long guid) {
+    	this.guid = guid;
 		ByteBuffer b = ByteBuffer.allocate(8);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putLong(guid);
-		this.GuidBytes = b.array();
+		this.guidBytes = b.array();
 	}
 
 	public void setGuildGuid(long guildGuid) {
-		this.GuildGuidBytes = ByteBuffer.allocate(8).putLong(guildGuid).array();
+		this.guildGuidBytes = ByteBuffer.allocate(8).putLong(guildGuid).array();
 	}
 
 	public void setTargetGuid(long targetGuid) {

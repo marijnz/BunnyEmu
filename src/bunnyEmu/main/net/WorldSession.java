@@ -104,7 +104,7 @@ public class WorldSession {
 
 		float x = 0.0f;
 		float y = 0.0f;
-		float z = 0.0f;
+		float z = 100.0f;
 		
 		int mapID = 0;
 		

@@ -24,7 +24,7 @@ public class UpdatePacket extends ServerPacket {
 
 		BitPack bitPack = new BitPack(this);
 
-		//bitPack.setGuid(character.getGUID());
+		bitPack.setGuid(character.getGUID());
 
 		/* TODO: comment these */
 		bitPack.write(0);
@@ -85,14 +85,14 @@ public class UpdatePacket extends ServerPacket {
 			
 			packet.putFloat((float) movementSpeed.WalkSpeed);
 			packet.putFloat((float) movementSpeed.RunSpeed);
-
+			
 			bitPack.writeGuidBytes(new byte[] { 0, 3 });
-
+			
 			packet.putFloat((float) movementSpeed.SwimBackSpeed);
 			packet.putFloat((float) movementSpeed.TurnSpeed);
-
+			
 			bitPack.writeGuidBytes(new byte[] { 5 });
-
+			
 			packet.putFloat(character.getZ());
 			packet.putFloat(0);					// orientation NYI
 

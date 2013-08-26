@@ -15,7 +15,6 @@ import bunnyEmu.main.utils.xml.FieldParser;
  */
 public abstract class WorldObject {
 
-	// TODO, fix for other values than 1 for UpdatePackets
 	private static int countGUID = 4;
 
 	protected float x;
@@ -24,13 +23,14 @@ public abstract class WorldObject {
 	protected long guid;
 	protected int mapID;
 
+	// TODO: Put all of the updatedata / mask in another class
 	private Hashtable<Integer, Integer> updateData = new Hashtable<Integer, Integer>();
 	private BitSet mask;
 	private int maskSize;
 	
 	private Realm realm;
 	
-	private FieldParser fields; // UpdateFields, version dependable
+	private FieldParser fields; // UpdateFields, version dependable and parsed from xml
 	
 	public WorldObject() {
 		Log.log("Created worldobject with GUID " + countGUID);
@@ -68,15 +68,13 @@ public abstract class WorldObject {
 	}
 	
 	/**
-	 * Set a new update field
+	 * Set a new update field with added value to index and offset 0.
+	 * 
 	 * @added value added to the generated index
 	 */
 	public <T extends Number> void setUpdateField(String field, String name, int added, T value, Class<T> type) {
 		int index = getIndex(field, name);
-		if(index == -1)
-			return;
-		
-		this.setUpdateField(index + added, value, type, (byte) 0);
+		this.setUpdateField(index + added, value, type, 0);
 	}
 
 	/**
@@ -86,40 +84,43 @@ public abstract class WorldObject {
 	 * @param name For example: MaxHealth, used to generate index
 	 * @param value The value of the updatefield, For example: 235.32f
 	 * @param type The type of the given value, For example: Float
-	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed apart on the same index
+	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed as 4 bytes on the same index
 	 */
-	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type, byte offset) {
+	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type, int offset) {
 		int index = getIndex(field, name);
-		if(index == -1)
-			return;
 		setUpdateField(index, value, type, offset);
 	}
 	
-	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, byte offset) {
+	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, int offset) {
+		if(index == -1)
+			return;
 		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
-			mask.set(index);
 			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();
+			
 			int multipliedOffset = offset * (type.isAssignableFrom(Byte.class) ? 8 : 16);
-			if (updateData.contains(index) && updateData.get(index) != null)
-				updateData.put(index, (int)((int)updateData.get(index) | (int)(tmpValue << multipliedOffset)));
-            else
+			if (mask.get(index)){
+				updateData.put(index, updateData.get(index) | (tmpValue << multipliedOffset));
+			}
+			else
             	updateData.put(index, (int)(tmpValue << multipliedOffset));
-
+			mask.set(index);
 		} else if (type.isAssignableFrom(Long.class)) {
-			 mask.set(index);
-			 mask.set(index + 1, true);
              long tmpValue = value.longValue();
              updateData.put(index, (int) (tmpValue & Integer.MAX_VALUE));
-             updateData.put(index+1, (int) ((tmpValue >> 32) & Integer.MAX_VALUE));     
+             updateData.put(index+1, (int) ((tmpValue >> 32) & Integer.MAX_VALUE));   
+             mask.set(index);
+			 mask.set(index + 1);
 		} else if (type.isAssignableFrom(Float.class)) {
-			mask.set(index);
 			updateData.put(index, Float.floatToIntBits(value.floatValue()));
-		} else if (type.isAssignableFrom(Integer.class)) {
 			mask.set(index);
+		} else if (type.isAssignableFrom(Integer.class)) {
 			updateData.put(index, value.intValue());
+			mask.set(index);
 		} else {
 			Log.log("Datatype not supported");
 		}
+
+		Log.log(updateData.toString());
 	}
 	
 	private int getIndex(String field, String name) {
@@ -137,18 +138,20 @@ public abstract class WorldObject {
 	 */
 	public void writeUpdateFields(Packet p) {
 		p.put((byte) maskSize);
-		Log.log("mask size: " + maskSize);
 		byte[] b = new byte[((mask.size() + 8) / 8) + 1];
 		byte[] maskB = mask.toByteArray();
 		for (int i = 0; i < maskB.length; i++)
 			b[i] = maskB[i];
 
 		p.put(b, 0, maskSize * 4);
-		for (int i = 0; i < mask.size(); i++) {
-			if (mask.get(i)) {
-				p.putInt((int) updateData.get(i));
+		for (int i = 0; i < mask.size(); i++)
+			if (mask.get(i)){
+				Log.log("Writing " + (int) updateData.get(i) + " on " + i);
+				//if(i == 28)
+				//	p.putInt(67336);
+				//else
+					p.putInt((int) updateData.get(i));
 			}
-		}
 	}
 
 	public float getX() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.Unit;
+import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.types.MovementSpeed;
 
 /**
@@ -71,11 +72,12 @@ public class Char extends Unit {
 	 */
 	public void setUpdateFields(Realm realm) {
 		this.initFields(realm);
-		 // ObjectFields
+		
+		 // ObjectFields, required for world login
 		setUpdateField("ObjectFields", "Guid", guid, Long.class);
 		setUpdateField("ObjectFields", "Data", (long) 0, Long.class);
 		setUpdateField("ObjectFields", "Type", 0x19, Integer.class);
-		setUpdateField("ObjectFields", "Scale", 1.0f, Float.class);
+		setUpdateField("ObjectFields", "Scale", 1, Integer.class);			// Actually float
 		
 		setUpdateField("UnitFields", "Health", 13377, Integer.class);
         setUpdateField("UnitFields", "MaxHealth", 13377, Integer.class);
@@ -84,12 +86,15 @@ public class Char extends Unit {
          
         setUpdateField("UnitFields", "FactionTemplate", 0x74, Integer.class);
          
-        setUpdateField("UnitFields", "Bytes0", this.cRace, Byte.class, (byte) 0);
-        setUpdateField("UnitFields", "Bytes0", this.cClass, Byte.class, (byte) 1);
-        setUpdateField("UnitFields", "Bytes0", this.cGender, Byte.class, (byte) 2);
-        setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, (byte) 3); // powertype (mana etc.)
-
-        // PlayerFields
+        Log.log("race: " + this.cRace);
+        Log.log("class: " + this.cClass);
+        Log.log("gender: " + this.cGender);
+        setUpdateField("UnitFields", "Bytes0", this.cRace, Byte.class, 0);
+        setUpdateField("UnitFields", "Bytes0", this.cClass, Byte.class, 1);
+        setUpdateField("UnitFields", "Bytes0", this.cGender, Byte.class,  2);
+        setUpdateField("UnitFields", "Bytes0", (byte) 0, Byte.class, 3); // powertype (mana etc.)
+        
+        // PlayerFields, optional and not required to be able to login to world
         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 0); // skin
         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 1); // face
         setUpdateField("PlayerFields", "Bytes1", (byte) 1, Byte.class, (byte) 2); // hairstyle
@@ -115,10 +120,10 @@ public class Char extends Unit {
         setUpdateField("UnitFields", "DisplayID", displayID, Integer.class);
         setUpdateField("UnitFields", "NativeDisplayID", displayID, Integer.class);
         
-        for (int i = 0; i < skills.size(); i++) {
+        for (int i = 0; i < skills.size(); i++)
         	setUpdateField("PlayerFields", "Skill", i, skills.get(i).getId(), Integer.class);
-        }
-        	setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
+        
+        setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
 	}
 
 	public String getCharName() {
