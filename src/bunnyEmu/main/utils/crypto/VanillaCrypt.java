@@ -18,7 +18,7 @@ public class VanillaCrypt implements GenericCrypt{
 		 */
 	
 	public VanillaCrypt() { 
-		Log.log("Created new Vanilla crypt");
+		Log.log(Log.DEBUG, "Created new Vanilla crypt");
 	}
 
 	public byte[] decrypt(byte[] data){

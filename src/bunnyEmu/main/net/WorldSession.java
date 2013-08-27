@@ -54,7 +54,7 @@ public class WorldSession {
 	 * Send the character list to the client.
 	 */
 	public void sendCharacters() {
-		Log.log("sending chars");
+		Log.log(Log.DEBUG, "sending chars");
 		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
@@ -117,7 +117,7 @@ public class WorldSession {
 														cSkinColor, cRace, cClass, cGender,
 														cStartLevel));
 
-		Log.log("Created new char with name: " + cName);
+		Log.log(Log.DEBUG, "Created new char with name: " + cName);
 	}
 
 	/* delete the specified character */
@@ -174,10 +174,10 @@ public class WorldSession {
         boolean charDeletion = connection.getClient().removeCharacter(guid);
         
         if (charDeletion) {
-        	System.out.println("Deleted character with GUID = " + guid);
+        	Log.log(Log.DEBUG, "Deleted character with GUID = " + guid);
         }
         else {
-        	System.out.println("Failed to delete character with GUID = " + guid);
+        	Log.log(Log.DEBUG, "Failed to delete character with GUID = " + guid);
         }
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
@@ -194,7 +194,7 @@ public class WorldSession {
 		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
-			System.out.println("\nPROBLEM: Character is null at login to world..\n");
+			Log.log(Log.DEBUG, "\nPROBLEM: Character is null at login to world..\n");
 		}
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -261,7 +261,7 @@ public class WorldSession {
 		//long guid = p.getLong();
 		//Log.log("GUID: " + guid);
 		
-		connection.send(new SMSG_NAME_CACHE(connection.client.getCurrentCharacter(), realm));
+		connection.send(new SMSG_NAME_CACHE(connection.client.getCurrentCharacter()));
 	}
 	
 	/**
@@ -320,15 +320,6 @@ public class WorldSession {
 	 * Untested and unimplemented packets go down here
 	 * 
 	 */
-
-	private void sendSpellGo() {
-		byte[] data = (new byte[] { 0x01, 0x01, 0x01, 0x01, 0x00, 0x44, 0x03,
-				0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x44, (byte) 0xC8, 0x00,
-				0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-				0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x01 });
-		
-		connection.send(new ServerPacket(Opcodes.SMSG_SPELL_GO, data.length, data));
-	}
 	
 	/* temporary proof of concept */
 	private String randomName() {

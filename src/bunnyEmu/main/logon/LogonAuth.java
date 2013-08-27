@@ -44,12 +44,12 @@ import bunnyEmu.main.utils.Versions;
             try {
                 md = MessageDigest.getInstance("SHA1");
             } catch (NoSuchAlgorithmException ex) {
-                Log.log("Couldn't load algorithm");
+                Log.log(Log.ERROR, "Couldn't load algorithm");
             }
         }
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
-            Log.log("serverLogonChallenge");
+            Log.log(Log.DEBUG, "serverLogonChallenge");
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
@@ -58,7 +58,6 @@ import bunnyEmu.main.utils.Versions;
             byte[]  country = new byte[4];	 // 'enUS'
             
             in.get(gamename);                        // gamename
-            Log.log(gamename[0] + " " + gamename[1] + " " + gamename[2] + " " + gamename[3]);
             version += in.get();                	// version 1
             int midVal = in.get();   				 // version 2
             if(midVal >= 10)
@@ -67,30 +66,28 @@ import bunnyEmu.main.utils.Versions;
             version += in.get();                  	// version 3
             in.getShort();                    	 	// build
             in.get(platform);                          	// platform
-            Log.log(platform[0] + " " + platform[1] + " " + platform[2] + " " + platform[3]);
             in.get(os);                                // os
             in.get(country);                           // country
             in.getInt();                               // timezone_bias
             in.getInt();                               // ip
             byte I_len = in.get();                 // I_len
-            Log.log(I_len);
             I = new byte[I_len];
             in.packet.get(I, 0, I_len);                       // I  
             
             String P = "password".toUpperCase();
             
-           //Generate account hash
+            //Generate account hash
             md.update(I);
             md.update((":").getBytes());
             md.update(P.getBytes());
             
-            
             byte[] accountHash = md.digest();
-            Log.log("AccountHash: " + new BigNumber(accountHash).toHexString());
+            Log.log(Log.DEBUG, "AccountHash: " + new BigNumber(accountHash).toHexString());
             String username = new String(I);
-            Log.log("USERNAME: " + username);
+            Log.log(Log.DEBUG, "USERNAME: " + username);
             client = new Client(username, Integer.parseInt(version));
             client.attachLogon(connection);
+            
             // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = ClientHandler.findClient(username);
             if(existingClient != null)
@@ -126,7 +123,7 @@ import bunnyEmu.main.utils.Versions;
 
             connection.send(serverLogonChallenge);
             
-            Log.log("send challenge");
+            Log.log(Log.DEBUG, "send challenge");
         }
 
         public void serverLogonProof(ClientPacket in) throws IOException {
@@ -134,7 +131,7 @@ import bunnyEmu.main.utils.Versions;
             byte[] _M1 = new byte[20];
             byte[] crc_hash = new byte[20];
             
-            Log.log("serverLogonProof");
+            Log.log(Log.DEBUG, "serverLogonProof");
 
             in.get(_A);
             in.get(_M1);
@@ -250,7 +247,7 @@ import bunnyEmu.main.utils.Versions;
         
         
         public void serverRealmList() throws IOException {
-        	Log.log("Sending realmlist");
+        	Log.log(Log.DEBUG, "Sending realmlist");
             connection.send(RealmHandler.getRealmList()); 
         }
       

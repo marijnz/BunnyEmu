@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.AuthPacket;
-import bunnyEmu.main.utils.Log;
 
 public class RealmHandler {
 	
@@ -40,7 +39,6 @@ public class RealmHandler {
         	realmPacket.put((byte) realm.flags);   
         	realmPacket.putString(realm.name);      // Name
         	realmPacket.putString(realm.address);   // Address
-        	Log.log("address: " + realm.address);
         	realmPacket.putFloat(realm.population);      // Population
         	realmPacket.put((byte) 0); // char count
 

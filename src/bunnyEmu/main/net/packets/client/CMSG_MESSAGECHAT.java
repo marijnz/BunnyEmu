@@ -1,8 +1,6 @@
 package bunnyEmu.main.net.packets.client;
 
-import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.net.packets.server.SMSG_MESSAGECHAT;
 import bunnyEmu.main.utils.BitUnpack;
 
 public class CMSG_MESSAGECHAT extends ClientPacket {

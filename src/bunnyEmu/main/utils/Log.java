@@ -49,13 +49,8 @@ public class Log {
     }
     
     public static void log(int level, String message){
-    	/* switch(level){
-        	case ERROR: System.out.println("ERROR: " + message); break;
-        	case INFO:	System.out.println("INFO: " + message); break;
-        	case DEBUG:	System.out.println("DEBUG: " + message); break;
-        }
-        */
-    	System.out.println(message);
+    	if(level <= _level)
+    		System.out.println(message);
     	if(ServerApplet.debugLabel != null){
     		ServerApplet.debugLabel.setText(ServerApplet.debugLabel.getText() + "\n" + message);
     	}

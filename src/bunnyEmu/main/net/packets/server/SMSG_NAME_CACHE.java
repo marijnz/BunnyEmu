@@ -1,10 +1,8 @@
 package bunnyEmu.main.net.packets.server;
 
-import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 
 /**
@@ -16,12 +14,10 @@ import bunnyEmu.main.utils.Opcodes;
 public class SMSG_NAME_CACHE extends ServerPacket{
 
 	private Char character;
-	private Realm realm;
 
-	public SMSG_NAME_CACHE(Char character, Realm realm) {
+	public SMSG_NAME_CACHE(Char character) {
 		super(Opcodes.SMSG_NAME_CACHE, 50);
 		this.character = character;
-		this.realm = realm;
 	}
 	
 	@Override
@@ -54,8 +50,6 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 		this.putInt(1);
 		
 		bitPack.writeGuidBytes(new byte[] {3, 2});
-		
-		Log.log("realm id: " + realm.id);
 			
 		this.wrap();
 		return true;

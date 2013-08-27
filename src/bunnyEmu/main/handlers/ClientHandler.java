@@ -27,7 +27,7 @@ public class ClientHandler {
 	 */
 	
 	public static boolean addTempClient(Client client){
-		Log.log("Adding temporary client: " + client.getName());
+		Log.log(Log.DEBUG, "Adding temporary client: " + client.getName());
 		if(temporaryClients.containsKey(client.getName()))
 			return false;
 		temporaryClients.put(client.getName(), client);
@@ -50,7 +50,7 @@ public class ClientHandler {
 		for(Realm realm : RealmHandler.getRealms()){
 			Client client = realm.getClient(name);
 			if(client != null){
-				Log.log("got client: " + name);
+				Log.log(Log.DEBUG, "Found client: " + name);
 				return client;
 			}
 		}

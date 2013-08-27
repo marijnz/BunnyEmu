@@ -171,7 +171,7 @@ public class Client {
     }
     
     public int addCharacter(Char c){
-    	Log.log("adding char with GUID " + c.getGUID());
+    	Log.log(Log.DEBUG, "adding char with GUID " + c.getGUID());
     	if(characters.size() >= 10)
     		return -1;
     	characters.add(c);
@@ -199,7 +199,7 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	Log.log("setting cur char with GUID " + GUID);
+    	Log.log(Log.DEBUG, "setting cur char with GUID " + GUID);
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {

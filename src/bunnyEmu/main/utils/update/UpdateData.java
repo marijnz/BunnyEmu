@@ -3,7 +3,6 @@ package bunnyEmu.main.utils.update;
 import java.util.BitSet;
 import java.util.Hashtable;
 
-import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
 
@@ -90,16 +89,14 @@ public class UpdateData {
 			updateData.put(index, value.intValue());
 			mask.set(index);
 		} else {
-			Log.log("Datatype not supported");
+			Log.log(Log.ERROR, "Datatype for updatefield not supported");
 		}
-
-		Log.log(updateData.toString());
 	}
 	
 	private int getIndex(String field, String name) {
 		Integer index = fields.get(field, name);
 		if(index == null) {
-			Log.log("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")");
+			Log.log(Log.DEBUG, "Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")");
 			return -1;
 		}
 		return index;

@@ -2,7 +2,6 @@ package bunnyEmu.main.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -114,9 +113,7 @@ public class BitPack {
         bitPosition = 8;
     }
     
-    private long guid;
     public void setGuid(long guid) {
-    	this.guid = guid;
 		ByteBuffer b = ByteBuffer.allocate(8);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putLong(guid);

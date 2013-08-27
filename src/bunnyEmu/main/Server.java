@@ -28,7 +28,8 @@ public class Server {
 	private ArrayList<Connection> connections = new ArrayList<Connection>(10);
 	
 	public static void main(String[] args) {
-		Log.setlevel(Log.ERROR);
+		Log.setlevel(Log.INFO);
+		Log.log(Log.INFO, "Launched BunnyEmu");
 		new Server().launch();
 	}
 	

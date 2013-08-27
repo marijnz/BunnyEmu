@@ -57,10 +57,9 @@ public class Realm extends Thread {
 		this.id = id;
 		this.name = "[" + version + "]" + name ;
 		this.address = address + ":" + String.valueOf(port);
-		Log.log(this.address);
-		Log.log(port);
 		this.port = port;
 		this.version = version;
+		
 		if(version <= Versions.VERSION_WOTLK)
 			packets = Opcodes.formWotLK();
 		else if(version <= Versions.VERSION_CATA)
@@ -69,7 +68,7 @@ public class Realm extends Thread {
 			packets = Opcodes.formMoP();
 		start();
 		
-		Log.log("Created new realm: " + this.name);
+		Log.log(Log.INFO, "Created new realm: " + this.name);
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			Log.log(Log.INFO, "Connection made to realm " + id);
+			Log.log(Log.DEBUG, "Connection made to realm " + id);
 		}
 	}
 
@@ -167,7 +166,7 @@ public class Realm extends Thread {
 	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
-    	Log.log("loading packet");
+    	Log.log(Log.DEBUG, "loading packet");
     	String opcode = null;
     	ByteBuffer data = ByteBuffer.allocate(capacity);
     	try {

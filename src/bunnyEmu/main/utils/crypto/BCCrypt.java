@@ -12,7 +12,7 @@ public class BCCrypt extends VanillaCrypt {
 	 */
 	
 	public BCCrypt(){
-		Log.log("Created new Burning Crusade crypt");
+		Log.log(Log.DEBUG, "Created new Burning Crusade crypt");
 	}
 	
 	@Override

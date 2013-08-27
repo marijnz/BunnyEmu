@@ -117,7 +117,6 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			charSize = 350 * charCount;
 		}
 		
-		System.out.println("This many characters: " + charCount);
 		
 		create(Opcodes.SMSG_CHAR_ENUM, charSize, null);
 

@@ -32,7 +32,7 @@ public abstract class Connection extends Thread {
 	}
 
 	private void initialize() {
-		Log.log("Created Connection");
+		Log.log(Log.INFO, "Created Connection");
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());

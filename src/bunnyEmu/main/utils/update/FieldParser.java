@@ -38,11 +38,11 @@ public class FieldParser {
 		try {
 			Document doc = parse("assets/xml/updatefields/" + version + ".xml");
 			NodeList sorts = doc.getElementsByTagName("type");
-			Log.log("Parsing " + sorts.getLength() + " nodes");
+			Log.log(Log.DEBUG, "Parsing " + sorts.getLength() + " nodes");
 			for (int i = 0; i < sorts.getLength(); i++) {
 				Node typeNode = sorts.item(i);
 				String type = ((Element) typeNode).getAttribute("name");
-				Log.log("Parsing node: " + type);
+				Log.log(Log.DEBUG, "Parsing node: " + type);
 				NodeList fields = typeNode.getChildNodes();
 				for (int i2 = 0; i2 < fields.getLength(); i2++) {
 					NodeList nodes =  fields.item(i2).getChildNodes();
@@ -54,7 +54,7 @@ public class FieldParser {
 				}
 		}
 		} catch (IOException e) {
-			Log.log("Parsing went wrong!");
+			Log.log(Log.ERROR, "Parsing went wrong!");
 			e.printStackTrace();
 		}
 	}
@@ -66,7 +66,7 @@ public class FieldParser {
 			typeField = typeFields.get(type);
 		}
 		typeField.put(name, value);
-		Log.log("Added new field: " + type + " " + name + " " + value);
+		Log.log(Log.DEBUG, "Added new field: " + type + " " + name + " " + value);
 	}
 	
 	public Integer get(String type, String name){

@@ -42,7 +42,7 @@ public class WotLKCrypt implements GenericCrypt {
 	 * Instantiates a new crypt.
 	 */
 	public WotLKCrypt() { 
-		Log.log("Created new WotLK crypt");
+		Log.log(Log.DEBUG, "Created new WotLK crypt");
 		ServerEncryptionKey = new byte[]{ (byte) 0xCC,  (byte)0x98,  (byte)0xAE, 0x04, (byte)0xE8,  (byte)0x97, (byte)0xEA,  (byte)0xCA, 0x12, 
 				(byte)0xDD,  (byte)0xC0,  (byte)0x93, 0x42,  (byte)0x91, 0x53, 0x57 };
 		

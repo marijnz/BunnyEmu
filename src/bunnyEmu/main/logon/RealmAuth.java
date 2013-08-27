@@ -13,6 +13,7 @@ import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.handlers.ClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
+import bunnyEmu.main.net.packets.server.SMSG_AUTH_RESPONSE;
 import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
@@ -72,7 +73,7 @@ public class RealmAuth extends Auth {
     }
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
-        Log.log("authSession");
+        Log.log(Log.DEBUG, "authSession");
 
         client = ClientHandler.removeTempClient(authProof.getAccountName());
 
@@ -92,12 +93,12 @@ public class RealmAuth extends Auth {
             md.update(connection.getClient().getSessionKey());
             byte[] digest = md.digest();	
             
-            Log.log("authSession " + client.getName());
+            Log.log(Log.DEBUG, "authSession " + client.getName());
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
             if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
-            	Log.log("Valid account: " + client.getName());
+            	Log.log(Log.INFO, "Valid client connected: " + client.getName());
                 if (realm.getVersion() <= Versions.VERSION_CATA){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
@@ -107,7 +108,8 @@ public class RealmAuth extends Auth {
 	                connection.send(authResponse);
                 } else {
                 	// MoP sends all classes and races + some other data, packet from Arctium
-                    connection.send(realm.loadPacket("authresponse_mop", 80)); // 0x0890 packet
+                    //connection.send(realm.loadPacket("authresponse_mop", 80)); // 0x0890 packet
+                    connection.send(new SMSG_AUTH_RESPONSE());
                     connection.send(new ServerPacket(Opcodes.SMSG_UPDATE_CLIENT_CACHE_VERSION, 4));
                     connection.send(new ServerPacket(Opcodes.SMSG_TUTORIAL_FLAGS, 8*4));
                 }
@@ -116,6 +118,6 @@ public class RealmAuth extends Auth {
                 client.disconnect();
         } else
         	connection.close();
-        Log.log("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
+        Log.log(Log.INFO, "Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
     }
 }

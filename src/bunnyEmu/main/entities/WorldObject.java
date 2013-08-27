@@ -20,7 +20,6 @@ public abstract class WorldObject {
 	protected long guid;
 	protected int mapID;
 
-	private Realm realm;
 	protected UpdateData data;
 	
 	public WorldObject() {
@@ -28,11 +27,6 @@ public abstract class WorldObject {
 		this.setGUID(countGUID++);
 		setPosition(1,1,1,1);
 		this.data = new UpdateData();
-	}
-
-	public WorldObject(Realm realm) {
-		this();
-		this.realm = realm;
 	}
 	
 	public void writeUpdateFields(Packet p){
