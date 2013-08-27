@@ -1,11 +1,8 @@
 package bunnyEmu.main.entities;
 
-import java.util.BitSet;
-import java.util.Hashtable;
-
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
-import bunnyEmu.main.utils.xml.FieldParser;
+import bunnyEmu.main.utils.update.UpdateData;
 
 /**
  * A WorldObject that supports update packets
@@ -23,34 +20,23 @@ public abstract class WorldObject {
 	protected long guid;
 	protected int mapID;
 
-	// TODO: Put all of the updatedata / mask in another class
-	private Hashtable<Integer, Integer> updateData = new Hashtable<Integer, Integer>();
-	private BitSet mask;
-	private int maskSize;
-	
 	private Realm realm;
-	
-	private FieldParser fields; // UpdateFields, version dependable and parsed from xml
+	protected UpdateData data;
 	
 	public WorldObject() {
 		Log.log("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
-		// 1973 in MoP? Seems 1326 in wotlk
-		int dataLength = 1973;
-
-		maskSize = (dataLength + 32) / 32;
-		mask = new BitSet(dataLength);
 		setPosition(1,1,1,1);
+		this.data = new UpdateData();
 	}
 
 	public WorldObject(Realm realm) {
 		this();
-		initFields(realm);
+		this.realm = realm;
 	}
 	
-	public void initFields(Realm realm) {
-		this.realm = realm;
-		fields = new FieldParser(realm.getVersion());
+	public void writeUpdateFields(Packet p){
+		data.writeUpdateFields(p);
 	}
 	
 	public void setPosition(float x, float y, float z, int mapId) {
@@ -60,100 +46,6 @@ public abstract class WorldObject {
 		this.mapID = mapId;
 	}
 	
-	/**
-	 * Set a new update field with offset 0.
-	 */
-	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type) {
-		this.setUpdateField(field, name, value, type, (byte) 0);
-	}
-	
-	/**
-	 * Set a new update field with added value to index and offset 0.
-	 * 
-	 * @added value added to the generated index
-	 */
-	public <T extends Number> void setUpdateField(String field, String name, int added, T value, Class<T> type) {
-		int index = getIndex(field, name);
-		this.setUpdateField(index + added, value, type, 0);
-	}
-
-	/**
-	 * Set a new update field
-	 * 
-	 * @param field For example: UnitFields, used to generate index
-	 * @param name For example: MaxHealth, used to generate index
-	 * @param value The value of the updatefield, For example: 235.32f
-	 * @param type The type of the given value, For example: Float
-	 * @param offset The offset of the offset, happens in case of i.e.: Skin, Face, Hairstyle, Haircolor, passed as 4 bytes on the same index
-	 */
-	public <T extends Number> void setUpdateField(String field, String name, T value, Class<T> type, int offset) {
-		int index = getIndex(field, name);
-		setUpdateField(index, value, type, offset);
-	}
-	
-	private <T extends Number> void setUpdateField(int index, T value, Class<T> type, int offset) {
-		if(index == -1)
-			return;
-		if (type.isAssignableFrom(Byte.class) || type.isAssignableFrom(Short.class)) {
-			int tmpValue = type.isAssignableFrom(Byte.class) ? value.byteValue() : value.shortValue();
-			
-			int multipliedOffset = offset * (type.isAssignableFrom(Byte.class) ? 8 : 16);
-			if (mask.get(index)){
-				updateData.put(index, updateData.get(index) | (tmpValue << multipliedOffset));
-			}
-			else
-            	updateData.put(index, (int)(tmpValue << multipliedOffset));
-			mask.set(index);
-		} else if (type.isAssignableFrom(Long.class)) {
-             long tmpValue = value.longValue();
-             updateData.put(index, (int) (tmpValue & Integer.MAX_VALUE));
-             updateData.put(index+1, (int) ((tmpValue >> 32) & Integer.MAX_VALUE));   
-             mask.set(index);
-			 mask.set(index + 1);
-		} else if (type.isAssignableFrom(Float.class)) {
-			updateData.put(index, Float.floatToIntBits(value.floatValue()));
-			mask.set(index);
-		} else if (type.isAssignableFrom(Integer.class)) {
-			updateData.put(index, value.intValue());
-			mask.set(index);
-		} else {
-			Log.log("Datatype not supported");
-		}
-
-		Log.log(updateData.toString());
-	}
-	
-	private int getIndex(String field, String name) {
-		Integer index = fields.get(field, name);
-		if(index == null) {
-			Log.log("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realm.getVersion() + ")");
-			return -1;
-		}
-		return index;
-	}
-
-	/**
-	 * Write the update hashtable to the update packet.
-	 * @param p The packet the update data has to be written on
-	 */
-	public void writeUpdateFields(Packet p) {
-		p.put((byte) maskSize);
-		byte[] b = new byte[((mask.size() + 8) / 8) + 1];
-		byte[] maskB = mask.toByteArray();
-		for (int i = 0; i < maskB.length; i++)
-			b[i] = maskB[i];
-
-		p.put(b, 0, maskSize * 4);
-		for (int i = 0; i < mask.size(); i++)
-			if (mask.get(i)){
-				Log.log("Writing " + (int) updateData.get(i) + " on " + i);
-				//if(i == 28)
-				//	p.putInt(67336);
-				//else
-					p.putInt((int) updateData.get(i));
-			}
-	}
-
 	public float getX() {
 		return x;
 	}

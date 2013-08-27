@@ -1,7 +1,9 @@
-package bunnyEmu.main.utils.types.fields;
+package bunnyEmu.main.utils.update;
 
 /**
- * UpdateFields for MoP 5.1.0
+ * UpdateFields for MoP
+ * 
+ * Unused
  * 
  * @author Marijn
  *

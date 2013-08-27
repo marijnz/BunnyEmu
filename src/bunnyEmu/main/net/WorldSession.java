@@ -8,6 +8,7 @@ import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
 import bunnyEmu.main.net.packets.server.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.packets.server.SMSG_CHAR_ENUM;
@@ -277,26 +278,22 @@ public class WorldSession {
 	/**
 	 * Handles a chat message given by the client, checks for commands.
 	 */
-	public void handleChatMessage(ClientPacket p) {
+	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		 BitUnpack bitUnpack = new BitUnpack(p);
-         int language = p.getInt();
-
-         int messageLength = bitUnpack.GetBits((byte) 9);
-         String message = p.getString(messageLength);
-         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), language, message));
+		
+        connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {
-	         if (message.contains(".tele")) {
-	        	 String[] coords = message.split("\\s");
+	         if (p.getMessage().contains(".tele")) {
+	        	 String[] coords = p.getMessage().split("\\s");
 	        	 int mapId = Integer.parseInt(coords[1]);
 	        	 float x = Float.parseFloat(coords[2]);
 	        	 float y = Float.parseFloat(coords[3]);
 	        	 float z = Float.parseFloat(coords[4]);
 	        	 teleportTo(-x, -y, z, mapId);
 	         }
-	         if (message.contains(".speed")) {
-	        	 String[] coords = message.split("\\s");
+	         if (p.getMessage().contains(".speed")) {
+	        	 String[] coords = p.getMessage().split("\\s");
 	        	 int speed = Integer.parseInt(coords[1]);
 	        	 character.setCharSpeed((speed > 0) ? speed : 0);
 	        	 this.sendMOTD("Modifying the multiplying speed requires a teleport to be applied.");

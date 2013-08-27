@@ -1,4 +1,4 @@
-package bunnyEmu.main.utils.xml;
+package bunnyEmu.main.utils.update;
 
 import java.io.File;
 import java.io.IOException;

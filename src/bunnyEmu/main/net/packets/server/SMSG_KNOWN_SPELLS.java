@@ -31,7 +31,7 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 
 		ArrayList<Spell> spells = character.getCharSpells();
 		
-		bitPack.write(spells.size(), 24);
+		bitPack.write(spells.size(), 22);
 		bitPack.write(1);
 		bitPack.flush();
 
