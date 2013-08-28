@@ -71,7 +71,7 @@ public class BigNumber{
     
     
     public String toHexString(){
-        return ("(" + asByteArray().length + ") " + bigInteger.toString(16).toUpperCase());
+        return bigInteger.toString(16).toUpperCase();
     }
     
     public byte[] asByteArray(){

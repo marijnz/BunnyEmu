@@ -220,7 +220,7 @@ public class WorldSession {
 
 		sendAccountDataTimes(0xAA);
 		sendMOTD("Welcome to BunnyEmu, have fun exploring!");
-		
+		 connection.send(new SMSG_MOVE_SET_CANFLY(character));
 		//sendSpellGo(); // Shiny start
 	}
 
@@ -280,7 +280,7 @@ public class WorldSession {
 	 */
 	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		
+		Log.log("msg: " + p.getMessage());
         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {
@@ -291,12 +291,13 @@ public class WorldSession {
 	        	 float y = Float.parseFloat(coords[3]);
 	        	 float z = Float.parseFloat(coords[4]);
 	        	 teleportTo(-x, -y, z, mapId);
-	         }
-	         if (p.getMessage().contains(".speed")) {
+	         } else if (p.getMessage().contains(".speed")) {
 	        	 String[] coords = p.getMessage().split("\\s");
 	        	 int speed = Integer.parseInt(coords[1]);
 	        	 character.setCharSpeed((speed > 0) ? speed : 0);
 	        	 this.sendMOTD("Modifying the multiplying speed requires a teleport to be applied.");
+	         }else if (p.getMessage().contains(".fly")) {
+	        	 connection.send(new SMSG_MOVE_SET_CANFLY(character));
 	         }
          } catch (Exception e) {
         	 this.sendMOTD("Invalid command!");

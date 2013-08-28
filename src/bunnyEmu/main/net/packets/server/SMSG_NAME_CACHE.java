@@ -24,6 +24,7 @@ public class SMSG_NAME_CACHE extends ServerPacket{
 	public boolean writeMoP() {
 
 		BitPack bitPack = new BitPack(this);
+		bitPack.setGuid(character.getGUID());
 		
 		bitPack.write(0);
 		bitPack.writeGuidMask(new byte[] {1, 3, 2});

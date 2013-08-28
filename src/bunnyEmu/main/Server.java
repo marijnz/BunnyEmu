@@ -9,6 +9,9 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.Log;
@@ -28,8 +31,15 @@ public class Server {
 	private ArrayList<Connection> connections = new ArrayList<Connection>(10);
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			ServerWindow.create();
+			Thread.sleep(200);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		Log.setlevel(Log.INFO);
-		Log.log(Log.INFO, "Launched BunnyEmu");
+		
 		new Server().launch();
 	}
 	
@@ -46,6 +56,7 @@ public class Server {
     
     private void listenSocket(){
         try{
+        	Log.log(Log.INFO, "Launched BunnyEmu - listening on " + localIP);
         	InetAddress addr = InetAddress.getByName(localIP);
             serverSocket = new ServerSocket(3724, 0, addr);
         } catch (IOException e) {

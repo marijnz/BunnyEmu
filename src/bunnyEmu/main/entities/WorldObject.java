@@ -12,7 +12,7 @@ import bunnyEmu.main.utils.update.UpdateData;
  */
 public abstract class WorldObject {
 
-	private static int countGUID = 4;
+	private static int countGUID = 8;
 
 	protected float x;
 	protected float y;

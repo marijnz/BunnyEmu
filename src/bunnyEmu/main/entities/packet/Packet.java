@@ -7,7 +7,10 @@ package bunnyEmu.main.entities.packet;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
+import javax.xml.bind.DatatypeConverter;
+
 import bunnyEmu.main.utils.BigNumber;
+import bunnyEmu.main.utils.Log;
 
 /**
  * A basic packet with generic read and write methods. 
@@ -143,6 +146,28 @@ public abstract class Packet{
     		return "none";
         BigInteger bi = new BigInteger(1, packet.array());
         return String.format("%0" + (packet.capacity() << 1) + "X", bi);
+    }
+    
+    public String toStringBeautified(){
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(this.sOpcode + " " + "<" +Integer.toHexString( nOpcode).toUpperCase() +  "> ");
+    	sb.append("\n-------------------------------------------------------------------------\n");
+    	sb.append("00  01  02  03  04  05  06  07  08  09  0A  0B  0C  0D  0E  0F");
+    	sb.append("\n-------------------------------------------------------------------------\n");
+    	
+    	String sPacket = DatatypeConverter.printHexBinary(packet.array());
+    	
+    	int liner = 15;
+    	for(int i = 0; i < packet.position()-1; i ++){
+    		Log.log("PACKET2: " + sb.toString());
+    		sb.append(sPacket.substring(i, i+2) + "  ");
+    		if((i != 0) && ((i % liner) == 0))
+    			sb.append("\n");
+    		if(i == 17)
+    			liner = 16;
+    			
+    	}
+    	return sb.toString();
     }
     
     /**

@@ -19,7 +19,7 @@ public class SMSG_MOTD extends ServerPacket {
 
 		bitPack.write(3, 4);
 		bitPack.write(message.length(), 7);
-
+		bitPack.flush();
 		putString(message);
 
 		wrap();

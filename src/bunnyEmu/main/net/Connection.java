@@ -8,6 +8,7 @@ import java.net.Socket;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.PacketLog;
 
 /**
  * A connection made between the server and client, 
@@ -65,6 +66,7 @@ public abstract class Connection extends Thread {
 			Log.log(Log.ERROR, "packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
 			return false;
 		}
+		PacketLog.logPacket(p);
 		return sendBytes(p.getFull());
 	}
 

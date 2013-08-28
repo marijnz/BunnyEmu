@@ -2,6 +2,7 @@ package bunnyEmu.main.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -62,7 +63,7 @@ public class BitPack {
 
     public void writeGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-            write(guidBytes[order[i]]);
+        	Log.log(i + " Guidmask: " + order[i]);
     }
 
     public void writeGuildGuidMask(byte[] order) {
