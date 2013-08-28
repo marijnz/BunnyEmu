@@ -6,6 +6,7 @@ import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.AuthPacket;
+import bunnyEmu.main.entities.packet.Packet;
 
 public class RealmHandler {
 	

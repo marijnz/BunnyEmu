@@ -38,7 +38,7 @@ public class Server {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		Log.setlevel(Log.INFO);
+		Log.setlevel(Log.DEBUG);
 		
 		new Server().launch();
 	}
@@ -57,6 +57,8 @@ public class Server {
     private void listenSocket(){
         try{
         	Log.log(Log.INFO, "Launched BunnyEmu - listening on " + localIP);
+        	Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu - 28-8-2013");
+        	Log.log(Log.INFO, "Use any username to login, use password: 'password'");
         	InetAddress addr = InetAddress.getByName(localIP);
             serverSocket = new ServerSocket(3724, 0, addr);
         } catch (IOException e) {

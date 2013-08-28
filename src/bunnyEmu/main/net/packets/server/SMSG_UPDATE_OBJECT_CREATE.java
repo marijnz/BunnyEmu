@@ -22,9 +22,11 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket {
 
 	private Char character;
 	
-	public SMSG_UPDATE_OBJECT_CREATE(Client client) {
+	private boolean self;;
+	
+	public SMSG_UPDATE_OBJECT_CREATE(Client client, boolean self) {
 		super(Opcodes.SMSG_UPDATE_OBJECT, 3000);
-		
+		this.self = self;
 		character = client.getCurrentCharacter();
 	}
 	
@@ -36,7 +38,10 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket {
 		this.writePackedGuid(character.getGUID());
 		this.put(ObjectType.Player);
 
-		byte updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation | UpdateFlag.Self;
+		byte updateFlags = UpdateFlag.Alive | UpdateFlag.Rotation;
+		if(self)
+			updateFlags |= UpdateFlag.Self;
+			
 		writeUpdateObjectMovementMoP(character, updateFlags);
 		character.writeUpdateFields(this);
 

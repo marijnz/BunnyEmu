@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
@@ -191,7 +192,7 @@ public class WorldSession {
 	 */
 	public void verifyLogin(CMSG_PLAYER_LOGIN p) {
 
-		Char character = connection.getClient().setCurrentCharacter(p.getGuid());
+		final Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
 			Log.log(Log.DEBUG, "\nPROBLEM: Character is null at login to world..\n");
@@ -209,19 +210,26 @@ public class WorldSession {
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
 		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
-			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
 		else if (realm.getVersion() <= Versions.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
-			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
+			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
 			//connection.send(realm.loadPacket("updatepacket_mop", 500));
-
+		
+		
 		//connection.send(new SMSG_MOVE_SET_CANFLY(character));
 
 		sendAccountDataTimes(0xAA);
 		sendMOTD("Welcome to BunnyEmu, have fun exploring!");
-		 connection.send(new SMSG_MOVE_SET_CANFLY(character));
+		// connection.send(new SMSG_MOVE_SET_CANFLY(character));
 		//sendSpellGo(); // Shiny start
+		realm.sendAllClients(new SMSG_UPDATE_OBJECT_CREATE(connection.getClient(), false), connection.getClient());
+		for(Client client : realm.getAllClients())
+			if(!client.equals(connection.getClient()))
+				connection.send(new SMSG_UPDATE_OBJECT_CREATE(client, false));
+		
+			
 	}
 
 	/**
@@ -311,7 +319,7 @@ public class WorldSession {
 		Char character = this.connection.getClient().getCurrentCharacter();
 		character.setPosition(x, y, z, mapId);
 		connection.send(new SMSG_NEW_WORLD(character));
-        connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient()));
+        connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
 
 		connection.send(new SMSG_MOVE_SET_CANFLY(character));
 	}

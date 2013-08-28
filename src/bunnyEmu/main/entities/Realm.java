@@ -121,10 +121,9 @@ public class Realm extends Thread {
 	 */
 	public Client getClient(String name) {
 		name = name.toUpperCase();
-		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).getName().equals(name))
-				return clients.get(i);
-		}
+		for(Client client : clients)
+			if (client.getName().equals(name))
+				return client;
 		return null;
 	}
 	
@@ -132,6 +131,14 @@ public class Realm extends Thread {
 		return clients;
 	}
 
+	/**
+	 * Send a packet to all connected clients except for passed client
+	 */
+	public void sendAllClients(ServerPacket p, Client ignoreClient){
+		for(Client client : clients)
+			if(!client.equals(ignoreClient))
+				client.getWorldConnection().send(p);
+	}
 	/**
 	 * @return The version of this realm, can be used to build packets for specific versions.
 	 */

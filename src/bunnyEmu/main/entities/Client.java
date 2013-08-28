@@ -224,4 +224,12 @@ public class Client {
 	public int getVersion() {
 		return version;
 	}
+	
+	/**
+	 * @return True of both clients have the same name, false otherwise
+	 */
+	public boolean equals(Client other){
+		return other.getName().equals(this.getName());
+	}
+	
 }

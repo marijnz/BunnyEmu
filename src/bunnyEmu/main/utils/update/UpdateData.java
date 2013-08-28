@@ -14,6 +14,9 @@ import bunnyEmu.main.utils.Log;
  */
 public class UpdateData {
 
+	// 1973 in MoP? Seems 1326 in wotlk
+	private static final int dataLength = 1973;
+	
 	private Hashtable<Integer, Integer> updateData = new Hashtable<Integer, Integer>();
 	private BitSet mask;
 	private int maskSize;
@@ -24,12 +27,11 @@ public class UpdateData {
 	
 	public void initFields(int realmVersion){
 		this.realmVersion = realmVersion;
-		// 1973 in MoP? Seems 1326 in wotlk
-		int dataLength = 1973;
-	
 		maskSize = (dataLength + 32) / 32;
-		mask = new BitSet(dataLength);
 		fields = new FieldParser(realmVersion);
+
+		updateData = new Hashtable<Integer, Integer>();
+		mask = new BitSet(dataLength);
 	}
 	
 	/**
@@ -117,6 +119,5 @@ public class UpdateData {
 		for (int i = 0; i < mask.size(); i++)
 			if (mask.get(i))
 					p.putInt((int) updateData.get(i));
-			
 	}
 }
