@@ -158,14 +158,12 @@ public abstract class Packet{
     	String sPacket = DatatypeConverter.printHexBinary(packet.array());
     	
     	int liner = 15;
-    	for(int i = 0; i < packet.position()-1; i ++){
-    		Log.log("PACKET2: " + sb.toString());
+    	for(int i = 0; i < packet.position(); i ++){
     		sb.append(sPacket.substring(i, i+2) + "  ");
     		if((i != 0) && ((i % liner) == 0))
     			sb.append("\n");
     		if(i == 17)
     			liner = 16;
-    			
     	}
     	return sb.toString();
     }

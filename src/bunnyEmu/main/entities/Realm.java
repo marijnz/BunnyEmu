@@ -127,6 +127,10 @@ public class Realm extends Thread {
 		}
 		return null;
 	}
+	
+	public ArrayList<Client> getAllClients(){
+		return clients;
+	}
 
 	/**
 	 * @return The version of this realm, can be used to build packets for specific versions.

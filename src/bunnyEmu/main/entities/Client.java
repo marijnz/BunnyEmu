@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
-import bunnyEmu.main.handlers.ClientHandler;
+import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Log;
@@ -139,7 +139,7 @@ public class Client {
     	if(realm != null)
     		realm.removeClient(this);
     	else
-    		ClientHandler.removeTempClient(name);
+    		TempClientHandler.removeTempClient(name);
     	try {
 			_logonConnection.getSocket().close();
 		} catch (IOException e) {
@@ -160,7 +160,7 @@ public class Client {
     public void disconnectFromRealm(){
     	realm.removeClient(this);
     	realm = null;
-    	ClientHandler.addTempClient(this);
+    	TempClientHandler.addTempClient(this);
     }
     
     /**

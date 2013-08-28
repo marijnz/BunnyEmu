@@ -22,7 +22,9 @@ import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
+import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.Versions;
+import bunnyEmu.main.utils.PacketLog.PacketType;
 
 /**
  * 
@@ -71,6 +73,7 @@ public class WorldConnection extends Connection{
                 
                 if(p.sOpcode == null){
                 	Log.log(Log.DEBUG, "Received unknown packet: " + p.toString());
+                	PacketLog.logPacket(PacketType.CLIENT_UNKNOWN, p);
                 	continue;
                 }
                 
@@ -86,9 +89,11 @@ public class WorldConnection extends Connection{
 	    			} catch (Exception e){
 	    				e.printStackTrace();
 	    			}
-					Log.log(Log.INFO, "Received known packet with implementation: " + p.toString());
+					Log.log(Log.DEBUG, "Received known packet with implementation: " + p.toString());
+					PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
 				} catch (Exception e){
-					Log.log(Log.INFO, "Received known packet without implementation: " + p.toString());
+					Log.log(Log.DEBUG, "Received known packet without implementation: " + p.toString());
+					PacketLog.logPacket(PacketType.CLIENT_KNOWN_UNIMPLEMENTED, p);
 				}
                 
                 switch(p.sOpcode) {
@@ -157,13 +162,13 @@ public class WorldConnection extends Connection{
 			}
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
-    		Log.log(Log.ERROR, p.sOpcode + " can't be send, it has no opcode linked");
+    		Log.log(Log.DEBUG, p.sOpcode + " can't be send, it has no opcode linked");
     		Log.log(p.toString());
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Log.log(Log.INFO, "Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
+    	Log.log(Log.DEBUG, "Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
         return super.sendPacket(p);

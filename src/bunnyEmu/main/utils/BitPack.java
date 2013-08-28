@@ -63,7 +63,7 @@ public class BitPack {
 
     public void writeGuidMask(byte[] order) {
         for (byte i = 0; i < order.length; i++)
-        	Log.log(i + " Guidmask: " + order[i]);
+            write(guidBytes[order[i]]);
     }
 
     public void writeGuildGuidMask(byte[] order) {

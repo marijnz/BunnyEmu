@@ -9,6 +9,7 @@ import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.PacketLog;
+import bunnyEmu.main.utils.PacketLog.PacketType;
 
 /**
  * A connection made between the server and client, 
@@ -66,7 +67,7 @@ public abstract class Connection extends Thread {
 			Log.log(Log.ERROR, "packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
 			return false;
 		}
-		PacketLog.logPacket(p);
+		PacketLog.logPacket(PacketType.SERVER, p);
 		return sendBytes(p.getFull());
 	}
 

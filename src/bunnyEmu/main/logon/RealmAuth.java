@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.ServerPacket;
-import bunnyEmu.main.handlers.ClientHandler;
+import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.server.SMSG_AUTH_RESPONSE;
@@ -75,7 +75,7 @@ public class RealmAuth extends Auth {
     public void authSession(CMSG_AUTH_PROOF authProof) {
         Log.log(Log.DEBUG, "authSession");
 
-        client = ClientHandler.removeTempClient(authProof.getAccountName());
+        client = TempClientHandler.removeTempClient(authProof.getAccountName());
 
         if (client != null) {
         	client.connect(realm);

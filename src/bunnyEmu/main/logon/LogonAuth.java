@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.handlers.ClientHandler;
+import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.BigNumber;
@@ -89,13 +89,13 @@ import bunnyEmu.main.utils.Versions;
             client.attachLogon(connection);
             
             // Kick the existing client out if it's logged in already, Blizzlike
-            Client existingClient = ClientHandler.findClient(username);
+            Client existingClient = TempClientHandler.findClient(username);
             if(existingClient != null)
             	existingClient.disconnect();
 
         	RealmHandler.addVersionRealm(client.getVersion());
         	
-        	ClientHandler.addTempClient(client);
+        	TempClientHandler.addTempClient(client);
             
             // Generate x - the Private key
             md.update(s.asByteArray(32));
@@ -210,7 +210,7 @@ import bunnyEmu.main.utils.Versions;
             Log.log(Log.DEBUG, "M1 = " + M1.toHexString());
             
             if(!M.equals(M1)) {
-            	ClientHandler.removeTempClient(client.getName());
+            	TempClientHandler.removeTempClient(client.getName());
                 client.disconnect();
                 return;
             }

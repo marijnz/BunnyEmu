@@ -12,6 +12,8 @@ import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.logon.LogonAuth;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.PacketLog;
+import bunnyEmu.main.utils.PacketLog.PacketType;
 
 /**
  * Establish the first connection between server and client, handles client packets for all WoW versions.
@@ -41,8 +43,8 @@ public class LogonConnection extends Connection {
         	while((readByte = (byte) in.read()) != -1){
                 if ((p = readPacket(readByte)) == null) 
                     continue;
-                Log.log("got auth packet: " + p.toString());
-                
+                Log.log(Log.DEBUG, "Got auth packet: " + p.toString());
+                PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
                 switch(p.nOpcode){
                 	case CLIENT_LOGON_CHALLENGE:
                 		auth.serverLogonChallenge(p);  	// Responding to the client with some coowl data.
@@ -88,7 +90,7 @@ public class LogonConnection extends Connection {
 	}
 	
     public boolean send(Packet p){
-    	Log.log("Sending packet: (" + p.size + ") " + p.packetAsHex());
+    	Log.log(Log.DEBUG, "Sending packet: (" + p.size + ") " + p.packetAsHex());
         return super.sendPacket(p);
     }
 		

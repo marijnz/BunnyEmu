@@ -3,6 +3,7 @@ package bunnyEmu.main.handlers;
 import java.util.ArrayList;
 
 import bunnyEmu.main.Server;
+import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.AuthPacket;
 
@@ -74,6 +75,13 @@ public class RealmHandler {
 	
 	public static Realm getRealm(int id){
 		return realms.get(id);
+	}
+	
+	public static ArrayList<Client> getAllClientsAllRealms(){
+		ArrayList<Client> allClients = new ArrayList<Client>();
+		for(Realm realm : realms)
+			allClients.addAll(realm.getAllClients());
+		return allClients;
 	}
 	
 }

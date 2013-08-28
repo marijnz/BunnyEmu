@@ -12,7 +12,7 @@ import bunnyEmu.main.utils.Log;
  * @author Marijn
  *
  */
-public class ClientHandler {
+public class TempClientHandler {
 
 	
 	 /**
