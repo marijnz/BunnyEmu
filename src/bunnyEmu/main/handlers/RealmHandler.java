@@ -6,7 +6,6 @@ import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.AuthPacket;
-import bunnyEmu.main.entities.packet.Packet;
 
 public class RealmHandler {
 	
@@ -70,7 +69,7 @@ public class RealmHandler {
 		for(Realm realm : realms)
 			if(realm.getVersion() == version)
 				return;
-		realms.add(new Realm(realms.size()+1, "Version realm", Server.localIP, 8100 + realms.size(), version));
+		realms.add(new Realm(realms.size()+1, "Version realm", Server.realmlist, 8100 + realms.size(), version));
 	}
 
 	
