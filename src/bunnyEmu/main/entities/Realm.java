@@ -41,7 +41,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.localIP, 3456, Versions.VERSION_WOTLK);
+		this(1, "Marijnz ultimate server", Server.realmlist, 3456, Versions.VERSION_WOTLK);
 	}
 
 	/**
