@@ -72,11 +72,16 @@ public class RealmHandler {
 		realms.add(new Realm(realms.size()+1, "Version realm", Server.realmlist, 8100 + realms.size(), version));
 	}
 
-	
+	/**
+	 * @return The realm that belongs to the given ID
+	 */
 	public static Realm getRealm(int id){
 		return realms.get(id);
 	}
 	
+	/**
+	 * @return All clients from all realms
+	 */
 	public static ArrayList<Client> getAllClientsAllRealms(){
 		ArrayList<Client> allClients = new ArrayList<Client>();
 		for(Realm realm : realms)

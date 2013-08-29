@@ -5,6 +5,12 @@ import java.util.Properties;
 
 import bunnyEmu.main.utils.Log;
 
+/**
+ * Manages assets/server.conf
+ * 
+ * @author Wazy
+ *
+ */
 public class ConfigHandler {
 
 	/* load properties and return them */

@@ -90,11 +90,6 @@ public class Server {
 			
 			Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
 			Log.log(Log.INFO, "Use any username to login, use password: 'password'");
-			
-			/* console commands are handled by this thread */
-			Runnable loggerRunnable = new ConsoleLogger();
-			Thread loggerThread = new Thread(loggerRunnable);
-			loggerThread.start();
 
 		} catch (IOException e) {
 			Log.log("ERROR: port 3724 is not available!");

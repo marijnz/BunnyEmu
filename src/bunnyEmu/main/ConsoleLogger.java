@@ -1,47 +1,74 @@
 package bunnyEmu.main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-//import bunnyEmu.main.db.DatabaseHandler;
+import javax.swing.JTextArea;
 
+/**
+ * Command part of the GUI
+ * 
+ * @author Wazy
+ *
+ */
 /* handle console commands here */
 public class ConsoleLogger implements Runnable {
+	
+	/* The ConsoleLogger output */
+	private JTextArea textArea;
+	private String command = "";
+	
+	public ConsoleLogger(JTextArea textArea){
+		this.textArea = textArea;
+	}
+	
 	public void run() {
-		System.out.println("\nType commands below after >>> indicators.");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		textArea.append("Type commands below after >>> indicators.\n");
 		try {
+			textArea.addKeyListener(new KeyAdapter() {
+            	private StringBuilder commandBuilder = new StringBuilder();
+	            @Override
+	            public void keyTyped(KeyEvent e) {
+	                if(((int) e.getKeyChar()) == 10){
+	                	command = commandBuilder.toString();
+	                	commandBuilder.setLength(0);
+	                }
+	                else{
+	                	commandBuilder.append(e.getKeyChar());
+	                }
+	                super.keyTyped(e);
+	            }
+	        });
 			while (true) {
-				System.out.print(">>> ");
+				textArea.append(">>> ");
 				// not ready to read anything yet
-				while (!br.ready()) {
+				
+				while(command.isEmpty()){
 					Thread.sleep(200);
 				}
-				String command;
-				command = br.readLine();
-
+					
+					
+				System.out.println("NOT EMPTY");
 				if (command.equals("commands") || command.equals("help")) {
-					System.out.println("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.");
+					textArea.append("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.\n");
 				}
 				else if (command.equals("shutdown")) {
-					System.out.println("\n!!!Console shutdown imminent!!!");
+					textArea.append("\n!!!Console shutdown imminent!!!\n");
 					System.exit(0);
 				}
 				else if (command.equals("online")) {
-					System.out.println("This command is not completely implemented yet.");
+					textArea.append("This command is not completely implemented yet.\n");
 					//System.out.print("These accounts are online: ");
 					//DatabaseHandler.queryOnline();
 					//System.out.print("\n");
 				}
 				else if (command.equals("create")) {
-					System.out.println("This command is not completely implemented yet.");
-				}
-				else if (command.isEmpty()) {
-					continue;
+					textArea.append("This command is not completely implemented yet.\n");
 				}
 				else {
-					System.out.println("Unrecognized command. Try typing 'help'.");
+					textArea.append("Unrecognized command. Try typing 'help'.\n");
 				}
+				command = "";
 			}
 		}
 		catch (Exception e) {};

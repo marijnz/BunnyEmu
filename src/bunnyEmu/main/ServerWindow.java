@@ -24,6 +24,7 @@ import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
+import java.awt.Component;
 
 public class ServerWindow {
 
@@ -35,6 +36,7 @@ public class ServerWindow {
 	private static JTable table;
 	final static String[] headers = new String[] {"Name", "Opcode", "Size" };
 	static ArrayList<PacketType> packetLogTypes = new ArrayList<PacketType>();
+	private JPanel commandPanel;
 
 	/**
 	 * Launch the application.
@@ -191,17 +193,35 @@ public class ServerWindow {
 		checkboxClientUnk.setBounds(6, 114, 127, 23);
 		packetPanel.add(checkboxClientUnk);
 		
-		JPanel panel = new JPanel();
-		tabbedPane.addTab("Info", null, panel, null);
-		panel.setLayout(null);
+		JPanel infoPanel = new JPanel();
+		tabbedPane.addTab("Info", null, infoPanel, null);
+		infoPanel.setLayout(null);
 		
 		final JLabel memoryLabel = new JLabel("Memory usage:");
 		memoryLabel.setBounds(30, 11, 195, 22);
-		panel.add(memoryLabel);
+		infoPanel.add(memoryLabel);
 		
 		final JLabel clientsLabel = new JLabel("Clients logged in:");
 		clientsLabel.setBounds(30, 66, 195, 22);
-		panel.add(clientsLabel);
+		infoPanel.add(clientsLabel);
+		
+		commandPanel = new JPanel();
+		JTextArea commandArea = new JTextArea();
+		commandArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		commandArea.setColumns(65);
+		commandArea.setRows(14);
+		
+		DefaultCaret caret2 = (DefaultCaret)commandArea.getCaret();
+		caret2.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
+		JScrollPane scroll3 = new JScrollPane (commandArea);
+		commandPanel.add(scroll3);
+		tabbedPane.addTab("Command", null, commandPanel, null);
+		
+		/* console commands are handled by this thread */
+		Runnable loggerRunnable = new ConsoleLogger(commandArea);
+		Thread loggerThread = new Thread(loggerRunnable);
+		loggerThread.start();
 		
 		new Thread(){
 			@Override
