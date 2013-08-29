@@ -50,12 +50,12 @@ public class Server {
         listenSocket();
      }
     
-   public ServerSocket getServerSocket(){
+   public ServerSocket getServerSocket() {
 	   return serverSocket;
    }
     
-    private void listenSocket(){
-        try{
+    private void listenSocket() {
+        try {
         	Log.log(Log.INFO, "Launched BunnyEmu - listening on " + localIP);
         	Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu - 28-8-2013");
         	Log.log(Log.INFO, "Use any username to login, use password: 'password'");
@@ -64,8 +64,8 @@ public class Server {
         } catch (IOException e) {
             Log.log("3724 not working");
         }
-        try{
-            while(true){
+        try {
+            while (true) {
                LogonConnection con = new LogonConnection(serverSocket.accept());
                Log.log(Log.INFO, "Client connected to logon server");
                connections.add(con);
