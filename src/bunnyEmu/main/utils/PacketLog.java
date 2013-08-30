@@ -1,6 +1,8 @@
 package bunnyEmu.main.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,12 +37,20 @@ public class PacketLog {
 	 * 
 	 * @return A combination of types, of the logged packets
 	 */
-	public static ArrayList<Packet> getPackets(ArrayList<PacketType> types){
+	public static Packet[] getPackets(ArrayList<PacketType> types){
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
 		for(PacketType type : types)
 			if(multiPackets.containsKey(type))
 				packetList.addAll(multiPackets.get(type));
-		return packetList;
+		
+		Object[] sortedPackets = (Object[]) packetList.toArray();
+		Arrays.sort(sortedPackets, new Comparator<Object>() {
+	        @Override
+	        public int compare(Object p1, Object p2) {
+	        	return (int) (((Packet) p1).timestamp - ((Packet) p2).timestamp);
+	        }
+		});
+		return Arrays.copyOf(sortedPackets, sortedPackets.length, Packet[].class);
 	}
 	
 	

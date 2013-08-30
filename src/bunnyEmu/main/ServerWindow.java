@@ -31,7 +31,7 @@ public class ServerWindow {
 	private JFrame frame;
 	private static JTextArea textArea;
 	private static String[][] packets;
-	private static ArrayList<Packet> packetLog;
+	private static Packet[] packetLog;
 	
 	private static JTable table;
 	final static String[] headers = new String[] {"Name", "Opcode", "Size" };
@@ -57,10 +57,10 @@ public class ServerWindow {
 	public static void notifyChange(){
 		// A new packet has been logged, do we want to see them?
 		packetLog = PacketLog.getPackets(packetLogTypes);
-		packets = new String[packetLog.size()][3];
+		packets = new String[packetLog.length][3];
 		
 		for(int i = 0; i < packets.length; i++){
-			Packet p = packetLog.get(i);
+			Packet p = packetLog[i];
 			packets[i][0] = p.sOpcode;
 			packets[i][1] = String.valueOf(Integer.toHexString(p.nOpcode).toUpperCase());
 			packets[i][2] = String.valueOf(p.size);
@@ -131,7 +131,7 @@ public class ServerWindow {
 				textArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 				textArea.setColumns(35);
 				textArea.setRows(14);
-				textArea.append(packetLog.get(rowIndex).toStringBeautified());
+				textArea.append(packetLog[rowIndex].toStringBeautified());
 				JScrollPane scroll = new JScrollPane (textArea);
 				packetFrame.getContentPane().add(scroll);
 				
