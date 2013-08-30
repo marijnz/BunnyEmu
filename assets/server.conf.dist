@@ -7,7 +7,7 @@
 ## Database username/pass goes here ##
 ######################################
 user=root
-password=
+password=password
 
 
 ############################

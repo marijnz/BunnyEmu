@@ -51,6 +51,7 @@ public class DatabaseConnection {
 
 		} catch (Exception e) {
 			e.printStackTrace(); // Fix this.. exception wrapping.
+			System.exit(0);
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import bunnyEmu.main.Server;
 import bunnyEmu.main.ServerWindow;
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -27,7 +28,9 @@ public class PacketLog {
 		packets.add(p);
 
 		// Notify the GUI new packets have been logged
-		ServerWindow.notifyChange();
+		if (Integer.parseInt(Server.prop.getProperty("enableGUI")) != 0) {
+			ServerWindow.notifyChange();
+		}
 	}
 	
 	/**
@@ -37,10 +40,10 @@ public class PacketLog {
 	 * 
 	 * @return A combination of types, of the logged packets
 	 */
-	public static Packet[] getPackets(ArrayList<PacketType> types){
+	public static Packet[] getPackets(ArrayList<PacketType> types) {
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
-		for(PacketType type : types)
-			if(multiPackets.containsKey(type))
+		for (PacketType type : types)
+			if (multiPackets.containsKey(type))
 				packetList.addAll(multiPackets.get(type));
 		
 		Object[] sortedPackets = (Object[]) packetList.toArray();

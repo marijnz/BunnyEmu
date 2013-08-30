@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.bind.DatatypeConverter;
+
+import bunnyEmu.main.db.DatabaseHandler;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.net.LogonConnection;
+//import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Versions;
@@ -69,34 +73,54 @@ import bunnyEmu.main.utils.Versions;
             in.get(os);                                // os
             in.get(country);                           // country
             in.getInt();                               // timezone_bias
-            in.getInt();                               // ip
-            byte I_len = in.get();                 // I_len
-            I = new byte[I_len];
-            in.packet.get(I, 0, I_len);                       // I  
             
-            String P = "password".toUpperCase();
+            /* need to convert from int to dotted format here */
+            int intIP = in.getInt();
             
-            //Generate account hash
-            md.update(I);
-            md.update((":").getBytes());
-            md.update(P.getBytes());
+            int octet[]  = {0,0,0,0};
             
-            byte[] accountHash = md.digest();
-            Log.log(Log.DEBUG, "AccountHash: " + new BigNumber(accountHash).toHexString());
+            for (int i = 0; i < 4; i++) {
+            	octet[i] = ((intIP >> (i*8)) & 0xFF);
+            }
+            
+            String ip = octet[3] + "." + octet[2] + "." + octet[1] + "." + octet[0];
+            
+            Log.log(Log.INFO, "Client connecting from address: " + ip);
+ 
+            byte username_len = in.get();                 			// length of username
+            I = new byte[username_len];
+            in.packet.get(I, 0, username_len);                       // I  
+
             String username = new String(I);
+            
+            String[] userInfo = DatabaseHandler.queryAuth(username);
+
+            // need to return auth failed here
+            if (userInfo == null) {
+            	AuthPacket authWrongPass = new AuthPacket((short) 32);
+            	authWrongPass.putInt(0x16);
+            	connection.send(authWrongPass);
+
+            	Log.log(Log.INFO, "Wrong password sent.");
+
+            	return;
+            }
+
+            byte[] accountHash = DatatypeConverter.parseHexBinary(userInfo[1]);
+
             Log.log(Log.DEBUG, "USERNAME: " + username);
             client = new Client(username, Integer.parseInt(version));
             client.attachLogon(connection);
             
             // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = TempClientHandler.findClient(username);
-            if(existingClient != null)
+            if (existingClient != null)
             	existingClient.disconnect();
 
         	RealmHandler.addVersionRealm(client.getVersion());
         	
         	TempClientHandler.addTempClient(client);
-            
+
             // Generate x - the Private key
             md.update(s.asByteArray(32));
             md.update(accountHash);
@@ -214,8 +238,6 @@ import bunnyEmu.main.utils.Versions;
                 client.disconnect();
                 return;
             }
-            
-          
 
             client.setSessionKey(K.asByteArray());
             
