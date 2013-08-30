@@ -24,6 +24,11 @@ public abstract class Packet{
     public short size;
     public byte[] header;
     public ByteBuffer packet;
+    public long timestamp;
+    
+    public Packet(){
+    	timestamp = System.currentTimeMillis();
+    }
     
     public void put (Packet p){
     	this.nOpcode = p.nOpcode;

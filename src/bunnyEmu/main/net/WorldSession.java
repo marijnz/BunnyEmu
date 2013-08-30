@@ -228,7 +228,6 @@ public class WorldSession {
 		for(Client client : realm.getAllClients())
 			if(!client.equals(connection.getClient()))
 				connection.send(new SMSG_UPDATE_OBJECT_CREATE(client, false));
-		
 			
 	}
 

@@ -30,6 +30,8 @@ public class Opcodes {
 	public static final String CMSG_DISCONNECT					= "CMSG_DISCONNECT";
 	public static final String CMSG_LOADING_SCREEN 				= "CMSG_LOADING_SCREEN";
 	public static final String CMSG_BULK_DB_QUERY 				= "CMSG_BULK_DB_QUERY";
+	public static final String CMSG_MOVEMENT					= "CMSG_MOVEMENT";						// Covers ALL movement packets
+
 	
 	
 	public static final String SMSG_CHAR_CREATE					= "SMSG_CHAR_CREATE";
@@ -65,7 +67,7 @@ public class Opcodes {
 	public static final String SMSG_TUTORIAL_FLAGS				= "SMSG_TUTORIAL_FLAGS";				// MoP
 	public static final String SMSG_RANDOM_NAME_RESULT 			= "SMSG_RANDOM_NAME_RESULT";			
 	public static final String SMSG_REALM_SPLIT					= "SMSG_REALM_SPLIT";
-
+	
 	public static final String MSG_SET_DUNGEON_DIFFICULTY 		= "MSG_SET_DUNGEON_DIFFICULTY";
 	public static final String MSG_SET_RAID_DIFFICULTY 			= "MSG_SET_RAID_DIFFICULTY";
 	public static final String MSG_MOVE_SET_RUN_SPEED			= "MSG_MOVE_SET_RUN_SPEED";
@@ -203,10 +205,39 @@ public class Opcodes {
 		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);
 		add(SMSG_NEW_WORLD						,0x04D9);
 		add(SMSG_REALM_SPLIT					,0x0F89);
-		
+		addMultiple(CMSG_MOVEMENT				,0x0A4B
+												,0x0A4B
+												,0x08D2
+												,0x0813
+												,0x0816
+												,0x0843
+												,0x0A4A
+												,0x0CCA
+												,0x0A9E
+												,0x0A07
+												,0x080A
+												,0x0C02
+												,0x0A12
+												,0x0AC7
+												,0x081F
+												,0x0856
+												,0x0CCF
+												,0x0C13
+												,0x0C93
+												,0x0A5F
+												,0x0C43
+												,0x0886
+												,0x0E0B
+												,0x0AC3
+												,0x0ADF
+												,0x089F
+												,0x0A47
+												,0x0C92
+												,0x0893
+												,0x0A56);
+
 		/* server side opcodes end */
 
-		
 		add(MSG_TRANSFER_INITIATE				,0x4F57);
 		
 		return packets.clone();
@@ -214,5 +245,10 @@ public class Opcodes {
 	
 	private static void add(String name, Integer opcode) {
 		packets.add(name, opcode.shortValue());
+	}
+	
+	private static void addMultiple(String name, Integer... opcodes) {
+		for(Integer opcode : opcodes)
+			packets.addValue(opcode.shortValue(), name);
 	}
 }
