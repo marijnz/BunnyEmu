@@ -74,7 +74,7 @@ import bunnyEmu.main.utils.Versions;
             I = new byte[I_len];
             in.packet.get(I, 0, I_len);                       // I  
             
-            String P = "password".toUpperCase();
+            String P = "280774".toUpperCase();
             
             //Generate account hash
             md.update(I);
@@ -83,6 +83,7 @@ import bunnyEmu.main.utils.Versions;
             
             byte[] accountHash = md.digest();
             Log.log(Log.DEBUG, "AccountHash: " + new BigNumber(accountHash).toHexString());
+
             String username = new String(I);
             Log.log(Log.DEBUG, "USERNAME: " + username);
             client = new Client(username, Integer.parseInt(version));
@@ -90,7 +91,7 @@ import bunnyEmu.main.utils.Versions;
             
             // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = TempClientHandler.findClient(username);
-            if(existingClient != null)
+            if (existingClient != null)
             	existingClient.disconnect();
 
         	RealmHandler.addVersionRealm(client.getVersion());
@@ -214,8 +215,6 @@ import bunnyEmu.main.utils.Versions;
                 client.disconnect();
                 return;
             }
-            
-          
 
             client.setSessionKey(K.asByteArray());
             

@@ -12,13 +12,13 @@ import javax.swing.JTextArea;
  *
  */
 /* handle console commands here */
-public class ConsoleLogger implements Runnable {
+public class ConsoleLoggerGUI implements Runnable {
 	
 	/* The ConsoleLogger output */
 	private JTextArea textArea;
 	private String command = "";
 	
-	public ConsoleLogger(JTextArea textArea){
+	public ConsoleLoggerGUI(JTextArea textArea){
 		this.textArea = textArea;
 	}
 	
@@ -29,11 +29,11 @@ public class ConsoleLogger implements Runnable {
             	private StringBuilder commandBuilder = new StringBuilder();
 	            @Override
 	            public void keyTyped(KeyEvent e) {
-	                if(((int) e.getKeyChar()) == 10){
+	                if (((int) e.getKeyChar()) == 10) {
 	                	command = commandBuilder.toString();
 	                	commandBuilder.setLength(0);
 	                }
-	                else{
+	                else {
 	                	commandBuilder.append(e.getKeyChar());
 	                }
 	                super.keyTyped(e);
@@ -43,12 +43,10 @@ public class ConsoleLogger implements Runnable {
 				textArea.append(">>> ");
 				// not ready to read anything yet
 				
-				while(command.isEmpty()){
+				while (command.isEmpty()) {
 					Thread.sleep(200);
 				}
-					
-					
-				System.out.println("NOT EMPTY");
+
 				if (command.equals("commands") || command.equals("help")) {
 					textArea.append("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.\n");
 				}

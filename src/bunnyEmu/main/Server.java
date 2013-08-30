@@ -52,6 +52,7 @@ public class Server {
 				System.exit(0);
 			}
 			
+			/* does user want a GUI */
 			if (Integer.parseInt(prop.getProperty("enableGUI")) != 0) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				ServerWindow.create();
@@ -90,6 +91,13 @@ public class Server {
 			
 			Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
 			Log.log(Log.INFO, "Use any username to login, use password: 'password'");
+			
+			/* console commands are handled by this thread if no GUI */
+			if (Integer.parseInt(prop.getProperty("enableGUI")) == 0) {
+				Runnable loggerRunnable = new ConsoleLoggerCMD();
+				Thread loggerThread = new Thread(loggerRunnable);
+				loggerThread.start();
+			}
 
 		} catch (IOException e) {
 			Log.log("ERROR: port 3724 is not available!");

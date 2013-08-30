@@ -5,7 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import bunnyEmu.main.Server;
+
 public class DatabaseHandler {
+	
+	private static String authDB = "USE " + Server.prop.getProperty("authDB");
+	//private static String charactersDB = "USE " + Server.prop.getProperty("charactersDB");
+	//private static String worldDB = "USE " + Server.prop.getProperty("worldDB");
+	
 	/* this is to check that auth, characters, and world actually exist */
 	public static boolean databasesExist(String auth, String characters, String world) throws SQLException {
 		try {
@@ -38,6 +45,32 @@ public class DatabaseHandler {
 
 		return false;
 	}
+	
+	/* creates an account in the authDB */
+	public static boolean createAccount(String userName, String hashPW) {
+		try {
+			Connection conn = DatabaseConnection.getConnection();
+			Statement st = conn.createStatement();
+
+			/* try to add an account here from userName and password hash */
+			st.execute(authDB);
+			st.executeUpdate("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
+														"'" + userName + "', '" + hashPW + "');");
+
+			// cleanup
+			DatabaseConnection.closeStatement(st);
+			DatabaseConnection.closeConnection(conn);
+
+			return true;
+		}
+		// this will throw duplicate errors because of Unique constraint
+		// just silence the error and red text and tell client creation failed
+		catch (SQLException e) {
+			//e.printStackTrace();
+			return false;
+		}
+	}
+	
 	// server console command -- this is hacky needs to be rewritten "for niceness"
 	public static void queryOnline() throws SQLException {
 		int counter = 0;
@@ -163,32 +196,6 @@ public class DatabaseHandler {
 		// cleanup
 		DatabaseConnection.closeStatement(st);
 		DatabaseConnection.closeConnection(conn);
-	}
-
-	/* TODO: Fix this */
-	public static boolean addAccount(String[] accountDetails) {
-		try { // try to add an account here from username and password hash
-			String username = accountDetails[0];
-			String hashpw = accountDetails[1];
-
-			Connection conn = DatabaseConnection.getConnection();
-			Statement st = conn.createStatement();
-
-			st.executeUpdate("INSERT INTO `auth.accounts` (`Username`, `Password`) VALUES (" + 
-								"'" + username + "', '" + hashpw + "');");
-
-			// cleanup
-			DatabaseConnection.closeStatement(st);
-			DatabaseConnection.closeConnection(conn);
-
-			return true;
-		}
-		// this will throw duplicate errors because of Unique constraint
-		// just silence the error and red text and tell client it can't continue
-		catch (SQLException e) {
-			// e.printStackTrace();
-			return false;
-		}
 	}
 
 	

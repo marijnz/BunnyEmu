@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import bunnyEmu.main.Server;
 import bunnyEmu.main.ServerWindow;
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -25,7 +26,9 @@ public class PacketLog {
 		packets.add(p);
 
 		// Notify the GUI new packets have been logged
-		ServerWindow.notifyChange();
+		if (Integer.parseInt(Server.prop.getProperty("enableGUI")) != 0) {
+			ServerWindow.notifyChange();
+		}
 	}
 	
 	/**

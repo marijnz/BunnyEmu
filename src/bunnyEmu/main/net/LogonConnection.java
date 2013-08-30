@@ -40,12 +40,15 @@ public class LogonConnection extends Connection {
         try {
         	byte readByte;
         	ClientPacket p = null;
-        	while((readByte = (byte) in.read()) != -1){
+
+        	while((readByte = (byte) in.read()) != -1) {
                 if ((p = readPacket(readByte)) == null) 
                     continue;
+
                 Log.log(Log.DEBUG, "Got auth packet: " + p.toString());
                 PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
-                switch(p.nOpcode){
+                
+                switch (p.nOpcode) {
                 	case CLIENT_LOGON_CHALLENGE:
                 		auth.serverLogonChallenge(p);  	// Responding to the client with some coowl data.
                         break; 

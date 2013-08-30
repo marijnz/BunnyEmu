@@ -219,7 +219,7 @@ public class ServerWindow {
 		tabbedPane.addTab("Command", null, commandPanel, null);
 		
 		/* console commands are handled by this thread */
-		Runnable loggerRunnable = new ConsoleLogger(commandArea);
+		Runnable loggerRunnable = new ConsoleLoggerGUI(commandArea);
 		Thread loggerThread = new Thread(loggerRunnable);
 		loggerThread.start();
 		
