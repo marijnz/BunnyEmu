@@ -10,7 +10,6 @@ import java.nio.ByteBuffer;
 import javax.xml.bind.DatatypeConverter;
 
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Log;
 
 /**
  * A basic packet with generic read and write methods. 

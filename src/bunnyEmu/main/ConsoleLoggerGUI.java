@@ -5,6 +5,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JTextArea;
 
+import bunnyEmu.main.db.DatabaseHandler;
+import bunnyEmu.main.utils.crypto.HashHelper;
+
 /**
  * Command part of the GUI
  * 
@@ -60,8 +63,33 @@ public class ConsoleLoggerGUI implements Runnable {
 					//DatabaseHandler.queryOnline();
 					//System.out.print("\n");
 				}
-				else if (command.equals("create")) {
-					textArea.append("This command is not completely implemented yet.\n");
+				else if (command.contains("create")) {
+					String[] accountInfo = command.split(" ");
+					
+					if (accountInfo.length != 3) {
+						textArea.append("Usage for this command is: create account password\n");
+						command="";
+						continue;
+					}
+					
+					/* get userName and hashPW here and then insert into database */
+					String userName = accountInfo[1];
+					
+					if (userName.isEmpty()) {
+						textArea.append("Username cannot be empty!\n");
+						continue;
+					}
+					
+					String hashPW = HashHelper.generatePasswordHash(accountInfo);
+					
+					Boolean result = DatabaseHandler.createAccount(userName, hashPW);
+					
+					if (result) {
+						textArea.append("Account: " + userName + " created successfully!\n");
+					}
+					else {
+						textArea.append("Failed to create: " + userName + ". Name is probably already taken.\n");
+					}
 				}
 				else {
 					textArea.append("Unrecognized command. Try typing 'help'.\n");

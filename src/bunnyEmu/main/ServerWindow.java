@@ -24,7 +24,6 @@ import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
-import java.awt.Component;
 
 public class ServerWindow {
 

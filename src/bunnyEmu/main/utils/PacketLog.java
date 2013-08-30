@@ -40,10 +40,10 @@ public class PacketLog {
 	 * 
 	 * @return A combination of types, of the logged packets
 	 */
-	public static Packet[] getPackets(ArrayList<PacketType> types){
+	public static Packet[] getPackets(ArrayList<PacketType> types) {
 		ArrayList<Packet> packetList = new ArrayList<Packet>();
-		for(PacketType type : types)
-			if(multiPackets.containsKey(type))
+		for (PacketType type : types)
+			if (multiPackets.containsKey(type))
 				packetList.addAll(multiPackets.get(type));
 		
 		Object[] sortedPackets = (Object[]) packetList.toArray();
