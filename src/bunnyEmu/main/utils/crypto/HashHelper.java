@@ -3,11 +3,11 @@ package bunnyEmu.main.utils.crypto;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import bunnyEmu.main.utils.BigNumber;
+import javax.xml.bind.DatatypeConverter;
+
 import bunnyEmu.main.utils.Log;
 
 public class HashHelper {
-
 	/* create and return hashPW here */
 	public static String generatePasswordHash(String[] accountInfo) throws NoSuchAlgorithmException {
 		MessageDigest md;
@@ -18,8 +18,8 @@ public class HashHelper {
 
 		md.update(user.getBytes());
 
-		byte[] accountHash = md.digest();
-		Log.log(Log.DEBUG, "AccountHash: " + new BigNumber(accountHash).toHexString());
-		return (new BigNumber(accountHash).toHexString());
+		String accountHash = DatatypeConverter.printHexBinary(md.digest());
+		Log.log(Log.DEBUG, "AccountHash: " + accountHash);
+		return accountHash;
 	}
 }

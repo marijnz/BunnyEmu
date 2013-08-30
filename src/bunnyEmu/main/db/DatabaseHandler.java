@@ -113,32 +113,26 @@ public class DatabaseHandler {
 		DatabaseConnection.closeConnection(conn);
 	}
 
+	/* this needs to be modified to return the exact issue */
 	public static String[] queryAuth(String username) {
 		try {
-			int ID = 0;
-			String[] userInfo = new String[6];
+			int ID = -1;
+			String[] userInfo = new String[2];
 
 			Connection conn = DatabaseConnection.getConnection();
 			Statement st = conn.createStatement();
-			ResultSet rst = st.executeQuery("SELECT * FROM auth.accounts WHERE Username = '" + username + "'");
+			
+			st.execute(authDB);
+			ResultSet rst = st.executeQuery("SELECT * FROM account WHERE username = '" + username + "'");
 
 			/* ID, Username, Password (Hashed) */
 			if (rst.next()) {
-				ID = rst.getInt("ID");
+				ID = rst.getInt("id");
 				userInfo[0] = String.valueOf(ID);
-				
-				// I think this is where password should be returned to be checked
-				userInfo[1] = rst.getString("Password");
-
-				/* TODO: this part should happen after authentication to populate CMSG_CHAR_ENUM */
-				rst = st.executeQuery("SELECT * FROM characters.players WHERE accountID = " + ID);
-
-				// return online player by populating an array -- TODO: update this to current schema
-				if (rst.next()) {
-					userInfo[2] = rst.getString(2);
-					userInfo[3] = String.valueOf(rst.getInt(5));
-					userInfo[4] = String.valueOf(rst.getInt(6));
-				}
+				userInfo[1] = rst.getString("hashPW");
+			}
+			else {
+				userInfo = null;
 			}
 
 			// cleanup
@@ -154,6 +148,18 @@ public class DatabaseHandler {
 		}
 	}
 
+/*
+	// TODO: this part should happen after authentication to populate CMSG_CHAR_ENUM /
+	rst = st.executeQuery("SELECT * FROM characters.players WHERE accountID = " + ID);
+
+	// return online player by populating an array -- TODO: update this to current schema
+	if (rst.next()) {
+		userInfo[2] = rst.getString(2);
+		userInfo[3] = String.valueOf(rst.getInt(5));
+		userInfo[4] = String.valueOf(rst.getInt(6));
+	}
+*/
+	
 	public static void turnOnline(int ID) {
 		try {
 			Connection conn = DatabaseConnection.getConnection();
