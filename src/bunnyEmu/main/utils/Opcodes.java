@@ -67,6 +67,7 @@ public class Opcodes {
 	public static final String SMSG_TUTORIAL_FLAGS				= "SMSG_TUTORIAL_FLAGS";				// MoP
 	public static final String SMSG_RANDOM_NAME_RESULT 			= "SMSG_RANDOM_NAME_RESULT";			
 	public static final String SMSG_REALM_SPLIT					= "SMSG_REALM_SPLIT";
+	public static final String SMSG_MOVE_UPDATE					= "SMSG_MOVE_UPDATE";
 	
 	public static final String MSG_SET_DUNGEON_DIFFICULTY 		= "MSG_SET_DUNGEON_DIFFICULTY";
 	public static final String MSG_SET_RAID_DIFFICULTY 			= "MSG_SET_RAID_DIFFICULTY";
@@ -177,34 +178,6 @@ public class Opcodes {
 		add(CMSG_PING       					,0x08E3); 
 		add(CMSG_DISCONNECT                     ,0x09A2);	// player canceled login
 		add(CMSG_BULK_DB_QUERY					,0x0149);
-		
-		/* client side opcodes end */
-		
-		
-		/* server side opcodes start */
-		
-		add(SMSG_AUTH_CHALLENGE 				,0x0221);  
-		add(SMSG_AUTH_RESPONSE 					,0x0890); 
-		add(SMSG_CHAR_ENUM						,0x0FDD);
-		add(SMSG_CHAR_CREATE					,0x1495);
-		add(SMSG_CHAR_DELETE					,0x14C1);
-		add(SMSG_RANDOM_NAME_RESULT				,0x0AD9);
-		
-		add(SMSG_PONG       					,0x1121);
-		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1);
-		add(SMSG_TIME_SYNC_REQ        			,0x0AD4); 
-		add(SMSG_MOTD        					,0x12DC); 
-		add(SMSG_SPELL_GO        				,0x030C0);	// cata
-		add(SMSG_UPDATE_OBJECT        			,0x0C65);
-		add(SMSG_MOVE_SET_CANFLY				,0x0F48);
-		add(SMSG_KNOWN_SPELLS					,0x173F);
-		add(SMSG_NAME_CACHE       				,0x0BD0);	// aka QueryPlayerNameResponse
-		add(SMSG_REALM_CACHE       				,0x10CC);	// aka RealmQueryResponse
-		add(SMSG_MESSAGECHAT					,0x17EF);
-		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x1489);
-		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);
-		add(SMSG_NEW_WORLD						,0x04D9);
-		add(SMSG_REALM_SPLIT					,0x0F89);
 		addMultiple(CMSG_MOVEMENT				,0x0A4B
 												,0x0A4B
 												,0x08D2
@@ -235,6 +208,35 @@ public class Opcodes {
 												,0x0C92
 												,0x0893
 												,0x0A56);
+		
+		/* client side opcodes end */
+		
+		
+		/* server side opcodes start */
+		
+		add(SMSG_AUTH_CHALLENGE 				,0x0221);  
+		add(SMSG_AUTH_RESPONSE 					,0x0890); 
+		add(SMSG_CHAR_ENUM						,0x0FDD);
+		add(SMSG_CHAR_CREATE					,0x1495);
+		add(SMSG_CHAR_DELETE					,0x14C1);
+		add(SMSG_RANDOM_NAME_RESULT				,0x0AD9);
+		
+		add(SMSG_PONG       					,0x1121);
+		add(SMSG_ACCOUNT_DATA_TIMES        		,0x0CD1);
+		add(SMSG_TIME_SYNC_REQ        			,0x0AD4); 
+		add(SMSG_MOTD        					,0x12DC); 
+		add(SMSG_SPELL_GO        				,0x030C0);	// cata
+		add(SMSG_UPDATE_OBJECT        			,0x0C65);
+		add(SMSG_MOVE_SET_CANFLY				,0x0F48);
+		add(SMSG_KNOWN_SPELLS					,0x173F);
+		add(SMSG_NAME_CACHE       				,0x0BD0);	// aka QueryPlayerNameResponse
+		add(SMSG_REALM_CACHE       				,0x10CC);	// aka RealmQueryResponse
+		add(SMSG_MESSAGECHAT					,0x17EF);
+		add(SMSG_UPDATE_CLIENT_CACHE_VERSION	,0x1489);
+		add(SMSG_TUTORIAL_FLAGS					,0x0D7E);
+		add(SMSG_NEW_WORLD						,0x04D9);
+		add(SMSG_REALM_SPLIT					,0x0F89);
+		add(SMSG_MOVE_UPDATE					,0x1109);
 
 		/* server side opcodes end */
 

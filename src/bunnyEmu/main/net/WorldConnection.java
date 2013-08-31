@@ -18,13 +18,15 @@ import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
+import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
+import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketLog;
-import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.PacketLog.PacketType;
+import bunnyEmu.main.utils.Versions;
 
 /**
  * 
@@ -102,7 +104,7 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_READY_FOR_ACCOUNT_DATA_TIMES:		worldSession.sendAccountDataTimes(0x15);				break;
                     case Opcodes.CMSG_CHAR_ENUM:						worldSession.sendCharacters();							break;
                     case Opcodes.CMSG_RANDOM_NAME:						worldSession.sendRandomName();							break;
-                    case Opcodes.CMSG_CHAR_CREATE:						worldSession.createCharacter(p); 						break;
+                    case Opcodes.CMSG_CHAR_CREATE:						worldSession.createCharacter((CMSG_CHAR_CREATE) p); 	break;
                     case Opcodes.CMSG_CHAR_DELETE:						worldSession.deleteCharacter(p); 						break;
                     case Opcodes.CMSG_PLAYER_LOGIN:						worldSession.verifyLogin((CMSG_PLAYER_LOGIN) p); 		break;
                     case Opcodes.CMSG_PING:								worldSession.sendPong(); 								break;
@@ -110,12 +112,14 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_NAME_CACHE:						worldSession.handleNameCache(p);						break; // MoP only
                     case Opcodes.CMSG_REALM_CACHE: 						worldSession.handleRealmCache(p);						break; // MoP only
                     case Opcodes.CMSG_MESSAGECHAT: 						worldSession.handleChatMessage((CMSG_MESSAGECHAT)p);	break;
+                    case Opcodes.CMSG_MOVEMENT: 						worldSession.handleMovement((CMSG_MOVEMENT) p);			break;
                     case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 									break;
                 }
             }
             Log.log(Log.INFO, "World closed connection from " + clientSocket.toString());
         } catch (IOException ex) {
         	Log.log(WorldConnection.class.getName() + " force closed");
+        	ex.printStackTrace();
         } finally {
         	// The client parent might be null if the realm authentication hasn't been completed yet
         	if(client != null)

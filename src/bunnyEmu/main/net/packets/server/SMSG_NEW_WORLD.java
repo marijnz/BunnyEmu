@@ -21,10 +21,10 @@ public class SMSG_NEW_WORLD extends ServerPacket {
 
 	public boolean writeGeneric() {
 		putInt(character.getMapID());
-		putFloat(character.getX());
-		putFloat(0); // orientation
-		putFloat(character.getY());
-		putFloat(character.getZ());
+		putFloat(character.getPosition().getX());
+		putFloat(character.getPosition().getO()); 
+		putFloat(character.getPosition().getY());
+		putFloat(character.getPosition().getZ());
 		return true;
 	}
 }

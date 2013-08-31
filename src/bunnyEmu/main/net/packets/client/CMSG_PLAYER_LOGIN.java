@@ -41,7 +41,7 @@ public class CMSG_PLAYER_LOGIN extends ClientPacket {
 		BitUnpack GuidUnpacker = new BitUnpack(this);
 		
 		this.getInt(); // Unknown
-		guid = GuidUnpacker.GetGuid(guidMask, guidBytes);
+		guid = GuidUnpacker.getGuid(guidMask, guidBytes);
 		Log.log(guid);
 		return true;
 	}

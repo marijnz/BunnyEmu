@@ -9,7 +9,9 @@ import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
+import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
 import bunnyEmu.main.net.packets.server.SMSG_ACCOUNT_DATA_TIMES;
 import bunnyEmu.main.net.packets.server.SMSG_CHAR_ENUM;
@@ -18,6 +20,7 @@ import bunnyEmu.main.net.packets.server.SMSG_LOGIN_VERIFY_WORLD;
 import bunnyEmu.main.net.packets.server.SMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.server.SMSG_MOTD;
 import bunnyEmu.main.net.packets.server.SMSG_MOVE_SET_CANFLY;
+import bunnyEmu.main.net.packets.server.SMSG_MOVE_UPDATE;
 import bunnyEmu.main.net.packets.server.SMSG_NAME_CACHE;
 import bunnyEmu.main.net.packets.server.SMSG_NAME_QUERY_RESPONSE;
 import bunnyEmu.main.net.packets.server.SMSG_NEW_WORLD;
@@ -65,33 +68,7 @@ public class WorldSession {
 	 *
 	 *
 	 */
-	public void createCharacter(ClientPacket p) throws UnsupportedEncodingException {
-
-		byte cHairStyle = p.get();
-		byte cFaceStyle  = p.get();
-		byte cFacialHair = p.get();
-		byte cHairColor  = p.get();
-		byte cRace      = p.get();
-		byte cClass     = p.get();
-		byte cSkinColor  = p.get();
-		
-		p.get();
-		
-		byte cGender     = p.get();
-		
-		byte nameLength = p.get();
-	    StringBuilder builder = new StringBuilder();
-		
-		// length/4 is amount of characters in ASCII
-		for (int x = 0; x < nameLength/4; x++) {
-			builder.append(new String(new byte[] { p.get() }, "US-ASCII"));
-		}
-		
-		/* capitalize name */
-		String cName = builder.toString().toLowerCase();
-		char[] chars = cName.toCharArray();
-		chars[0] = Character.toUpperCase(chars[0]);
-		cName = String.valueOf(chars);
+	public void createCharacter(CMSG_CHAR_CREATE p) throws UnsupportedEncodingException {
 		
 		ServerPacket isCharOkay = new ServerPacket(Opcodes.SMSG_CHAR_CREATE, 1);
 
@@ -104,21 +81,22 @@ public class WorldSession {
 
 		/* TODO: need database query to insert and for start position and map here */
 
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 100.0f;
+		float x = 1.0f;
+		float y = 1.0f;
+		float z = 50.0f;
+		float o = 1.0f;
 		
-		int mapID = 0;
+		int mapID = 1;
 		
 		/* this value will come from a configuration file */
 		int cStartLevel = 1;
 		
-		connection.getClient().addCharacter(new Char(cName, x, y, z, mapID, cHairStyle, 
-														cFaceStyle, cFacialHair, cHairColor,
-														cSkinColor, cRace, cClass, cGender,
+		connection.getClient().addCharacter(new Char(p.cName, x, y, z, o, mapID, p.cHairStyle, 
+				p.cFaceStyle, p.cFacialHair, p.cHairColor,
+														p.cSkinColor, p.cRace, p.cClass, p.cGender,
 														cStartLevel));
 
-		Log.log(Log.DEBUG, "Created new char with name: " + cName);
+		Log.log(Log.DEBUG, "Created new char with name: " + p.cName);
 	}
 
 	/* delete the specified character */
@@ -209,7 +187,7 @@ public class WorldSession {
 		if (realm.getVersion() <= Versions.VERSION_BC)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
 		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
-			//connection.send(realm.loadPacket("updatepacket_wotlk", 2500));
+			//connection.send(realm.loadPacket("updatepacket_wotlk", 8000));
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
 		else if (realm.getVersion() <= Versions.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
@@ -220,15 +198,11 @@ public class WorldSession {
 		
 		//connection.send(new SMSG_MOVE_SET_CANFLY(character));
 
-		sendAccountDataTimes(0xAA);
+		sendAccountDataTimes(0xEA);
 		sendMOTD("Welcome to BunnyEmu, have fun exploring!");
 		// connection.send(new SMSG_MOVE_SET_CANFLY(character));
 		//sendSpellGo(); // Shiny start
-		realm.sendAllClients(new SMSG_UPDATE_OBJECT_CREATE(connection.getClient(), false), connection.getClient());
-		for(Client client : realm.getAllClients())
-			if(!client.equals(connection.getClient()))
-				connection.send(new SMSG_UPDATE_OBJECT_CREATE(client, false));
-			
+		//multiplayerCreation();
 	}
 
 	/**
@@ -319,8 +293,20 @@ public class WorldSession {
 		character.setPosition(x, y, z, mapId);
 		connection.send(new SMSG_NEW_WORLD(character));
         connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
-
 		connection.send(new SMSG_MOVE_SET_CANFLY(character));
+		multiplayerCreation();
+	}
+	
+	private void multiplayerCreation(){
+		realm.sendAllClients(new SMSG_UPDATE_OBJECT_CREATE(connection.getClient(), false), connection.getClient());
+		for(Client client : realm.getAllClients())
+			if(!client.equals(connection.getClient()) && client.isInWorld())
+				connection.send(new SMSG_UPDATE_OBJECT_CREATE(client, false));
+	}
+	
+	public void handleMovement(CMSG_MOVEMENT p){
+		connection.getClient().getCurrentCharacter().getPosition().set(p.getPosition());
+		realm.sendAllClients(new SMSG_MOVE_UPDATE(connection.getClient().getCurrentCharacter(), p.getMovementValues(), p.getPosition()), connection.getClient());
 	}
 
 	/**

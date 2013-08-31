@@ -195,6 +195,15 @@ public class Client {
     	this.currentCharacter = currentCharacter;
     }
     
+   
+    
+    /**
+     * @return The Character this client is currently playing with (possibly null if the player didn't get past the character selection screen yet).
+     */
+    public Char getCurrentCharacter() {
+    	return currentCharacter;
+    }
+    
     /**
      * @return The character that belongs to the guid, null if doesn't exist.
      */
@@ -210,19 +219,15 @@ public class Client {
     	return null;
     }
     
-    /**
-     * @return The Character this client is currently playing with (possibly null if the player didn't get past the character selection screen yet).
-     */
-    
-    public Char getCurrentCharacter() {
-    	return currentCharacter;
-    }
-    
 	/**
 	 * @return The version this Client logged in with, could be different than the actual supported versions.
 	 */
 	public int getVersion() {
 		return version;
+	}
+	
+	public boolean isInWorld(){
+		return currentCharacter != null;
 	}
 	
 	/**

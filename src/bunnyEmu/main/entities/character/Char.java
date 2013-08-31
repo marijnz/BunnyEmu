@@ -27,22 +27,18 @@ public class Char extends Unit {
 	private byte cGender;
 	
 	private int cLevel;
-	private float cSpeed = 1;
 	
 	private ArrayList<Spell> spells = new ArrayList<Spell>();
 	private ArrayList<Skill> skills = new ArrayList<Skill>();
 
 
-	public Char(String cName, float x, float y, float z, int mapID, byte cHairStyle, 
+	public Char(String cName, float x, float y, float z, float o, int mapID, byte cHairStyle, 
 				byte cFaceStyle, byte cFacialHair, byte cHairColor, byte cSkinColor, 
 				byte cRace, byte cClass, byte cGender, int cLevel) {
 		
 		this.setCharName(cName);
 		
-		this.setX(x);
-		this.setY(y);
-		this.setZ(z);
-		this.setMapID(mapID);
+		this.setPosition(x, y, z, mapID);
 
 		this.setCharHairStyle(cHairStyle);
 		this.setCharFaceStyle(cFaceStyle);
@@ -163,7 +159,7 @@ public class Char extends Unit {
 	}
 
 	public float getCharSpeed() {
-		return cSpeed;
+		return movement.WalkSpeed;
 	}
 
 	public byte getCharLevel() {
@@ -171,7 +167,7 @@ public class Char extends Unit {
 	}
 
 	public void setCharSpeed(float speed) {
-		this.cSpeed = speed;
+		movement.WalkSpeed = speed;
 	}
 	
 	public void setCharLevel(int level) {

@@ -2,6 +2,7 @@ package bunnyEmu.main.entities;
 
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.math.Vector4;
 import bunnyEmu.main.utils.update.UpdateData;
 
 /**
@@ -12,11 +13,9 @@ import bunnyEmu.main.utils.update.UpdateData;
  */
 public abstract class WorldObject {
 
-	private static int countGUID = 8;
+	private static int countGUID = 1;
 
-	protected float x;
-	protected float y;
-	protected float z;
+	protected Vector4 position;
 	protected long guid;
 	protected int mapID;
 
@@ -34,36 +33,10 @@ public abstract class WorldObject {
 	}
 	
 	public void setPosition(float x, float y, float z, int mapId) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.position = new Vector4(x, y, z);
 		this.mapID = mapId;
 	}
 	
-	public float getX() {
-		return x;
-	}
-
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
-
-	public float getZ() {
-		return z;
-	}
-
-	public void setZ(float z) {
-		this.z = z;
-	}
-
 	public int getMapID() {
 		return mapID;
 	}
@@ -71,7 +44,10 @@ public abstract class WorldObject {
 	public void setMapID(int mapID) {
 		this.mapID = mapID;
 	}
-
+	
+	public Vector4 getPosition(){
+		return position;
+	}
 	/**
 	 * @return The generated GUID for this object
 	 */

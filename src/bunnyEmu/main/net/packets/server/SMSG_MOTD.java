@@ -12,9 +12,20 @@ import bunnyEmu.main.utils.Opcodes;
  */
 public class SMSG_MOTD extends ServerPacket {
 	
+	String message;
+	
 	public SMSG_MOTD(String message) {
 		super(Opcodes.SMSG_MOTD, 4 +  message.length() + 1);
-
+		this.message = message;
+	}
+	
+	public boolean writeGeneric(){
+		putInt(4);
+		putString(message);
+		return true;
+	}
+	
+	public boolean writeMoP(){
 		BitPack bitPack = new BitPack(this);
 
 		bitPack.write(3, 4);
@@ -23,6 +34,7 @@ public class SMSG_MOTD extends ServerPacket {
 		putString(message);
 
 		wrap();
+		return true;
 	}
 
 }

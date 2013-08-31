@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import bunnyEmu.main.Server;
+import bunnyEmu.main.utils.Log;
 
 public class DatabaseHandler {
 	
@@ -56,6 +57,9 @@ public class DatabaseHandler {
 			st.execute(authDB);
 			st.executeUpdate("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
 														"'" + userName + "', '" + hashPW + "');");
+			
+			Log.log("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
+														"'" + userName + "', '" + hashPW + "');");
 
 			// cleanup
 			DatabaseConnection.closeStatement(st);
@@ -66,7 +70,7 @@ public class DatabaseHandler {
 		// this will throw duplicate errors because of Unique constraint
 		// just silence the error and red text and tell client creation failed
 		catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		}
 	}

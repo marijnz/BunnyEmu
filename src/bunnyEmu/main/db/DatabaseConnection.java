@@ -1,10 +1,10 @@
 package bunnyEmu.main.db;
 
 import java.sql.Connection;
-import java.util.Properties;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import bunnyEmu.main.Server;
 import bunnyEmu.main.utils.Log;

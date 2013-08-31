@@ -10,13 +10,14 @@ import bunnyEmu.main.db.DatabaseHandler;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.handlers.RealmHandler;
+import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
-//import bunnyEmu.main.utils.AuthCodes;
+import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BigNumber;
 import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.Versions;
+//import bunnyEmu.main.utils.AuthCodes;
 
     /**
      * 
@@ -97,25 +98,31 @@ import bunnyEmu.main.utils.Versions;
 
             // need to return auth failed here
             if (userInfo == null) {
-            	AuthPacket authWrongPass = new AuthPacket((short) 32);
-            	authWrongPass.putInt(0x16);
+            	AuthPacket authWrongPass = new AuthPacket((short) 3);
+            	authWrongPass.put((byte) 0); // opcode
+            	authWrongPass.put((byte) 0);
+            	authWrongPass.put((byte) AuthCodes.AUTH_UNKNOWN_ACCOUNT);
             	connection.send(authWrongPass);
 
-            	Log.log(Log.INFO, "Wrong password sent.");
+            	Log.log(Log.DEBUG, "Wrong password sent. (" + username + ")");
 
             	return;
             }
 
             byte[] accountHash = DatatypeConverter.parseHexBinary(userInfo[1]);
 
-            Log.log(Log.DEBUG, "USERNAME: " + username);
             client = new Client(username, Integer.parseInt(version));
             client.attachLogon(connection);
             
-            // Kick the existing client out if it's logged in already, Blizzlike
             Client existingClient = TempClientHandler.findClient(username);
-            if (existingClient != null)
-            	existingClient.disconnect();
+            if (existingClient != null){
+            	AuthPacket authWrongPass = new AuthPacket((short) 3);
+            	authWrongPass.put((byte) 0); // opcode
+            	authWrongPass.put((byte) 0);
+            	authWrongPass.put((byte) AuthCodes.AUTH_ALREADY_LOGGED_IN);
+            	connection.send(authWrongPass);
+            	return;
+            }
 
         	RealmHandler.addVersionRealm(client.getVersion());
         	

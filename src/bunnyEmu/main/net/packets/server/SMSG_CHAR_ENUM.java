@@ -29,7 +29,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 	@Override
 	public boolean writeGeneric(){
 		charCount = client.getCharacters().size();
-		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount, null);
+		create(Opcodes.SMSG_CHAR_ENUM, 350 * charCount + 10, null);
 
 		put((byte) charCount);
 
@@ -50,9 +50,9 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			put((byte) 60); // Level;
 			putInt(0); // Zone ID;
 			putInt(currentChar.getMapID());
-			putFloat(currentChar.getX()); // X
-			putFloat(currentChar.getY()); // Y
-			putFloat(currentChar.getZ()); // Z
+			putFloat(currentChar.getPosition().getX()); // X
+			putFloat(currentChar.getPosition().getY()); // Y
+			putFloat(currentChar.getPosition().getZ()); // Z
 			// Guild ID
 			if (client.getVersion() < Versions.VERSION_CATA)
 				putInt(0);
@@ -178,7 +178,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.writeGuildGuidBytes(new byte[] { 6 });
 				bitPack.writeGuidBytes(new byte [] { 3 });
 				
-				this.putFloat(currentChar.getX());
+				this.putFloat(currentChar.getPosition().getX());
 				this.putInt(0);								// CharacterFlags TODO: check
 				
 				bitPack.writeGuildGuidBytes(new byte[] { 0 });
@@ -193,7 +193,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				bitPack.writeGuildGuidBytes(new byte[] { 4 });
 				bitPack.writeGuidBytes(new byte[] { 2, 5 });
 
-				this.putFloat(currentChar.getY());
+				this.putFloat(currentChar.getPosition().getY());
 				this.putInt(0);								// pet family
 		
 				try {
@@ -219,7 +219,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 					this.put((byte) 0);
 				}
 
-				this.putFloat(currentChar.getZ());
+				this.putFloat(currentChar.getPosition().getZ());
 				this.putInt(0);								// zone
 				this.put(currentChar.getCharFacialHair());	// facial hair
 				this.put(currentChar.getCharClass());

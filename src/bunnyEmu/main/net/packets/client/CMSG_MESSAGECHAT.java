@@ -11,7 +11,7 @@ public class CMSG_MESSAGECHAT extends ClientPacket {
 	public boolean readMoP() {
 		BitUnpack bitUnpack = new BitUnpack(this);
         language = getInt();
-        int messageLength = bitUnpack.GetBits((byte) 8);
+        int messageLength = bitUnpack.getBits((byte) 8);
         message = getString(messageLength);
         
 		return true;

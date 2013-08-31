@@ -21,12 +21,10 @@ public class SMSG_KNOWN_SPELLS extends ServerPacket {
 	public SMSG_KNOWN_SPELLS(Char character) {
 		super(Opcodes.SMSG_KNOWN_SPELLS, 50 + character.getCharSpells().size() * 4 );
 		this.character = character;
-
 	}
 	
 	@Override
 	public boolean writeMoP(){
-
 		BitPack bitPack = new BitPack(this);
 
 		ArrayList<Spell> spells = character.getCharSpells();

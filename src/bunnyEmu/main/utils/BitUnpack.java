@@ -35,7 +35,7 @@ public class BitUnpack {
 		return ((returnValue >> 7) == 1 || (returnValue >> 7) == -1);
 	}
 
-	public int GetBits(byte bitCount) {
+	public int getBits(int bitCount) {
 		int returnValue = 0;
 
 		for (int i = bitCount - 1; i >= 0; --i)
@@ -44,7 +44,7 @@ public class BitUnpack {
 		return returnValue;
 	}
 
-	public int GetNameLength(byte bitCount) {
+	public int getNameLength(byte bitCount) {
 		int returnValue = 0;
 		// Unknown, always before namelength bits...
 		getBit();
@@ -55,7 +55,7 @@ public class BitUnpack {
 		return returnValue;
 	}
 
-	public long GetGuid(byte[] mask, byte[] bytes) {
+	public long getGuid(byte[] mask, byte[] bytes) {
 		boolean[] guidMask = new boolean[mask.length];
 		byte[] guidBytes = new byte[bytes.length];
 

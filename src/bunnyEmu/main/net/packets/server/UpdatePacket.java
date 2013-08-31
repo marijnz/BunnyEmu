@@ -3,8 +3,10 @@ package bunnyEmu.main.net.packets.server;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.utils.BitPack;
+import bunnyEmu.main.utils.Log;
 import bunnyEmu.main.utils.types.MovementSpeed;
-import bunnyEmu.main.utils.types.ObjectMovementValues;
+import bunnyEmu.main.utils.types.MovementValues;
+import bunnyEmu.main.utils.types.UpdateFlag;
 
 /**
  * Adapted from Arctium, currently only used in the initial update packet.
@@ -20,7 +22,7 @@ public class UpdatePacket extends ServerPacket {
 
 	protected void writeUpdateObjectMovementMoP(Char character, byte updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
-		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+		MovementValues values = new MovementValues(updateFlags);
 
 		BitPack bitPack = new BitPack(this);
 
@@ -93,15 +95,15 @@ public class UpdatePacket extends ServerPacket {
 			
 			bitPack.writeGuidBytes(new byte[] { 5 });
 			
-			packet.putFloat(character.getZ());
-			packet.putFloat(0);					// orientation NYI
+			packet.putFloat(character.getPosition().getZ());
+			packet.putFloat(character.getPosition().getO());
 
 			bitPack.writeGuidBytes(new byte[] { 6 });
 
 			packet.putFloat((float) movementSpeed.PitchSpeed);
 			packet.putFloat((float) movementSpeed.RunBackSpeed);
 			
-			packet.putFloat(character.getY());
+			packet.putFloat(character.getPosition().getY());
 			
 			packet.putFloat((float) movementSpeed.SwimSpeed);
 			packet.putFloat((float) movementSpeed.FlyBackSpeed);
@@ -109,7 +111,7 @@ public class UpdatePacket extends ServerPacket {
 			bitPack.writeGuidBytes(new byte[] { 7 });
 
 			packet.putFloat((float) movementSpeed.FlySpeed);
-			packet.putFloat(character.getX());
+			packet.putFloat(character.getPosition().getX());
 
 			bitPack.writeGuidBytes(new byte[] { 4 });
 		}
@@ -117,10 +119,10 @@ public class UpdatePacket extends ServerPacket {
 		
 		if (values.HasStationaryPosition) {
 
-			packet.putFloat(character.getX());
-			packet.putFloat(character.getZ());
+			packet.putFloat(character.getPosition().getX());
+			packet.putFloat(character.getPosition().getZ());
 			packet.putFloat(0);	// orientation
-			packet.putFloat(character.getY());
+			packet.putFloat(character.getPosition().getY());
 		}
 
 		// TODO: implement?
@@ -136,7 +138,7 @@ public class UpdatePacket extends ServerPacket {
 	protected void writeUpdateObjectMovementCata(Char character, short updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
 		this.putShort(updateFlags);  // update flags              
-		ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+		MovementValues values = new MovementValues(updateFlags);
 
 		short moveFlags = 0;
 		
@@ -146,9 +148,9 @@ public class UpdatePacket extends ServerPacket {
 	        this.putShort(moveFlags);      		// movement flags
 	        this.putInt((int) 0);				// time (in milliseconds)
 	        
-	        packet.putFloat(character.getX());
-	        packet.putFloat(character.getY());
-	        packet.putFloat(character.getZ());
+	        packet.putFloat(character.getPosition().getX());
+	        packet.putFloat(character.getPosition().getY());
+	        packet.putFloat(character.getPosition().getZ());
 	        packet.putFloat(0); // orientation
 	        
 	        // Movement 2
@@ -170,18 +172,30 @@ public class UpdatePacket extends ServerPacket {
 	 */
 	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
-		this.putShort(updateFlags);  // update flags              
-		//ObjectMovementValues values = new ObjectMovementValues(updateFlags);
+		this.putShort((short) 0x71);  // update flags              
+		MovementValues values = new MovementValues(updateFlags);
 		
-	    //if (values.IsAlive){
+		Log.log("VALUES: ");
+		Log.log("test: " + values.IsSelf);
+		Log.log("test: " + values.IsAlive);
+		Log.log("test: " + values.HasRotation);
+		Log.log("test: " + values.HasStationaryPosition);
+		Log.log("test: " + values.HasTarget);
+		Log.log("test: " + values.IsTransport);
+		Log.log("test: " + values.HasGoTransportPosition);
+		Log.log("test: " + values.HasAnimKits);
+		Log.log("test: " + values.HasUnknown);
+		Log.log("test: " + values.HasUnknown2);
+		Log.log("test: " + values.HasUnknown4);
+	    if (values.IsAlive){
 	    	// Build Movement
 	    	this.putInt(0); // flags2
 	        this.putShort((short) 0);      		// movement flags
 	        this.putInt((int) 0);				// time (in milliseconds) TODO: actual time?
 	        
-	        packet.putFloat(character.getX());
-	        packet.putFloat(character.getY());
-	        packet.putFloat(character.getZ());
+	        packet.putFloat(character.getPosition().getX());
+	        packet.putFloat(character.getPosition().getY());
+	        packet.putFloat(character.getPosition().getZ());
 	        packet.putFloat(0); // orientation
 	        
 	        packet.putInt(0); // Fall time
@@ -199,7 +213,7 @@ public class UpdatePacket extends ServerPacket {
 	        packet.putFloat((float) movementSpeed.PitchSpeed);
 	        
 	        /* 32+36 = 68 bytes so far */
-	   // }
+	    }
 	}
 
 }

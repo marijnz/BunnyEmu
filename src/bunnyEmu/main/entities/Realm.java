@@ -135,9 +135,12 @@ public class Realm extends Thread {
 	 * Send a packet to all connected clients except for passed client
 	 */
 	public void sendAllClients(ServerPacket p, Client ignoreClient){
+		Log.log("Ignore client: " + ignoreClient.getName());
 		for(Client client : clients)
-			if(!client.equals(ignoreClient))
+			if(!client.equals(ignoreClient)){
+				Log.log("Sending packet " + p.sOpcode + " to client: " + client.getName());
 				client.getWorldConnection().send(p);
+			}
 	}
 	/**
 	 * @return The version of this realm, can be used to build packets for specific versions.

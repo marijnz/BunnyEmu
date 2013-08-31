@@ -2,7 +2,6 @@ package bunnyEmu.main.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
 import bunnyEmu.main.entities.packet.Packet;
 
@@ -27,6 +26,11 @@ public class BitPack {
 	public BitPack(Packet packet) {
         this.packet = packet;
         bitPosition = 8;
+    }
+	
+	public BitPack(Packet packet, long guid) {
+        this(packet);
+        this.setGuid(guid);
     }
 	
 	public void write(boolean bit){
@@ -61,7 +65,7 @@ public class BitPack {
         return (int) l;
     }
 
-    public void writeGuidMask(byte[] order) {
+    public void writeGuidMask(byte... order) {
         for (byte i = 0; i < order.length; i++)
             write(guidBytes[order[i]]);
     }
@@ -81,7 +85,7 @@ public class BitPack {
             write(transportGuidBytes[order[i]]);
     }
 
-    public void writeGuidBytes(byte[] order) {
+    public void writeGuidBytes(byte... order) {
         for (byte i = 0; i < order.length; i++)
             if (guidBytes[order[i]] != 0)
                 packet.put((byte)(guidBytes[order[i]] ^ 1));
