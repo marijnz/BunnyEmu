@@ -9,6 +9,7 @@ import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersions;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
@@ -32,7 +33,6 @@ import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.BitUnpack;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * Used after world authentication, handles incoming packets.
@@ -184,12 +184,12 @@ public class WorldSession {
 		character.setUpdateFields(realm);
 
 		// Currently only fully supports MoP
-		if (realm.getVersion() <= Versions.VERSION_BC)
+		if (realm.getVersion() <= ClientVersions.VERSION_BC.getNumber())
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
-		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
+		else if (realm.getVersion() <= ClientVersions.VERSION_WOTLK.getNumber())
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 8000));
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
-		else if (realm.getVersion() <= Versions.VERSION_CATA)
+		else if (realm.getVersion() <= ClientVersions.VERSION_CATA.getNumber())
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
@@ -210,7 +210,7 @@ public class WorldSession {
 	 */
 	public void sendAccountDataTimes(int mask) {
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
-		if (this.realm.getVersion() <= Versions.VERSION_CATA)
+		if (this.realm.getVersion() <= ClientVersions.VERSION_CATA.getNumber())
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 
