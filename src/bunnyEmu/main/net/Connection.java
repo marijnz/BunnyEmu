@@ -26,7 +26,7 @@ public abstract class Connection extends Thread {
 	/**
 	 * Create a new connection attached based on the given socket
 	 * 
-	 * @param clientSocket The socket the client connected on
+	 * @param clientSocket The socket the client connected on.
 	 */
 	public Connection(Socket clientSocket) {
 		this.clientSocket = clientSocket;
@@ -34,12 +34,12 @@ public abstract class Connection extends Thread {
 	}
 
 	private void initialize() {
-		System.out.println("Created Connection");
+		System.out.println("Created Connection.");
+		
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());
-
-		} catch (IOException ex) {
+		} catch (IOException e) {
 			Logger.writeError("Couldn't create input and output streams.");
 		}
 	}
@@ -51,7 +51,7 @@ public abstract class Connection extends Thread {
 			in.close();
 			clientSocket.close();
 			interrupt();
-		} catch (IOException ex) {
+		} catch (IOException e) {
 			Logger.writeError("Couldn't close connection properly");
 		}
 	}
