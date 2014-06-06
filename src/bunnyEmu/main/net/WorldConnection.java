@@ -51,8 +51,7 @@ public class WorldConnection extends Connection{
         try {
         	packetWriter = IPacketWritable.class.getMethod("write" + realm.getVersionName());
         	packetReader = IPacketReadable.class.getMethod("read" + realm.getVersionName());
-		}
-        catch (Exception e) {;}
+		} catch (Exception e) {;}
         
         auth = new RealmAuth(this, realm);
         if(realm.getVersion() < Versions.VERSION_MOP)
@@ -116,7 +115,8 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 									break;
                 }
             }
-            Logger.writeError("World closed connection from " + clientSocket.toString());
+
+            System.out.println("World closed connection from " + clientSocket.toString());
         } catch (IOException ex) {
         	Logger.writeError(WorldConnection.class.getName() + " force closed");
         	ex.printStackTrace();
@@ -138,7 +138,7 @@ public class WorldConnection extends Connection{
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             		
             if (p.size < 0){
-            	Logger.writeError(p.size + " is < 0, RETURNING " + p.headerAsHex());
+            	System.out.println(p.size + " is < 0, RETURNING " + p.headerAsHex());
             	return null;
             } else if (p.size == 0){
             	p.packet = ByteBuffer.wrap(new byte[1]); // just put an empty byte in it to avoid null errors on logging
@@ -172,7 +172,7 @@ public class WorldConnection extends Connection{
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Logger.writeError("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
+    	System.out.println("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
         return super.sendPacket(p);
