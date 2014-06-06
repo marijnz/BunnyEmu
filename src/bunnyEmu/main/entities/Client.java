@@ -28,7 +28,7 @@ import bunnyEmu.main.utils.crypto.WotLKCrypt;
 public class Client {
     
     private String name;
-    private int version;
+    private ClientVersion version;
     private byte[] sessionKey;
     private GenericCrypt crypt;
     
@@ -44,17 +44,17 @@ public class Client {
      * @param name The name of the client (username)
      * @param version The patch/version of the client i.e.: 335. 
      */
-    public Client(String name, int version){
+    public Client(String name, ClientVersion version){
         this.name = name.toUpperCase();
         this.version = version;
         
-        if(version <= ClientVersion.VERSION_VANILLA.getNumber())
+        if(version == ClientVersion.VERSION_VANILLA)
         	crypt = new VanillaCrypt();
-        else if(version <= ClientVersion.VERSION_BC.getNumber())
+        else if(version == ClientVersion.VERSION_BC)
         	crypt = new BCCrypt();
-        else if(version <= ClientVersion.VERSION_CATA.getNumber())
+        else if(version == ClientVersion.VERSION_CATA)
         	crypt = new WotLKCrypt();
-        else if(version <= ClientVersion.VERSION_MOP.getNumber())
+        else if(version == ClientVersion.VERSION_MOP)
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
@@ -222,7 +222,7 @@ public class Client {
 	/**
 	 * @return The version this Client logged in with, could be different than the actual supported versions.
 	 */
-	public int getVersion() {
+	public ClientVersion getVersion() {
 		return version;
 	}
 	
