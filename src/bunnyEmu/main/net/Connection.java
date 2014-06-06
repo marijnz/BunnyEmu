@@ -34,13 +34,13 @@ public abstract class Connection extends Thread {
 	}
 
 	private void initialize() {
-		Logger.writeError("Created Connection");
+		System.out.println("Created Connection");
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());
 
 		} catch (IOException ex) {
-			Logger.writeError("Couldn't create in and output streams");
+			Logger.writeError("Couldn't create input and output streams.");
 		}
 	}
 	
@@ -60,11 +60,15 @@ public abstract class Connection extends Thread {
 	 * 
 	 * @param p The sent packet
 	 * 
-	 * @return True if succesful, false if the actual capacity exceeds the given size
+	 * @return True if successful, false if the actual capacity exceeds the given size
 	 */
 	protected boolean sendPacket(Packet p) {
 		if (p.size < p.packet.capacity()) {
-			Logger.writeError("packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
+			String errorMessage = "";
+			errorMessage += "Packet Error: The size of the packer (" + p.size;
+			errorMessage += ") is less than the total capacity (" + p.packet.capacity() +").";
+			Logger.writeError(errorMessage);
+			
 			return false;
 		}
 		PacketLog.logPacket(PacketType.SERVER, p);
