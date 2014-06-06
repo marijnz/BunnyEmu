@@ -13,19 +13,30 @@ import bunnyEmu.main.utils.types.MovementSpeed;
  *
  */
 public class Char extends Unit {
-
+	/** The character's name. */
 	private String cName;
 	
+	/** The ID of the character's hair-style. */
 	private byte cHairStyle; 
+	/** The ID of the character's face. */
 	private byte cFaceStyle; 
+	/** The ID of the character's facial hair. */
 	private byte cFacialHair;
+	/** The ID of the character's hair color. */
 	private byte cHairColor; 
+	/** The ID of the character's skin color. */
 	private byte cSkinColor;
 	
+	/** The ID of the character's race. */
+	// TODO: Create an enum to represent races.
 	private byte cRace;
+	/** The ID of the character's class. */
+	// TODO: Create an enum to represent classes.
 	private byte cClass;
+	/** The ID of the character's gender. */
 	private byte cGender;
 	
+	/** The character's current level. */
 	private int cLevel;
 	
 	private ArrayList<Spell> spells = new ArrayList<Spell>();
@@ -118,38 +129,47 @@ public class Char extends Unit {
         data.setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
 	}
 
+	/** @return The character's name. */
 	public String getCharName() {
 		return cName;
 	}
 
+	/** @return The ID of the character's hair-style. */
 	public byte getCharHairStyle() {
 		return cHairStyle;
 	}
 
+	/** @return The ID of the character's face. */
 	public byte getCharFaceStyle() {
 		return cFaceStyle;
 	}
 
+	/** @return The ID of the character's facial hair. */
 	public byte getCharFacialHair() {
 		return cFacialHair;
 	}
 	
+	/** @return The ID of the character's hair color. */
 	public byte getCharHairColor() {
 		return cHairColor;
 	}
 	
+	/** @return The ID of the character's skin color. */
 	public byte getCharSkinColor() {
 		return cSkinColor;
 	}
 	
+	/** @return The ID of the character's race. */
 	public byte getCharRace() {
 		return cRace;
 	}
 	
+	/** @return The ID of the character's class. */
 	public byte getCharClass() {
 		return cClass;
 	}
 	
+	/** @return The ID of the character's gender. */
 	public byte getCharGender() {
 		return cGender;
 	}
