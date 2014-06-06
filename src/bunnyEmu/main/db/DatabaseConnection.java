@@ -35,7 +35,7 @@ public class DatabaseConnection {
 			// config.setLazyInit(true); // depends on the application usage
 			connectionPool = new BoneCP(config); // setup the connection pool
 
-			Logger.writeError("Database connection succeeded!");
+			System.out.println("Database connection succeeded!");
 
 			// Log.log("This many active physical connections: " + connectionPool.getTotalCreatedConnections());
 			DatabaseConnection.setConnectionPool(connectionPool);
