@@ -10,7 +10,7 @@ import bunnyEmu.main.db.DatabaseHandler;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.enums.ClientVersions;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
@@ -253,7 +253,7 @@ import bunnyEmu.main.utils.Logger;
             md.update(K.asByteArray());
 
             short size = 32;
-            if(client.getVersion() <= ClientVersions.VERSION_VANILLA.getNumber())
+            if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
             	size = 26;
             
 	        AuthPacket serverLogonAuth = new AuthPacket((short) size);
@@ -261,7 +261,7 @@ import bunnyEmu.main.utils.Logger;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(client.getVersion() <= ClientVersions.VERSION_VANILLA.getNumber())
+	        if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
 	        	serverLogonAuth.putInt(0);     
 	        else{
 	        	serverLogonAuth.putInt(0x00800000);

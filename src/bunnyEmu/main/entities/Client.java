@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
-import bunnyEmu.main.enums.ClientVersions;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
@@ -48,13 +48,13 @@ public class Client {
         this.name = name.toUpperCase();
         this.version = version;
         
-        if(version <= ClientVersions.VERSION_VANILLA.getNumber())
+        if(version <= ClientVersion.VERSION_VANILLA.getNumber())
         	crypt = new VanillaCrypt();
-        else if(version <= ClientVersions.VERSION_BC.getNumber())
+        else if(version <= ClientVersion.VERSION_BC.getNumber())
         	crypt = new BCCrypt();
-        else if(version <= ClientVersions.VERSION_CATA.getNumber())
+        else if(version <= ClientVersion.VERSION_CATA.getNumber())
         	crypt = new WotLKCrypt();
-        else if(version <= ClientVersions.VERSION_MOP.getNumber())
+        else if(version <= ClientVersion.VERSION_MOP.getNumber())
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);

@@ -59,10 +59,7 @@ public class Server {
 	}
 
 	public void launch() {
-		// RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344,
-		// 1));
-		// RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3345,
-		// 1));
+		//RealmHandler.addRealm(new Realm(1, "Server test 1", "31.220.24.8", 3344, 1));
 		listenSocket();
 	}
 
@@ -96,9 +93,13 @@ public class Server {
 		
 		try {
 			while (true) {
-				LogonConnection connection = new LogonConnection(serverSocket.accept());
-				System.out.println("Client connected to logon server.");
-				connections.add(connection);
+				try {
+					LogonConnection connection = new LogonConnection(serverSocket.accept());
+					System.out.println("Client connected to logon server.");
+					connections.add(connection);
+				} catch(NullPointerException e) {
+					continue;
+				}
 			}
 		} catch (IOException e) {
 			Logger.writeError("Accept failed: 3724");
