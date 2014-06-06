@@ -1,7 +1,7 @@
 package bunnyEmu.main.entities;
 
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.math.Vector4;
 import bunnyEmu.main.utils.update.UpdateData;
 
@@ -22,7 +22,7 @@ public abstract class WorldObject {
 	protected UpdateData data;
 	
 	public WorldObject() {
-		Log.log("Created worldobject with GUID " + countGUID);
+		Logger.writeError("Created worldobject with GUID " + countGUID);
 		this.setGUID(countGUID++);
 		setPosition(1,1,1,1);
 		this.data = new UpdateData();

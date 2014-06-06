@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
 
@@ -34,13 +34,13 @@ public abstract class Connection extends Thread {
 	}
 
 	private void initialize() {
-		Log.log(Log.INFO, "Created Connection");
+		Logger.writeError("Created Connection");
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());
 
 		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't create in and output streams");
+			Logger.writeError("Couldn't create in and output streams");
 		}
 	}
 	
@@ -52,7 +52,7 @@ public abstract class Connection extends Thread {
 			clientSocket.close();
 			interrupt();
 		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't close connection properly");
+			Logger.writeError("Couldn't close connection properly");
 		}
 	}
 
@@ -64,7 +64,7 @@ public abstract class Connection extends Thread {
 	 */
 	protected boolean sendPacket(Packet p) {
 		if (p.size < p.packet.capacity()) {
-			Log.log(Log.ERROR, "packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
+			Logger.writeError("packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
 			return false;
 		}
 		PacketLog.logPacket(PacketType.SERVER, p);

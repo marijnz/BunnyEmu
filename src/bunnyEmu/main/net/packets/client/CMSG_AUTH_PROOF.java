@@ -2,7 +2,7 @@ package bunnyEmu.main.net.packets.client;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * Authentication proof
@@ -61,7 +61,7 @@ public class CMSG_AUTH_PROOF extends ClientPacket {
 		get(new byte[4]);
 		get(digest, position += 2, 6);
 		get(mClientBuild);// mClientBuild
-		Log.log(new BigNumber(mClientBuild).toHexString());
+		Logger.writeError(new BigNumber(mClientBuild).toHexString());
 		get(digest, position += 6, 1);
 		get(new byte[5]);
 

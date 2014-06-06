@@ -3,7 +3,7 @@ package bunnyEmu.main.net.packets.client;
 import java.io.UnsupportedEncodingException;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 public class CMSG_CHAR_CREATE extends ClientPacket {
 	public byte cHairStyle;
@@ -31,7 +31,7 @@ public class CMSG_CHAR_CREATE extends ClientPacket {
 	}
 	
 	public boolean readMoP() {
-		Log.log(this.toString());
+		Logger.writeError(this.toString());
 		cHairStyle = get();
 		cFaceStyle  = get();
 		cFacialHair = get();

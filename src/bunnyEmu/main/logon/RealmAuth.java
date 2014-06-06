@@ -15,7 +15,7 @@ import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.server.SMSG_AUTH_RESPONSE;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.Versions;
 
@@ -73,7 +73,7 @@ public class RealmAuth extends Auth {
     }
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
-        Log.log(Log.DEBUG, "authSession");
+        Logger.writeError("authSession");
 
         client = TempClientHandler.removeTempClient(authProof.getAccountName());
 
@@ -93,12 +93,12 @@ public class RealmAuth extends Auth {
             md.update(connection.getClient().getSessionKey());
             byte[] digest = md.digest();	
             
-            Log.log(Log.DEBUG, "authSession " + client.getName());
+            Logger.writeError("authSession " + client.getName());
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
             if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
-            	Log.log(Log.INFO, "Valid client connected: " + client.getName());
+            	Logger.writeError("Valid client connected: " + client.getName());
                 if (realm.getVersion() <= Versions.VERSION_CATA){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
@@ -118,6 +118,6 @@ public class RealmAuth extends Auth {
                 client.disconnect();
         } else
         	connection.close();
-        Log.log(Log.INFO, "Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
+        Logger.writeError("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
     }
 }

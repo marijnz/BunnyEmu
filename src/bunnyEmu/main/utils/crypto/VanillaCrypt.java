@@ -1,6 +1,6 @@
 package bunnyEmu.main.utils.crypto;
 
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 
 /*
@@ -18,7 +18,7 @@ public class VanillaCrypt implements GenericCrypt{
 		 */
 	
 	public VanillaCrypt() { 
-		Log.log(Log.DEBUG, "Created new Vanilla crypt");
+		Logger.writeError("Created new Vanilla crypt");
 	}
 
 	public byte[] decrypt(byte[] data){

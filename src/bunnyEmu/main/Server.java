@@ -16,7 +16,7 @@ import bunnyEmu.main.db.DatabaseConnection;
 import bunnyEmu.main.handlers.ConfigHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * 
@@ -41,14 +41,14 @@ public class Server {
 			
 			/* this shouldn't happen ? */
 			if (prop == null) {
-				Log.log("Property file could not be loaded.");
+				Logger.writeError("Property file could not be loaded.");
 				System.exit(0);
 			}
 			
 			realmlist = prop.getProperty("realmlistAddress");
 
 			if (realmlist.isEmpty()) {
-				Log.log("No realmlist set in server.conf.. unable to start.");
+				Logger.writeError("No realmlist set in server.conf.. unable to start.");
 				System.exit(0);
 			}
 			
@@ -61,8 +61,6 @@ public class Server {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		Log.setlevel(Log.DEBUG);
 
 		new Server().launch();
 	}
@@ -81,7 +79,7 @@ public class Server {
 
 	private void listenSocket() {
 		try {
-			Log.log(Log.INFO, "Launched BunnyEmu - listening on " + realmlist);
+			Logger.writeError("Launched BunnyEmu - listening on " + realmlist);
 			
 			InetAddress addr = InetAddress.getByName(realmlist);
 			serverSocket = new ServerSocket(3724, 0, addr);
@@ -89,8 +87,8 @@ public class Server {
 			/* load database connection */
 			DatabaseConnection.initConnectionPool(prop);
 			
-			Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
-			Log.log(Log.INFO, "Remember to create an account before logging in.");
+			Logger.writeError("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
+			Logger.writeError("Remember to create an account before logging in.");
 			
 			/* console commands are handled by this thread if no GUI */
 			if (Integer.parseInt(prop.getProperty("enableGUI")) == 0) {
@@ -100,16 +98,16 @@ public class Server {
 			}
 
 		} catch (IOException e) {
-			Log.log("ERROR: port 3724 is not available!");
+			Logger.writeError("ERROR: port 3724 is not available!");
 		}
 		try {
 			while (true) {
 				LogonConnection con = new LogonConnection(serverSocket.accept());
-				Log.log(Log.INFO, "Client connected to logon server");
+				Logger.writeError("Client connected to logon server");
 				connections.add(con);
 			}
 		} catch (IOException e) {
-			Log.log("Accept failed: 3724");
+			Logger.writeError("Accept failed: 3724");
 		}
 	}
 }

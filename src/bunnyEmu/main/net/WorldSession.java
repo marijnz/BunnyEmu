@@ -30,7 +30,7 @@ import bunnyEmu.main.net.packets.server.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.Versions;
 
@@ -58,7 +58,7 @@ public class WorldSession {
 	 * Send the character list to the client.
 	 */
 	public void sendCharacters() {
-		Log.log(Log.DEBUG, "sending chars");
+		Logger.writeError("sending chars");
 		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
@@ -96,7 +96,7 @@ public class WorldSession {
 														p.cSkinColor, p.cRace, p.cClass, p.cGender,
 														cStartLevel));
 
-		Log.log(Log.DEBUG, "Created new char with name: " + p.cName);
+		Logger.writeError("Created new char with name: " + p.cName);
 	}
 
 	/* delete the specified character */
@@ -153,10 +153,10 @@ public class WorldSession {
         boolean charDeletion = connection.getClient().removeCharacter(guid);
         
         if (charDeletion) {
-        	Log.log(Log.DEBUG, "Deleted character with GUID = " + guid);
+        	Logger.writeError("Deleted character with GUID = " + guid);
         }
         else {
-        	Log.log(Log.DEBUG, "Failed to delete character with GUID = " + guid);
+        	Logger.writeError("Failed to delete character with GUID = " + guid);
         }
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
@@ -173,7 +173,7 @@ public class WorldSession {
 		final Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
-			Log.log(Log.DEBUG, "\nPROBLEM: Character is null at login to world..\n");
+			Logger.writeError("\nPROBLEM: Character is null at login to world..\n");
 		}
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -261,7 +261,7 @@ public class WorldSession {
 	 */
 	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		Log.log("msg: " + p.getMessage());
+		Logger.writeError("msg: " + p.getMessage());
         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {

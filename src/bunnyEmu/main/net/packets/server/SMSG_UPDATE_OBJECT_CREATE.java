@@ -2,7 +2,7 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.character.Char;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.types.ObjectType;
 import bunnyEmu.main.utils.types.UpdateFlag;

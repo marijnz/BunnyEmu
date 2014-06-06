@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.Realm;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * Handles all connected clients
@@ -27,7 +27,7 @@ public class TempClientHandler {
 	 */
 	
 	public static boolean addTempClient(Client client){
-		Log.log(Log.DEBUG, "Adding temporary client: " + client.getName());
+		Logger.writeError("Adding temporary client: " + client.getName());
 		if(temporaryClients.containsKey(client.getName()))
 			return false;
 		temporaryClients.put(client.getName(), client);
@@ -50,7 +50,7 @@ public class TempClientHandler {
 		for(Realm realm : RealmHandler.getRealms()){
 			Client client = realm.getClient(name);
 			if(client != null){
-				Log.log(Log.DEBUG, "Found client: " + name);
+				Logger.writeError("Found client: " + name);
 				return client;
 			}
 		}

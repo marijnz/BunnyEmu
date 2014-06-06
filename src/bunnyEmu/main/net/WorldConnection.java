@@ -22,7 +22,7 @@ import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
@@ -74,7 +74,7 @@ public class WorldConnection extends Connection{
                     continue;
                 
                 if(p.sOpcode == null){
-                	Log.log(Log.DEBUG, "Received unknown packet: " + p.toString());
+                	Logger.writeError("Received unknown packet: " + p.toString());
                 	PacketLog.logPacket(PacketType.CLIENT_UNKNOWN, p);
                 	continue;
                 }
@@ -91,10 +91,10 @@ public class WorldConnection extends Connection{
 	    			} catch (Exception e){
 	    				e.printStackTrace();
 	    			}
-					Log.log(Log.DEBUG, "Received known packet with implementation: " + p.toString());
+					Logger.writeError("Received known packet with implementation: " + p.toString());
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
 				} catch (Exception e){
-					Log.log(Log.DEBUG, "Received known packet without implementation: " + p.toString());
+					Logger.writeError("Received known packet without implementation: " + p.toString());
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_UNIMPLEMENTED, p);
 				}
                 
@@ -116,9 +116,9 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 									break;
                 }
             }
-            Log.log(Log.INFO, "World closed connection from " + clientSocket.toString());
+            Logger.writeError("World closed connection from " + clientSocket.toString());
         } catch (IOException ex) {
-        	Log.log(WorldConnection.class.getName() + " force closed");
+        	Logger.writeError(WorldConnection.class.getName() + " force closed");
         	ex.printStackTrace();
         } finally {
         	// The client parent might be null if the realm authentication hasn't been completed yet
@@ -138,7 +138,7 @@ public class WorldConnection extends Connection{
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             		
             if (p.size < 0){
-            	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
+            	Logger.writeError(p.size + " is < 0, RETURNING " + p.headerAsHex());
             	return null;
             } else if (p.size == 0){
             	p.packet = ByteBuffer.wrap(new byte[1]); // just put an empty byte in it to avoid null errors on logging
@@ -150,7 +150,7 @@ public class WorldConnection extends Connection{
 	            p.packet.put(b);
             }
         } catch (IOException e) {
-            Log.log(Log.DEBUG, "Couldn't read client packet");
+            Logger.writeError("Couldn't read client packet");
         }
         return p;
     }
@@ -166,13 +166,13 @@ public class WorldConnection extends Connection{
 			}
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
-    		Log.log(Log.DEBUG, p.sOpcode + " can't be send, it has no opcode linked");
-    		Log.log(p.toString());
+    		Logger.writeError(p.sOpcode + " can't be send, it has no opcode linked");
+    		Logger.writeError(p.toString());
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Log.log(Log.DEBUG, "Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
+    	Logger.writeError("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
         return super.sendPacket(p);

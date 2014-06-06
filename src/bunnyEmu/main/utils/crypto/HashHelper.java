@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 public class HashHelper {
 	/* create and return hashPW here */
@@ -19,7 +19,7 @@ public class HashHelper {
 		md.update(user.getBytes());
 
 		String accountHash = DatatypeConverter.printHexBinary(md.digest());
-		Log.log(Log.DEBUG, "AccountHash: " + accountHash);
+		Logger.writeError("AccountHash: " + accountHash);
 		return accountHash;
 	}
 }

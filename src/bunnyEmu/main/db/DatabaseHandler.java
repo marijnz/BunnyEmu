@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import bunnyEmu.main.Server;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 public class DatabaseHandler {
 	
@@ -58,7 +58,7 @@ public class DatabaseHandler {
 			st.executeUpdate("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
 														"'" + userName + "', '" + hashPW + "');");
 			
-			Log.log("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
+			Logger.writeError("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
 														"'" + userName + "', '" + hashPW + "');");
 
 			// cleanup

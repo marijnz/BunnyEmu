@@ -11,7 +11,7 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Versions;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
@@ -154,7 +154,7 @@ public class Client {
 			}
     	}
     	
-    	Log.log(this.name + " disconnected!");
+    	Logger.writeError(this.name + " disconnected!");
     }
     
     public void disconnectFromRealm(){
@@ -171,7 +171,7 @@ public class Client {
     }
     
     public int addCharacter(Char c){
-    	Log.log(Log.DEBUG, "adding char with GUID " + c.getGUID());
+    	Logger.writeError("adding char with GUID " + c.getGUID());
     	if(characters.size() >= 10)
     		return -1;
     	characters.add(c);
@@ -208,7 +208,7 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	Log.log(Log.DEBUG, "setting cur char with GUID " + GUID);
+    	Logger.writeError("setting cur char with GUID " + GUID);
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {
