@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersions;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketMap;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * A realm that has to be added to the RealmHandler.
@@ -41,7 +41,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.realmlist, 3456, Versions.VERSION_WOTLK);
+		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersions.VERSION_WOTLK.getNumber());
 	}
 
 	/**
@@ -60,11 +60,11 @@ public class Realm extends Thread {
 		this.port = port;
 		this.version = version;
 		
-		if(version <= Versions.VERSION_WOTLK)
+		if(version <= ClientVersions.VERSION_WOTLK.getNumber())
 			packets = Opcodes.formWotLK();
-		else if(version <= Versions.VERSION_CATA)
+		else if(version <= ClientVersions.VERSION_CATA.getNumber())
 			packets = Opcodes.formCata();
-		else if(version <= Versions.VERSION_MOP)
+		else if(version <= ClientVersions.VERSION_MOP.getNumber())
 			packets = Opcodes.formMoP();
 		start();
 		
@@ -150,15 +150,15 @@ public class Realm extends Thread {
 	}
 	
 	public String getVersionName(){
-		if(this.version <= Versions.VERSION_VANILLA)
+		if(this.version <= ClientVersions.VERSION_VANILLA.getNumber())
 			return "Vanilla";
-		if(this.version <= Versions.VERSION_BC)
+		if(this.version <= ClientVersions.VERSION_BC.getNumber())
 			return "BC";
-		if(this.version <= Versions.VERSION_WOTLK)
+		if(this.version <= ClientVersions.VERSION_WOTLK.getNumber())
 			return "WotLK";
-		if(this.version <= Versions.VERSION_CATA)
+		if(this.version <= ClientVersions.VERSION_CATA.getNumber())
 			return "Cata";
-		if(this.version <= Versions.VERSION_MOP)
+		if(this.version <= ClientVersions.VERSION_MOP.getNumber())
 			return "MoP";
 		else
 			return null;
