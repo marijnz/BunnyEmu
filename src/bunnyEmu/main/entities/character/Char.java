@@ -36,21 +36,21 @@ public class Char extends Unit {
 				byte cFaceStyle, byte cFacialHair, byte cHairColor, byte cSkinColor, 
 				byte cRace, byte cClass, byte cGender, int cLevel) {
 		
-		this.setCharName(cName);
+		this.cName = cName;
 		
 		this.setPosition(x, y, z, mapID);
 
-		this.setCharHairStyle(cHairStyle);
-		this.setCharFaceStyle(cFaceStyle);
-		this.setCharFacialHair(cFacialHair);
-		this.setCharHairColor(cHairColor);
-		this.setCharSkinColor(cSkinColor);
+		this.cHairStyle = cHairStyle;
+		this.cFaceStyle = cFaceStyle;
+		this.cFacialHair = cFacialHair;
+		this.cHairColor = cHairColor;
+		this.cSkinColor = cSkinColor;
 
-		this.setCharRace(cRace);
-		this.setCharClass(cClass);
-		this.setCharGender(cGender);
+		this.cRace = cRace;
+		this.cClass = cClass;
+		this.cGender = cGender;
 		
-		this.setCharLevel(cLevel);
+		this.cLevel = cLevel;
 
 		spells.add(new Spell(669)); // orcish
 		skills.add(new Skill(109)); // language 1
@@ -172,44 +172,5 @@ public class Char extends Unit {
 	
 	public void setCharLevel(int level) {
 		this.cLevel = level;
-	}
-
-
-	/* these attributes should only be set on creation (for now) */
-	
-	private void setCharName(String name) {
-		this.cName = name;
-	}
-
-	private void setCharHairStyle(byte cHairStyle) {
-		this.cHairStyle = cHairStyle;
-	}
-
-	private void setCharFaceStyle(byte cFaceStyle) {
-		this.cFaceStyle = cFaceStyle;
-	}
-
-	private void setCharFacialHair(byte cFacialHair) {
-		this.cFacialHair = cFacialHair;
-	}
-
-	private void setCharHairColor(byte cHairColor) {
-		this.cHairColor = cHairColor;
-	}
-
-	private void setCharSkinColor(byte cSkinColor) {
-		this.cSkinColor = cSkinColor;
-	}
-
-	private void setCharRace(byte charRace) {
-		this.cRace = charRace;
-	}
-
-	private void setCharClass(byte charClass) {
-		this.cClass = charClass;
-	}
-
-	private void setCharGender(byte cGender) {
-		this.cGender = cGender;
 	}
 }
