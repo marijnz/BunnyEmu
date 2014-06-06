@@ -10,7 +10,7 @@ import bunnyEmu.main.utils.crypto.HashHelper;
 /* handle console commands here */
 public class ConsoleLoggerCMD implements Runnable {
 	public void run() {
-		Logger.writeError("\nType commands below after >>> indicators.");
+		System.out.println("\nType commands below after >>> indicators.");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			while (true) {
@@ -24,14 +24,14 @@ public class ConsoleLoggerCMD implements Runnable {
 				String command = br.readLine();
 
 				if (command.equals("commands") || command.equals("help")) {
-					Logger.writeError("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.");
+					System.out.println("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.");
 				}
 				else if (command.equals("shutdown")) {
-					Logger.writeError("\n!!!Console shutdown imminent!!!");
+					System.out.println("\n!!!Console shutdown imminent!!!");
 					System.exit(0);
 				}
 				else if (command.equals("online")) {
-					Logger.writeError("This command is not completely implemented yet.");
+					System.out.println("This command is not completely implemented yet.");
 					//System.out.print("These accounts are online: ");
 					//DatabaseHandler.queryOnline();
 					//System.out.print("\n");
@@ -40,7 +40,7 @@ public class ConsoleLoggerCMD implements Runnable {
 					String[] accountInfo = command.split(" ");
 					
 					if (accountInfo.length != 3) {
-						Logger.writeError("Usage for this command is: create account password");
+						System.out.println("Usage for this command is: create account password");
 						continue;
 					}
 					
@@ -57,17 +57,17 @@ public class ConsoleLoggerCMD implements Runnable {
 					Boolean result = DatabaseHandler.createAccount(userName, hashPW);
 					
 					if (result) {
-						Logger.writeError("Account: " + userName + " created successfully!");
+						System.out.println("Account: " + userName + " created successfully!");
 					}
 					else {
-						Logger.writeError("Failed to create: " + userName + ". Name is probably already taken");
+						System.out.println("Failed to create: " + userName + ". Name is probably already taken");
 					}
 				}
 				else if (command.isEmpty()) {
 					continue;
 				}
 				else {
-					Logger.writeError("Unrecognized command. Try typing 'help'.");
+					System.out.println("Unrecognized command. Try typing 'help'.");
 				}
 			}
 		}
