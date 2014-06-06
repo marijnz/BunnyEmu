@@ -45,7 +45,7 @@ public class DatabaseConnection {
 															prop.getProperty("worldDB").toLowerCase());
 			
 			if (!exists) {
-				Logger.writeError("Some databases do not exist!");
+				Logger.writeError("One or more databases (authDB, charactersDB, or worldDB) do not exist.");
 				System.exit(0);
 			}
 
@@ -59,10 +59,10 @@ public class DatabaseConnection {
 	public static void shutdownConnectionPool() {
 		try {
 			BoneCP connectionPool = DatabaseConnection.getConnectionPool();
-			Logger.writeError("Shutting down connection pool.");
+			System.out.println("Shutting down connection pool.");
 			if (connectionPool != null) {
 				connectionPool.shutdown();
-				Logger.writeError("Connection pooling is destroyed successfully.");
+				System.out.println("Connection pooling is destroyed successfully.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
