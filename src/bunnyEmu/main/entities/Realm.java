@@ -68,7 +68,7 @@ public class Realm extends Thread {
 			packets = Opcodes.formMoP();
 		start();
 		
-		Logger.writeError("Created new realm: " + this.name);
+		System.out.println("Created new realm: " + this.name);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			Logger.writeError("Connection made to realm " + id);
+			System.out.println("Connection made to realm " + id);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class Realm extends Thread {
 		Logger.writeError("Ignore client: " + ignoreClient.getName());
 		for(Client client : clients)
 			if(!client.equals(ignoreClient)){
-				Logger.writeError("Sending packet " + p.sOpcode + " to client: " + client.getName());
+				System.out.println("Sending packet " + p.sOpcode + " to client: " + client.getName());
 				client.getWorldConnection().send(p);
 			}
 	}
