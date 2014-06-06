@@ -6,9 +6,9 @@ import java.nio.ByteOrder;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersions;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Opcodes;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * Character list response
@@ -54,12 +54,12 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putFloat(currentChar.getPosition().getY()); // Y
 			putFloat(currentChar.getPosition().getZ()); // Z
 			// Guild ID
-			if (client.getVersion() < Versions.VERSION_CATA)
+			if (client.getVersion() < ClientVersions.VERSION_CATA.getNumber())
 				putInt(0);
 			else
 				putLong(0);
 			putInt(0); // Character Flags;
-			if (client.getVersion() <= Versions.VERSION_BC)
+			if (client.getVersion() <= ClientVersions.VERSION_BC.getNumber())
 				put((byte) 0); // Login Flags;
 			else {
 				putInt(0); // Login Flags;
@@ -71,19 +71,19 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putInt(0); // Pet FamilyID;
 
 			int EQUIPMENT_SLOT_END = 19;
-			if (client.getVersion() == Versions.VERSION_WOTLK)
+			if (client.getVersion() == ClientVersions.VERSION_WOTLK.getNumber())
 				EQUIPMENT_SLOT_END++;
 
 			for (int itemSlot = 0; itemSlot < EQUIPMENT_SLOT_END; ++itemSlot) {
 				putInt(0); // Item DisplayID;
 				put((byte) 0); // Item Inventory Type;
-				if (client.getVersion() >= Versions.VERSION_BC)
+				if (client.getVersion() >= ClientVersions.VERSION_BC.getNumber())
 					putInt(1); // Item EnchantID;
 			}
 
-			if (client.getVersion() >= Versions.VERSION_WOTLK) {
+			if (client.getVersion() >= ClientVersions.VERSION_WOTLK.getNumber()) {
 				int bagCount = 3;
-				if (client.getVersion() >= Versions.VERSION_CATA)
+				if (client.getVersion() >= ClientVersions.VERSION_CATA.getNumber())
 					bagCount++;
 				for (int c = 0; c < bagCount; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32
 					putInt(0); // bag;
@@ -95,7 +95,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				put((byte) 0); // first bag inventory type
 			}
 
-			if (client.getVersion() == Versions.VERSION_BC)
+			if (client.getVersion() == ClientVersions.VERSION_BC.getNumber())
 				putInt(0); // enchant?
 
 		}
