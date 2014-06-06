@@ -6,7 +6,6 @@ import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.types.MovementSpeed;
 import bunnyEmu.main.utils.types.MovementValues;
-import bunnyEmu.main.utils.types.UpdateFlag;
 
 /**
  * Adapted from Arctium, currently only used in the initial update packet.
