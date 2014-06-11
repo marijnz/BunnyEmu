@@ -54,7 +54,7 @@ import bunnyEmu.main.utils.Logger;
         }
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
-            Logger.writeError("serverLogonChallenge");
+        	System.out.println("serverLogonChallenge");
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
@@ -86,7 +86,7 @@ import bunnyEmu.main.utils.Logger;
             
             String ip = octet[3] + "." + octet[2] + "." + octet[1] + "." + octet[0];
             
-            Logger.writeError("Client connecting from address: " + ip);
+            System.out.println("Client connecting from address: " + ip);
  
             byte username_len = in.get();                 			// length of username
             I = new byte[username_len];
@@ -104,7 +104,7 @@ import bunnyEmu.main.utils.Logger;
             	authWrongPass.put((byte) AuthCodes.AUTH_UNKNOWN_ACCOUNT);
             	connection.send(authWrongPass);
 
-            	Logger.writeError("Wrong password sent. (" + username + ")");
+            	System.out.println("Wrong password sent. (" + username + ")");
 
             	return;
             }
@@ -114,7 +114,7 @@ import bunnyEmu.main.utils.Logger;
             
             System.out.println("DEBUG MESSAGE: Client version number is " + version);
             try {
-            client = new Client(username, ClientVersion.versionStringToEnum(version));
+            	client = new Client(username, ClientVersion.versionStringToEnum(version));
             } catch (IllegalArgumentException e) {
         		Logger.writeError(e.getMessage());
             }
@@ -161,7 +161,7 @@ import bunnyEmu.main.utils.Logger;
 
             connection.send(serverLogonChallenge);
             
-            Logger.writeError("send challenge");
+            System.out.println("send challenge");
         }
 
         public void serverLogonProof(ClientPacket in) throws IOException {
@@ -169,7 +169,7 @@ import bunnyEmu.main.utils.Logger;
             byte[] _M1 = new byte[20];
             byte[] crc_hash = new byte[20];
             
-            Logger.writeError("serverLogonProof");
+            System.out.println("serverLogonProof");
 
             in.get(_A);
             in.get(_M1);
@@ -283,7 +283,7 @@ import bunnyEmu.main.utils.Logger;
         
         
         public void serverRealmList() throws IOException {
-        	Logger.writeError("Sending realmlist");
+        	System.out.println("Sending realmlist");
             connection.send(RealmHandler.getRealmList()); 
         }
       
