@@ -33,7 +33,7 @@ public class Realm extends Thread {
 	public int flags = 0;
 	public int timezone;
 	public float population = 0;
-	private int version;
+	private ClientVersion version;
 	private PacketMap packets;
 
 	private ArrayList<Client> clients = new ArrayList<Client>(10);
@@ -41,7 +41,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersion.VERSION_WOTLK.getNumber());
+		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersion.VERSION_WOTLK);
 	}
 
 	/**
@@ -53,18 +53,18 @@ public class Realm extends Thread {
 	 * @param port The port of the worldsocket.
 	 * @param version The version of the realm, see Readme for up-to-date version support.
 	 */
-	public Realm(int id, String name, String address, int port, int version) {
+	public Realm(int id, String name, String address, int port, ClientVersion version) {
 		this.id = id;
 		this.name = "[" + version + "]" + name ;
 		this.address = address + ":" + String.valueOf(port);
 		this.port = port;
 		this.version = version;
 		
-		if(version <= ClientVersion.VERSION_WOTLK.getNumber())
+		if(version == ClientVersion.VERSION_WOTLK || version == ClientVersion.VERSION_BC || version == ClientVersion.VERSION_VANILLA)
 			packets = Opcodes.formWotLK();
-		else if(version <= ClientVersion.VERSION_CATA.getNumber())
+		else if(version == ClientVersion.VERSION_CATA)
 			packets = Opcodes.formCata();
-		else if(version <= ClientVersion.VERSION_MOP.getNumber())
+		else if(version == ClientVersion.VERSION_MOP)
 			packets = Opcodes.formMoP();
 		start();
 		
@@ -145,20 +145,20 @@ public class Realm extends Thread {
 	/**
 	 * @return The version of this realm, can be used to build packets for specific versions.
 	 */
-	public int getVersion() {
+	public ClientVersion getVersion() {
 		return version;
 	}
 	
 	public String getVersionName(){
-		if(this.version <= ClientVersion.VERSION_VANILLA.getNumber())
+		if(this.version == ClientVersion.VERSION_VANILLA)
 			return "Vanilla";
-		if(this.version <= ClientVersion.VERSION_BC.getNumber())
+		if(this.version == ClientVersion.VERSION_BC)
 			return "BC";
-		if(this.version <= ClientVersion.VERSION_WOTLK.getNumber())
+		if(this.version == ClientVersion.VERSION_WOTLK)
 			return "WotLK";
-		if(this.version <= ClientVersion.VERSION_CATA.getNumber())
+		if(this.version == ClientVersion.VERSION_CATA)
 			return "Cata";
-		if(this.version <= ClientVersion.VERSION_MOP.getNumber())
+		if(this.version == ClientVersion.VERSION_MOP)
 			return "MoP";
 		else
 			return null;
