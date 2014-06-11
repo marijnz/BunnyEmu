@@ -4,7 +4,7 @@ import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * Received upon world login
@@ -42,7 +42,7 @@ public class CMSG_PLAYER_LOGIN extends ClientPacket {
 		
 		this.getInt(); // Unknown
 		guid = GuidUnpacker.getGuid(guidMask, guidBytes);
-		Log.log(guid);
+		Logger.writeError(String.valueOf(guid));
 		return true;
 	}
 

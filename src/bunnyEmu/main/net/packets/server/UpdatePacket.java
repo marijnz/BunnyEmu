@@ -3,10 +3,9 @@ package bunnyEmu.main.net.packets.server;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.types.MovementSpeed;
 import bunnyEmu.main.utils.types.MovementValues;
-import bunnyEmu.main.utils.types.UpdateFlag;
 
 /**
  * Adapted from Arctium, currently only used in the initial update packet.
@@ -175,18 +174,18 @@ public class UpdatePacket extends ServerPacket {
 		this.putShort((short) 0x71);  // update flags              
 		MovementValues values = new MovementValues(updateFlags);
 		
-		Log.log("VALUES: ");
-		Log.log("test: " + values.IsSelf);
-		Log.log("test: " + values.IsAlive);
-		Log.log("test: " + values.HasRotation);
-		Log.log("test: " + values.HasStationaryPosition);
-		Log.log("test: " + values.HasTarget);
-		Log.log("test: " + values.IsTransport);
-		Log.log("test: " + values.HasGoTransportPosition);
-		Log.log("test: " + values.HasAnimKits);
-		Log.log("test: " + values.HasUnknown);
-		Log.log("test: " + values.HasUnknown2);
-		Log.log("test: " + values.HasUnknown4);
+		Logger.writeError("VALUES: ");
+		Logger.writeError("test: " + values.IsSelf);
+		Logger.writeError("test: " + values.IsAlive);
+		Logger.writeError("test: " + values.HasRotation);
+		Logger.writeError("test: " + values.HasStationaryPosition);
+		Logger.writeError("test: " + values.HasTarget);
+		Logger.writeError("test: " + values.IsTransport);
+		Logger.writeError("test: " + values.HasGoTransportPosition);
+		Logger.writeError("test: " + values.HasAnimKits);
+		Logger.writeError("test: " + values.HasUnknown);
+		Logger.writeError("test: " + values.HasUnknown2);
+		Logger.writeError("test: " + values.HasUnknown4);
 	    if (values.IsAlive){
 	    	// Build Movement
 	    	this.putInt(0); // flags2

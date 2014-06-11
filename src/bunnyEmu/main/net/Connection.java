@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
 
@@ -26,7 +26,7 @@ public abstract class Connection extends Thread {
 	/**
 	 * Create a new connection attached based on the given socket
 	 * 
-	 * @param clientSocket The socket the client connected on
+	 * @param clientSocket The socket the client connected on.
 	 */
 	public Connection(Socket clientSocket) {
 		this.clientSocket = clientSocket;
@@ -34,13 +34,13 @@ public abstract class Connection extends Thread {
 	}
 
 	private void initialize() {
-		Log.log(Log.INFO, "Created Connection");
+		System.out.println("Created Connection.");
+		
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());
-
-		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't create in and output streams");
+		} catch (IOException e) {
+			Logger.writeError("Couldn't create input and output streams.");
 		}
 	}
 	
@@ -51,8 +51,8 @@ public abstract class Connection extends Thread {
 			in.close();
 			clientSocket.close();
 			interrupt();
-		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't close connection properly");
+		} catch (IOException e) {
+			Logger.writeError("Couldn't close connection properly");
 		}
 	}
 
@@ -60,11 +60,15 @@ public abstract class Connection extends Thread {
 	 * 
 	 * @param p The sent packet
 	 * 
-	 * @return True if succesful, false if the actual capacity exceeds the given size
+	 * @return True if successful, false if the actual capacity exceeds the given size
 	 */
 	protected boolean sendPacket(Packet p) {
 		if (p.size < p.packet.capacity()) {
-			Log.log(Log.ERROR, "packet not sent: size " + p.size + " <  capacity " + p.packet.capacity());
+			String errorMessage = "";
+			errorMessage += "Packet Error: The size of the packer (" + p.size;
+			errorMessage += ") is less than the total capacity (" + p.packet.capacity() +").";
+			Logger.writeError(errorMessage);
+			
 			return false;
 		}
 		PacketLog.logPacket(PacketType.SERVER, p);

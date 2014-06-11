@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketMap;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * A realm that has to be added to the RealmHandler.
@@ -41,7 +41,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.realmlist, 3456, Versions.VERSION_WOTLK);
+		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersion.VERSION_WOTLK.getNumber());
 	}
 
 	/**
@@ -60,15 +60,15 @@ public class Realm extends Thread {
 		this.port = port;
 		this.version = version;
 		
-		if(version <= Versions.VERSION_WOTLK)
+		if(version <= ClientVersion.VERSION_WOTLK.getNumber())
 			packets = Opcodes.formWotLK();
-		else if(version <= Versions.VERSION_CATA)
+		else if(version <= ClientVersion.VERSION_CATA.getNumber())
 			packets = Opcodes.formCata();
-		else if(version <= Versions.VERSION_MOP)
+		else if(version <= ClientVersion.VERSION_MOP.getNumber())
 			packets = Opcodes.formMoP();
 		start();
 		
-		Log.log(Log.INFO, "Created new realm: " + this.name);
+		System.out.println("Created new realm: " + this.name);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class Realm extends Thread {
 		try {
 			listenSocket();
 		} catch (IOException ex) {
-			Log.log(Log.ERROR, "Couldn't create a listening socket for realm " + id);
+			Logger.writeError("Couldn't create a listening socket for realm " + id);
 		}
 	}
 
@@ -93,7 +93,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			Log.log(Log.DEBUG, "Connection made to realm " + id);
+			System.out.println("Connection made to realm " + id);
 		}
 	}
 
@@ -135,10 +135,10 @@ public class Realm extends Thread {
 	 * Send a packet to all connected clients except for passed client
 	 */
 	public void sendAllClients(ServerPacket p, Client ignoreClient){
-		Log.log("Ignore client: " + ignoreClient.getName());
+		Logger.writeError("Ignore client: " + ignoreClient.getName());
 		for(Client client : clients)
 			if(!client.equals(ignoreClient)){
-				Log.log("Sending packet " + p.sOpcode + " to client: " + client.getName());
+				System.out.println("Sending packet " + p.sOpcode + " to client: " + client.getName());
 				client.getWorldConnection().send(p);
 			}
 	}
@@ -150,15 +150,15 @@ public class Realm extends Thread {
 	}
 	
 	public String getVersionName(){
-		if(this.version <= Versions.VERSION_VANILLA)
+		if(this.version <= ClientVersion.VERSION_VANILLA.getNumber())
 			return "Vanilla";
-		if(this.version <= Versions.VERSION_BC)
+		if(this.version <= ClientVersion.VERSION_BC.getNumber())
 			return "BC";
-		if(this.version <= Versions.VERSION_WOTLK)
+		if(this.version <= ClientVersion.VERSION_WOTLK.getNumber())
 			return "WotLK";
-		if(this.version <= Versions.VERSION_CATA)
+		if(this.version <= ClientVersion.VERSION_CATA.getNumber())
 			return "Cata";
-		if(this.version <= Versions.VERSION_MOP)
+		if(this.version <= ClientVersion.VERSION_MOP.getNumber())
 			return "MoP";
 		else
 			return null;
@@ -180,7 +180,7 @@ public class Realm extends Thread {
 	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
-    	Log.log(Log.DEBUG, "loading packet");
+    	Logger.writeError("loading packet");
     	String opcode = null;
     	ByteBuffer data = ByteBuffer.allocate(capacity);
     	try {
@@ -210,7 +210,7 @@ public class Realm extends Thread {
             e.printStackTrace();
         }
     	
-    	Log.log(data.toString());
+    	Logger.writeError(data.toString());
     	ServerPacket p;
     	try{
     		p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);

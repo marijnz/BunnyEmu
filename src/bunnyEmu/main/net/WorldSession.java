@@ -9,6 +9,7 @@ import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
@@ -30,9 +31,8 @@ import bunnyEmu.main.net.packets.server.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * Used after world authentication, handles incoming packets.
@@ -58,7 +58,7 @@ public class WorldSession {
 	 * Send the character list to the client.
 	 */
 	public void sendCharacters() {
-		Log.log(Log.DEBUG, "sending chars");
+		Logger.writeError("sending chars");
 		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
@@ -96,7 +96,7 @@ public class WorldSession {
 														p.cSkinColor, p.cRace, p.cClass, p.cGender,
 														cStartLevel));
 
-		Log.log(Log.DEBUG, "Created new char with name: " + p.cName);
+		Logger.writeError("Created new char with name: " + p.cName);
 	}
 
 	/* delete the specified character */
@@ -153,10 +153,10 @@ public class WorldSession {
         boolean charDeletion = connection.getClient().removeCharacter(guid);
         
         if (charDeletion) {
-        	Log.log(Log.DEBUG, "Deleted character with GUID = " + guid);
+        	Logger.writeError("Deleted character with GUID = " + guid);
         }
         else {
-        	Log.log(Log.DEBUG, "Failed to delete character with GUID = " + guid);
+        	Logger.writeError("Failed to delete character with GUID = " + guid);
         }
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
@@ -173,7 +173,7 @@ public class WorldSession {
 		final Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
-			Log.log(Log.DEBUG, "\nPROBLEM: Character is null at login to world..\n");
+			Logger.writeError("\nPROBLEM: Character is null at login to world..\n");
 		}
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -184,12 +184,12 @@ public class WorldSession {
 		character.setUpdateFields(realm);
 
 		// Currently only fully supports MoP
-		if (realm.getVersion() <= Versions.VERSION_BC)
+		if (realm.getVersion() <= ClientVersion.VERSION_BC.getNumber())
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
-		else if (realm.getVersion() <= Versions.VERSION_WOTLK)
+		else if (realm.getVersion() <= ClientVersion.VERSION_WOTLK.getNumber())
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 8000));
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
-		else if (realm.getVersion() <= Versions.VERSION_CATA)
+		else if (realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber())
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
@@ -210,7 +210,7 @@ public class WorldSession {
 	 */
 	public void sendAccountDataTimes(int mask) {
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
-		if (this.realm.getVersion() <= Versions.VERSION_CATA)
+		if (this.realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber())
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 
@@ -261,7 +261,7 @@ public class WorldSession {
 	 */
 	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		Log.log("msg: " + p.getMessage());
+		Logger.writeError("msg: " + p.getMessage());
         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {

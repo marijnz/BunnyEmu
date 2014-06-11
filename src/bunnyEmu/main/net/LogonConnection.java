@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.logon.LogonAuth;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
 
@@ -45,7 +45,7 @@ public class LogonConnection extends Connection {
                 if ((p = readPacket(readByte)) == null) 
                     continue;
 
-                Log.log(Log.DEBUG, "Got auth packet: " + p.toString());
+                Logger.writeError("Got auth packet: " + p.toString());
                 PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
                 
                 switch (p.nOpcode) {
@@ -61,7 +61,7 @@ public class LogonConnection extends Connection {
                  }
         	}
         } catch (Exception e) {
-        	Log.log(LogonConnection.class.getName() + " force closed");
+        	Logger.writeError(LogonConnection.class.getName() + " force closed");
         	e.printStackTrace();
         } finally {
             close();
@@ -93,7 +93,7 @@ public class LogonConnection extends Connection {
 	}
 	
     public boolean send(Packet p){
-    	Log.log(Log.DEBUG, "Sending packet: (" + p.size + ") " + p.packetAsHex());
+    	Logger.writeError("Sending packet: (" + p.size + ") " + p.packetAsHex());
         return super.sendPacket(p);
     }
 		

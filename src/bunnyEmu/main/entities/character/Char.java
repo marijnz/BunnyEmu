@@ -13,19 +13,30 @@ import bunnyEmu.main.utils.types.MovementSpeed;
  *
  */
 public class Char extends Unit {
-
+	/** The character's name. */
 	private String cName;
 	
+	/** The ID of the character's hair-style. */
 	private byte cHairStyle; 
+	/** The ID of the character's face. */
 	private byte cFaceStyle; 
+	/** The ID of the character's facial hair. */
 	private byte cFacialHair;
+	/** The ID of the character's hair color. */
 	private byte cHairColor; 
+	/** The ID of the character's skin color. */
 	private byte cSkinColor;
 	
+	/** The ID of the character's race. */
+	// TODO: Create an enum to represent races.
 	private byte cRace;
+	/** The ID of the character's class. */
+	// TODO: Create an enum to represent classes.
 	private byte cClass;
+	/** The ID of the character's gender. */
 	private byte cGender;
 	
+	/** The character's current level. */
 	private int cLevel;
 	
 	private ArrayList<Spell> spells = new ArrayList<Spell>();
@@ -36,21 +47,21 @@ public class Char extends Unit {
 				byte cFaceStyle, byte cFacialHair, byte cHairColor, byte cSkinColor, 
 				byte cRace, byte cClass, byte cGender, int cLevel) {
 		
-		this.setCharName(cName);
+		this.cName = cName;
 		
 		this.setPosition(x, y, z, mapID);
 
-		this.setCharHairStyle(cHairStyle);
-		this.setCharFaceStyle(cFaceStyle);
-		this.setCharFacialHair(cFacialHair);
-		this.setCharHairColor(cHairColor);
-		this.setCharSkinColor(cSkinColor);
+		this.cHairStyle = cHairStyle;
+		this.cFaceStyle = cFaceStyle;
+		this.cFacialHair = cFacialHair;
+		this.cHairColor = cHairColor;
+		this.cSkinColor = cSkinColor;
 
-		this.setCharRace(cRace);
-		this.setCharClass(cClass);
-		this.setCharGender(cGender);
+		this.cRace = cRace;
+		this.cClass = cClass;
+		this.cGender = cGender;
 		
-		this.setCharLevel(cLevel);
+		this.cLevel = cLevel;
 
 		spells.add(new Spell(669)); // orcish
 		skills.add(new Skill(109)); // language 1
@@ -118,38 +129,47 @@ public class Char extends Unit {
         data.setUpdateField("PlayerFields", "VirtualPlayerRealm", 1, Integer.class);
 	}
 
+	/** @return The character's name. */
 	public String getCharName() {
 		return cName;
 	}
 
+	/** @return The ID of the character's hair-style. */
 	public byte getCharHairStyle() {
 		return cHairStyle;
 	}
 
+	/** @return The ID of the character's face. */
 	public byte getCharFaceStyle() {
 		return cFaceStyle;
 	}
 
+	/** @return The ID of the character's facial hair. */
 	public byte getCharFacialHair() {
 		return cFacialHair;
 	}
 	
+	/** @return The ID of the character's hair color. */
 	public byte getCharHairColor() {
 		return cHairColor;
 	}
 	
+	/** @return The ID of the character's skin color. */
 	public byte getCharSkinColor() {
 		return cSkinColor;
 	}
 	
+	/** @return The ID of the character's race. */
 	public byte getCharRace() {
 		return cRace;
 	}
 	
+	/** @return The ID of the character's class. */
 	public byte getCharClass() {
 		return cClass;
 	}
 	
+	/** @return The ID of the character's gender. */
 	public byte getCharGender() {
 		return cGender;
 	}
@@ -172,44 +192,5 @@ public class Char extends Unit {
 	
 	public void setCharLevel(int level) {
 		this.cLevel = level;
-	}
-
-
-	/* these attributes should only be set on creation (for now) */
-	
-	private void setCharName(String name) {
-		this.cName = name;
-	}
-
-	private void setCharHairStyle(byte cHairStyle) {
-		this.cHairStyle = cHairStyle;
-	}
-
-	private void setCharFaceStyle(byte cFaceStyle) {
-		this.cFaceStyle = cFaceStyle;
-	}
-
-	private void setCharFacialHair(byte cFacialHair) {
-		this.cFacialHair = cFacialHair;
-	}
-
-	private void setCharHairColor(byte cHairColor) {
-		this.cHairColor = cHairColor;
-	}
-
-	private void setCharSkinColor(byte cSkinColor) {
-		this.cSkinColor = cSkinColor;
-	}
-
-	private void setCharRace(byte charRace) {
-		this.cRace = charRace;
-	}
-
-	private void setCharClass(byte charClass) {
-		this.cClass = charClass;
-	}
-
-	private void setCharGender(byte cGender) {
-		this.cGender = cGender;
 	}
 }

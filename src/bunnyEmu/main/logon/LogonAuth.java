@@ -10,13 +10,13 @@ import bunnyEmu.main.db.DatabaseHandler;
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Log;
-import bunnyEmu.main.utils.Versions;
+import bunnyEmu.main.utils.Logger;
 //import bunnyEmu.main.utils.AuthCodes;
 
     /**
@@ -49,12 +49,12 @@ import bunnyEmu.main.utils.Versions;
             try {
                 md = MessageDigest.getInstance("SHA1");
             } catch (NoSuchAlgorithmException ex) {
-                Log.log(Log.ERROR, "Couldn't load algorithm");
+                Logger.writeError("Couldn't load algorithm");
             }
         }
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
-            Log.log(Log.DEBUG, "serverLogonChallenge");
+            Logger.writeError("serverLogonChallenge");
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
@@ -86,7 +86,7 @@ import bunnyEmu.main.utils.Versions;
             
             String ip = octet[3] + "." + octet[2] + "." + octet[1] + "." + octet[0];
             
-            Log.log(Log.INFO, "Client connecting from address: " + ip);
+            Logger.writeError("Client connecting from address: " + ip);
  
             byte username_len = in.get();                 			// length of username
             I = new byte[username_len];
@@ -104,7 +104,7 @@ import bunnyEmu.main.utils.Versions;
             	authWrongPass.put((byte) AuthCodes.AUTH_UNKNOWN_ACCOUNT);
             	connection.send(authWrongPass);
 
-            	Log.log(Log.DEBUG, "Wrong password sent. (" + username + ")");
+            	Logger.writeError("Wrong password sent. (" + username + ")");
 
             	return;
             }
@@ -154,7 +154,7 @@ import bunnyEmu.main.utils.Versions;
 
             connection.send(serverLogonChallenge);
             
-            Log.log(Log.DEBUG, "send challenge");
+            Logger.writeError("send challenge");
         }
 
         public void serverLogonProof(ClientPacket in) throws IOException {
@@ -162,7 +162,7 @@ import bunnyEmu.main.utils.Versions;
             byte[] _M1 = new byte[20];
             byte[] crc_hash = new byte[20];
             
-            Log.log(Log.DEBUG, "serverLogonProof");
+            Logger.writeError("serverLogonProof");
 
             in.get(_A);
             in.get(_M1);
@@ -237,8 +237,8 @@ import bunnyEmu.main.utils.Versions;
             BigNumber M = new BigNumber(m);
             BigNumber M1 = new BigNumber(_M1);
             
-            Log.log(Log.DEBUG, "M = " + M.toHexString());
-            Log.log(Log.DEBUG, "M1 = " + M1.toHexString());
+            Logger.writeError("M = " + M.toHexString());
+            Logger.writeError("M1 = " + M1.toHexString());
             
             if(!M.equals(M1)) {
             	TempClientHandler.removeTempClient(client.getName());
@@ -253,7 +253,7 @@ import bunnyEmu.main.utils.Versions;
             md.update(K.asByteArray());
 
             short size = 32;
-            if(client.getVersion() <= Versions.VERSION_VANILLA)
+            if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
             	size = 26;
             
 	        AuthPacket serverLogonAuth = new AuthPacket((short) size);
@@ -261,7 +261,7 @@ import bunnyEmu.main.utils.Versions;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(client.getVersion() <= Versions.VERSION_VANILLA)
+	        if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
 	        	serverLogonAuth.putInt(0);     
 	        else{
 	        	serverLogonAuth.putInt(0x00800000);
@@ -276,7 +276,7 @@ import bunnyEmu.main.utils.Versions;
         
         
         public void serverRealmList() throws IOException {
-        	Log.log(Log.DEBUG, "Sending realmlist");
+        	Logger.writeError("Sending realmlist");
             connection.send(RealmHandler.getRealmList()); 
         }
       

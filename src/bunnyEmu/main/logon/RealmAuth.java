@@ -10,14 +10,14 @@ import java.security.SecureRandom;
 
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.server.SMSG_AUTH_RESPONSE;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
-import bunnyEmu.main.utils.Versions;
 
 /**
  *
@@ -51,11 +51,11 @@ public class RealmAuth extends Auth {
         ServerPacket authChallenge = new ServerPacket(Opcodes.SMSG_AUTH_CHALLENGE, 50);
         _seed = new SecureRandom().generateSeed(4);
         
-        if (realm.getVersion() < Versions.VERSION_MOP) {
-	        if (realm.getVersion() >= Versions.VERSION_CATA) {
+        if (realm.getVersion() < ClientVersion.VERSION_MOP.getNumber()) {
+	        if (realm.getVersion() >= ClientVersion.VERSION_CATA.getNumber()) {
 	        	authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
 	        	authChallenge.put((byte) 1);
-	        } else if(realm.getVersion() > Versions.VERSION_BC && realm.getVersion() < Versions.VERSION_CATA)
+	        } else if(realm.getVersion() > ClientVersion.VERSION_BC.getNumber() && realm.getVersion() < ClientVersion.VERSION_CATA.getNumber())
 	        	authChallenge.putInt(1);
 	        authChallenge.put(_seed);
 	        authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
@@ -73,7 +73,7 @@ public class RealmAuth extends Auth {
     }
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
-        Log.log(Log.DEBUG, "authSession");
+        Logger.writeError("authSession");
 
         client = TempClientHandler.removeTempClient(authProof.getAccountName());
 
@@ -93,13 +93,13 @@ public class RealmAuth extends Auth {
             md.update(connection.getClient().getSessionKey());
             byte[] digest = md.digest();	
             
-            Log.log(Log.DEBUG, "authSession " + client.getName());
+            Logger.writeError("authSession " + client.getName());
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
-            if (realm.getVersion() > Versions.VERSION_CATA || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
+            if (realm.getVersion() > ClientVersion.VERSION_CATA.getNumber() || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
-            	Log.log(Log.INFO, "Valid client connected: " + client.getName());
-                if (realm.getVersion() <= Versions.VERSION_CATA){
+            	Logger.writeError("Valid client connected: " + client.getName());
+                if (realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
 	                authResponse.put((byte) 0x30);
@@ -118,6 +118,6 @@ public class RealmAuth extends Auth {
                 client.disconnect();
         } else
         	connection.close();
-        Log.log(Log.INFO, "Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
+        Logger.writeError("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
     }
 }

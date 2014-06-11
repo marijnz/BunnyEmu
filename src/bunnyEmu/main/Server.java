@@ -16,7 +16,7 @@ import bunnyEmu.main.db.DatabaseConnection;
 import bunnyEmu.main.handlers.ConfigHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * 
@@ -36,19 +36,12 @@ public class Server {
 
 	public static void main(String[] args) {
 		try {
-			
 			prop = ConfigHandler.loadProperties();
-			
-			/* this shouldn't happen ? */
-			if (prop == null) {
-				Log.log("Property file could not be loaded.");
-				System.exit(0);
-			}
 			
 			realmlist = prop.getProperty("realmlistAddress");
 
 			if (realmlist.isEmpty()) {
-				Log.log("No realmlist set in server.conf.. unable to start.");
+				Logger.writeError("No realmlist set in server.conf, unable to start.");
 				System.exit(0);
 			}
 			
@@ -62,16 +55,11 @@ public class Server {
 			e.printStackTrace();
 		}
 
-		Log.setlevel(Log.DEBUG);
-
 		new Server().launch();
 	}
 
 	public void launch() {
-		// RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3344,
-		// 1));
-		// RealmHandler.addRealm(new Realm(1, "Server test 2", localIP, 3345,
-		// 1));
+		//RealmHandler.addRealm(new Realm(1, "Server test 1", "31.220.24.8", 3344, 1));
 		listenSocket();
 	}
 
@@ -81,16 +69,16 @@ public class Server {
 
 	private void listenSocket() {
 		try {
-			Log.log(Log.INFO, "Launched BunnyEmu - listening on " + realmlist);
+			System.out.println("Launched BunnyEmu - listening on " + realmlist);
 			
-			InetAddress addr = InetAddress.getByName(realmlist);
-			serverSocket = new ServerSocket(3724, 0, addr);
+			InetAddress address = InetAddress.getByName(realmlist);
+			serverSocket = new ServerSocket(3724, 0, address);
 
 			/* load database connection */
 			DatabaseConnection.initConnectionPool(prop);
 			
-			Log.log(Log.INFO, "BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
-			Log.log(Log.INFO, "Remember to create an account before logging in.");
+			System.out.println("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
+			System.out.println("Remember to create an account before logging in.");
 			
 			/* console commands are handled by this thread if no GUI */
 			if (Integer.parseInt(prop.getProperty("enableGUI")) == 0) {
@@ -100,16 +88,21 @@ public class Server {
 			}
 
 		} catch (IOException e) {
-			Log.log("ERROR: port 3724 is not available!");
+			Logger.writeError("ERROR: port 3724 is not available!");
 		}
+		
 		try {
 			while (true) {
-				LogonConnection con = new LogonConnection(serverSocket.accept());
-				Log.log(Log.INFO, "Client connected to logon server");
-				connections.add(con);
+				try {
+					LogonConnection connection = new LogonConnection(serverSocket.accept());
+					System.out.println("Client connected to logon server.");
+					connections.add(connection);
+				} catch(NullPointerException e) {
+					continue;
+				}
 			}
 		} catch (IOException e) {
-			Log.log("Accept failed: 3724");
+			Logger.writeError("Accept failed: 3724");
 		}
 	}
 }

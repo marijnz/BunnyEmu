@@ -16,17 +16,17 @@ import bunnyEmu.main.entities.packet.IPacketReadable;
 import bunnyEmu.main.entities.packet.IPacketWritable;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
-import bunnyEmu.main.utils.Versions;
 
 /**
  * 
@@ -51,11 +51,10 @@ public class WorldConnection extends Connection{
         try {
         	packetWriter = IPacketWritable.class.getMethod("write" + realm.getVersionName());
         	packetReader = IPacketReadable.class.getMethod("read" + realm.getVersionName());
-		}
-        catch (Exception e) {;}
+		} catch (Exception e) {;}
         
         auth = new RealmAuth(this, realm);
-        if(realm.getVersion() < Versions.VERSION_MOP)
+        if(realm.getVersion() < ClientVersion.VERSION_MOP.getNumber())
         	auth.authChallenge();
         else
         	auth.transferInitiate();
@@ -74,7 +73,7 @@ public class WorldConnection extends Connection{
                     continue;
                 
                 if(p.sOpcode == null){
-                	Log.log(Log.DEBUG, "Received unknown packet: " + p.toString());
+                	Logger.writeError("Received unknown packet: " + p.toString());
                 	PacketLog.logPacket(PacketType.CLIENT_UNKNOWN, p);
                 	continue;
                 }
@@ -91,10 +90,10 @@ public class WorldConnection extends Connection{
 	    			} catch (Exception e){
 	    				e.printStackTrace();
 	    			}
-					Log.log(Log.DEBUG, "Received known packet with implementation: " + p.toString());
+					Logger.writeError("Received known packet with implementation: " + p.toString());
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
 				} catch (Exception e){
-					Log.log(Log.DEBUG, "Received known packet without implementation: " + p.toString());
+					Logger.writeError("Received known packet without implementation: " + p.toString());
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_UNIMPLEMENTED, p);
 				}
                 
@@ -116,9 +115,10 @@ public class WorldConnection extends Connection{
                     case Opcodes.CMSG_DISCONNECT: 						client.disconnect(); 									break;
                 }
             }
-            Log.log(Log.INFO, "World closed connection from " + clientSocket.toString());
+
+            System.out.println("World closed connection from " + clientSocket.toString());
         } catch (IOException ex) {
-        	Log.log(WorldConnection.class.getName() + " force closed");
+        	Logger.writeError(WorldConnection.class.getName() + " force closed");
         	ex.printStackTrace();
         } finally {
         	// The client parent might be null if the realm authentication hasn't been completed yet
@@ -133,12 +133,12 @@ public class WorldConnection extends Connection{
         try {
             p = new ClientPacket();
             p.header[0] = firstByte;
-            in.read(p.header, 1, ((realm.getVersion() <= Versions.VERSION_CATA) ? 5 : 3));
+            in.read(p.header, 1, ((realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()) ? 5 : 3));
             decodeHeader(p);
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             		
             if (p.size < 0){
-            	Log.log(Log.ERROR, p.size + " is < 0, RETURNING " + p.headerAsHex());
+            	System.out.println(p.size + " is < 0, RETURNING " + p.headerAsHex());
             	return null;
             } else if (p.size == 0){
             	p.packet = ByteBuffer.wrap(new byte[1]); // just put an empty byte in it to avoid null errors on logging
@@ -150,7 +150,7 @@ public class WorldConnection extends Connection{
 	            p.packet.put(b);
             }
         } catch (IOException e) {
-            Log.log(Log.DEBUG, "Couldn't read client packet");
+            Logger.writeError("Couldn't read client packet");
         }
         return p;
     }
@@ -166,13 +166,13 @@ public class WorldConnection extends Connection{
 			}
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
-    		Log.log(Log.DEBUG, p.sOpcode + " can't be send, it has no opcode linked");
-    		Log.log(p.toString());
+    		Logger.writeError(p.sOpcode + " can't be send, it has no opcode linked");
+    		Logger.writeError(p.toString());
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Log.log(Log.DEBUG, "Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
+    	System.out.println("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex());
 
     	p.position(0);
         return super.sendPacket(p);
@@ -188,13 +188,13 @@ public class WorldConnection extends Connection{
         if (newSize > 0x7FFF) 
             header[index++] = (byte) (0x80 | (0xFF & (newSize >> 16)));
 	
-		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Versions.VERSION_CATA) ? 8 : 0)));
-		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= Versions.VERSION_CATA) ? 0 : 8)));
+		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()) ? 8 : 0)));
+		header[index++] = (byte)(0xFF & (newSize >> ((realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()) ? 0 : 8)));
 		header[index++] = (byte)(0xFF & opcode);
 		header[index] = (byte)(0xFF & (opcode >> 8));
 		
         if (client != null){
-        	if(realm.getVersion() >= Versions.VERSION_MOP){
+        	if(realm.getVersion() >= ClientVersion.VERSION_MOP.getNumber()){
         		int totalLength = newSize-2;
                 totalLength <<= 13;
                 totalLength |= (opcode & 0x1FFF);
@@ -218,7 +218,7 @@ public class WorldConnection extends Connection{
     	if (client != null)
     		p.header = client.getCrypt().decrypt(p.header);
     	
-    	if(realm.getVersion() < Versions.VERSION_MOP){
+    	if(realm.getVersion() < ClientVersion.VERSION_MOP.getNumber()){
     		ByteBuffer toHeader = ByteBuffer.allocate(6);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
         	toHeader.put(p.header);
@@ -243,9 +243,9 @@ public class WorldConnection extends Connection{
 	        	p.header[3] = (byte)(0xFF & (opcode >> 8));
     		}
     		
-    		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= Versions.VERSION_CATA) ? 6 : 4);
+    		ByteBuffer toHeader = ByteBuffer.allocate((realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()) ? 6 : 4);
         	toHeader.order(ByteOrder.LITTLE_ENDIAN);
-        	toHeader.put(p.header, 0, (realm.getVersion() <= Versions.VERSION_CATA) ? 6 : 4);
+        	toHeader.put(p.header, 0, (realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()) ? 6 : 4);
         	toHeader.position(0);
 
 	        p.size = toHeader.getShort();

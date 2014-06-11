@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
+import bunnyEmu.main.enums.ClientVersion;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Log;
-import bunnyEmu.main.utils.Versions;
+import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
 import bunnyEmu.main.utils.crypto.MoPCrypt;
@@ -28,7 +28,7 @@ import bunnyEmu.main.utils.crypto.WotLKCrypt;
 public class Client {
     
     private String name;
-    private int version;
+    private ClientVersion version;
     private byte[] sessionKey;
     private GenericCrypt crypt;
     
@@ -44,17 +44,17 @@ public class Client {
      * @param name The name of the client (username)
      * @param version The patch/version of the client i.e.: 335. 
      */
-    public Client(String name, int version){
+    public Client(String name, ClientVersion version){
         this.name = name.toUpperCase();
         this.version = version;
         
-        if(version <= Versions.VERSION_VANILLA)
+        if(version == ClientVersion.VERSION_VANILLA)
         	crypt = new VanillaCrypt();
-        else if(version <= Versions.VERSION_BC)
+        else if(version == ClientVersion.VERSION_BC)
         	crypt = new BCCrypt();
-        else if(version <= Versions.VERSION_CATA)
+        else if(version == ClientVersion.VERSION_CATA)
         	crypt = new WotLKCrypt();
-        else if(version <= Versions.VERSION_MOP)
+        else if(version == ClientVersion.VERSION_MOP)
         	crypt = new MoPCrypt();
         
         // Char char1 = new Char("Test", -5626, -1496, 100, 1, (byte) 2,(byte) 1);
@@ -154,7 +154,7 @@ public class Client {
 			}
     	}
     	
-    	Log.log(this.name + " disconnected!");
+    	Logger.writeError(this.name + " disconnected!");
     }
     
     public void disconnectFromRealm(){
@@ -171,7 +171,7 @@ public class Client {
     }
     
     public int addCharacter(Char c){
-    	Log.log(Log.DEBUG, "adding char with GUID " + c.getGUID());
+    	Logger.writeError("adding char with GUID " + c.getGUID());
     	if(characters.size() >= 10)
     		return -1;
     	characters.add(c);
@@ -208,7 +208,7 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	Log.log(Log.DEBUG, "setting cur char with GUID " + GUID);
+    	Logger.writeError("setting cur char with GUID " + GUID);
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {
@@ -222,7 +222,7 @@ public class Client {
 	/**
 	 * @return The version this Client logged in with, could be different than the actual supported versions.
 	 */
-	public int getVersion() {
+	public ClientVersion getVersion() {
 		return version;
 	}
 	

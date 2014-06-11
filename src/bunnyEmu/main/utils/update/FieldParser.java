@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import bunnyEmu.main.utils.Log;
+import bunnyEmu.main.utils.Logger;
 
 /**
  * XML Parser for UpdateFields, to support UpdateFields for different patches
@@ -38,11 +38,11 @@ public class FieldParser {
 		try {
 			Document doc = parse("assets/xml/updatefields/" + version + ".xml");
 			NodeList sorts = doc.getElementsByTagName("type");
-			Log.log(Log.DEBUG, "Parsing " + sorts.getLength() + " nodes");
+			Logger.writeError("Parsing " + sorts.getLength() + " nodes");
 			for (int i = 0; i < sorts.getLength(); i++) {
 				Node typeNode = sorts.item(i);
 				String type = ((Element) typeNode).getAttribute("name");
-				Log.log(Log.DEBUG, "Parsing node: " + type);
+				Logger.writeError("Parsing node: " + type);
 				NodeList fields = typeNode.getChildNodes();
 				for (int i2 = 0; i2 < fields.getLength(); i2++) {
 					NodeList nodes =  fields.item(i2).getChildNodes();
@@ -54,7 +54,7 @@ public class FieldParser {
 				}
 		}
 		} catch (IOException e) {
-			Log.log(Log.ERROR, "Parsing went wrong!");
+			Logger.writeError("Parsing went wrong!");
 			e.printStackTrace();
 		}
 	}
@@ -66,7 +66,7 @@ public class FieldParser {
 			typeField = typeFields.get(type);
 		}
 		typeField.put(name, value);
-		Log.log(Log.DEBUG, "Added new field: " + type + " " + name + " " + value);
+		Logger.writeError("Added new field: " + type + " " + name + " " + value);
 	}
 	
 	public Integer get(String type, String name){
