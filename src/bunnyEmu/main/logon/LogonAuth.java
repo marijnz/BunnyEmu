@@ -111,8 +111,15 @@ import bunnyEmu.main.utils.Logger;
 
             byte[] accountHash = DatatypeConverter.parseHexBinary(userInfo[1]);
 
-            client = new Client(username, Integer.parseInt(version));
+            
+            System.out.println("DEBUG MESSAGE: Client version number is " + version);
+            try {
+            client = new Client(username, ClientVersion.versionStringToEnum(version));
+            } catch (IllegalArgumentException e) {
+        		Logger.writeError(e.getMessage());
+            }
             client.attachLogon(connection);
+            
             
             Client existingClient = TempClientHandler.findClient(username);
             if (existingClient != null){
@@ -253,7 +260,7 @@ import bunnyEmu.main.utils.Logger;
             md.update(K.asByteArray());
 
             short size = 32;
-            if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
+            if(client.getVersion() == ClientVersion.VERSION_VANILLA)
             	size = 26;
             
 	        AuthPacket serverLogonAuth = new AuthPacket((short) size);
@@ -261,7 +268,7 @@ import bunnyEmu.main.utils.Logger;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(client.getVersion() <= ClientVersion.VERSION_VANILLA.getNumber())
+	        if(client.getVersion() == ClientVersion.VERSION_VANILLA)
 	        	serverLogonAuth.putInt(0);     
 	        else{
 	        	serverLogonAuth.putInt(0x00800000);
