@@ -51,11 +51,11 @@ public class RealmAuth extends Auth {
         ServerPacket authChallenge = new ServerPacket(Opcodes.SMSG_AUTH_CHALLENGE, 50);
         _seed = new SecureRandom().generateSeed(4);
         
-        if (realm.getVersion() < ClientVersion.VERSION_MOP.getNumber()) {
-	        if (realm.getVersion() >= ClientVersion.VERSION_CATA.getNumber()) {
+        if (realm.getVersion() != ClientVersion.VERSION_MOP) {
+	        if (realm.getVersion() == ClientVersion.VERSION_MOP) {
 	        	authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
 	        	authChallenge.put((byte) 1);
-	        } else if(realm.getVersion() > ClientVersion.VERSION_BC.getNumber() && realm.getVersion() < ClientVersion.VERSION_CATA.getNumber())
+	        } else if(realm.getVersion() == ClientVersion.VERSION_CATA)
 	        	authChallenge.putInt(1);
 	        authChallenge.put(_seed);
 	        authChallenge.put(new BigNumber().setRand(16).asByteArray(16));
@@ -96,10 +96,10 @@ public class RealmAuth extends Auth {
             Logger.writeError("authSession " + client.getName());
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
-            if (realm.getVersion() > ClientVersion.VERSION_CATA.getNumber() || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
+            if (realm.getVersion() == ClientVersion.VERSION_MOP || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
             	Logger.writeError("Valid client connected: " + client.getName());
-                if (realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber()){
+                if (realm.getVersion() != ClientVersion.VERSION_CATA && realm.getVersion() != ClientVersion.VERSION_MOP){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
 	                authResponse.put((byte) 0x30);
