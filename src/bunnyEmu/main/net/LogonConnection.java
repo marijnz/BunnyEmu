@@ -45,7 +45,7 @@ public class LogonConnection extends Connection {
                 if ((p = readPacket(readByte)) == null) 
                     continue;
 
-                Logger.writeError("Got auth packet: " + p.toString());
+                System.out.println("Got auth packet: " + p.toString());
                 PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
                 
                 switch (p.nOpcode) {
@@ -93,7 +93,7 @@ public class LogonConnection extends Connection {
 	}
 	
     public boolean send(Packet p){
-    	Logger.writeError("Sending packet: (" + p.size + ") " + p.packetAsHex());
+    	System.out.println("Sending packet: (" + p.size + ") " + p.packetAsHex());
         return super.sendPacket(p);
     }
 		
