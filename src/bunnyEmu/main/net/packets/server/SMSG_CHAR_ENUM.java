@@ -54,12 +54,12 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putFloat(currentChar.getPosition().getY()); // Y
 			putFloat(currentChar.getPosition().getZ()); // Z
 			// Guild ID
-			if (client.getVersion() < ClientVersion.VERSION_CATA.getNumber())
+			if (client.getVersion() != ClientVersion.VERSION_CATA && client.getVersion() != ClientVersion.VERSION_MOP)
 				putInt(0);
 			else
 				putLong(0);
 			putInt(0); // Character Flags;
-			if (client.getVersion() <= ClientVersion.VERSION_BC.getNumber())
+			if (client.getVersion() == ClientVersion.VERSION_BC)
 				put((byte) 0); // Login Flags;
 			else {
 				putInt(0); // Login Flags;
@@ -71,19 +71,19 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 			putInt(0); // Pet FamilyID;
 
 			int EQUIPMENT_SLOT_END = 19;
-			if (client.getVersion() == ClientVersion.VERSION_WOTLK.getNumber())
+			if (client.getVersion() == ClientVersion.VERSION_WOTLK)
 				EQUIPMENT_SLOT_END++;
 
 			for (int itemSlot = 0; itemSlot < EQUIPMENT_SLOT_END; ++itemSlot) {
 				putInt(0); // Item DisplayID;
 				put((byte) 0); // Item Inventory Type;
-				if (client.getVersion() >= ClientVersion.VERSION_BC.getNumber())
+				if (client.getVersion() != ClientVersion.VERSION_BC && client.getVersion() != ClientVersion.VERSION_VANILLA)
 					putInt(1); // Item EnchantID;
 			}
 
-			if (client.getVersion() >= ClientVersion.VERSION_WOTLK.getNumber()) {
+			if (client.getVersion() != ClientVersion.VERSION_BC && client.getVersion() != ClientVersion.VERSION_VANILLA) {
 				int bagCount = 3;
-				if (client.getVersion() >= ClientVersion.VERSION_CATA.getNumber())
+				if (client.getVersion() != ClientVersion.VERSION_CATA)
 					bagCount++;
 				for (int c = 0; c < bagCount; c++) { // In 3.3.3 they added 3x new uint32 uint8 uint32
 					putInt(0); // bag;
@@ -95,7 +95,7 @@ public class SMSG_CHAR_ENUM extends ServerPacket {
 				put((byte) 0); // first bag inventory type
 			}
 
-			if (client.getVersion() == ClientVersion.VERSION_BC.getNumber())
+			if (client.getVersion() == ClientVersion.VERSION_BC)
 				putInt(0); // enchant?
 
 		}
