@@ -77,7 +77,7 @@ public class Char extends Unit {
 	 * @param realm The realm this char belongs to. Used for multiple version support, loading the right xml fields file, where indexes are defined
 	 */
 	public void setUpdateFields(Realm realm) {
-		data.initFields(realm.getVersion());
+		data.initFields(realm.getVersion().getNumber());
 		
 		 // ObjectFields, required for world login
 		data.setUpdateField("ObjectFields", "Guid", guid, Long.class);
