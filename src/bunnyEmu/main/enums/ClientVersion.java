@@ -23,7 +23,7 @@ public enum ClientVersion {
         return num;
     }
     
-    public ClientVersion versionStringToEnum(String clientVersion) throws IllegalArgumentException {
+    public static ClientVersion versionStringToEnum(String clientVersion) throws IllegalArgumentException {
     	ClientVersion version = null;
     	
     	switch(clientVersion) {
