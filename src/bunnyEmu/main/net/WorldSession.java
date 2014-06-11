@@ -184,12 +184,12 @@ public class WorldSession {
 		character.setUpdateFields(realm);
 
 		// Currently only fully supports MoP
-		if (realm.getVersion() <= ClientVersion.VERSION_BC.getNumber())
+		if (realm.getVersion() == ClientVersion.VERSION_BC || realm.getVersion() == ClientVersion.VERSION_VANILLA)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));
-		else if (realm.getVersion() <= ClientVersion.VERSION_WOTLK.getNumber())
+		else if (realm.getVersion() == ClientVersion.VERSION_WOTLK)
 			//connection.send(realm.loadPacket("updatepacket_wotlk", 8000));
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
-		else if (realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber())
+		else if (realm.getVersion() == ClientVersion.VERSION_CATA)
 			connection.send(realm.loadPacket("updatepacket_cata", 500));
 		else
 			connection.send(new SMSG_UPDATE_OBJECT_CREATE(this.connection.getClient(), true));
@@ -210,7 +210,7 @@ public class WorldSession {
 	 */
 	public void sendAccountDataTimes(int mask) {
 		connection.send(new SMSG_ACCOUNT_DATA_TIMES(mask));
-		if (this.realm.getVersion() <= ClientVersion.VERSION_CATA.getNumber())
+		if (this.realm.getVersion() != ClientVersion.VERSION_MOP)
 			connection.send(new ServerPacket(Opcodes.SMSG_TIME_SYNC_REQ, 4));
 	}
 
