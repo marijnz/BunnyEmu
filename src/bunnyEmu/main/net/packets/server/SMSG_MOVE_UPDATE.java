@@ -2,6 +2,7 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
@@ -40,7 +41,7 @@ public class SMSG_MOVE_UPDATE extends ServerPacket {
          if (movementValues.HasMovementFlags2)
              BitPack.write(movementValues.MovementFlags2, 13);
          
-         Logger.writeError("MovementFlags: " + movementValues.MovementFlags);
+         Logger.writeLog("MovementFlags: " + movementValues.MovementFlags, LogType.VERBOSE);
 
          BitPack.write(!movementValues.HasMovementFlags);
          BitPack.write(0);
@@ -98,7 +99,7 @@ public class SMSG_MOVE_UPDATE extends ServerPacket {
 
          BitPack.writeGuidBytes((byte) 2, (byte) 7, (byte) 5);
 
-         Logger.writeError("POSITION: " + position.toString());
+         Logger.writeLog("POSITION: " + position.toString(), LogType.VERBOSE);
          putFloat(position.getZ());
 
          BitPack.writeGuidBytes((byte) 0, (byte) 4, (byte) 3);

@@ -10,6 +10,7 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
@@ -58,7 +59,7 @@ public class WorldSession {
 	 * Send the character list to the client.
 	 */
 	public void sendCharacters() {
-		Logger.writeError("sending chars");
+		Logger.writeLog("sending chars", LogType.VERBOSE);
 		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
@@ -96,7 +97,7 @@ public class WorldSession {
 														p.cSkinColor, p.cRace, p.cClass, p.cGender,
 														cStartLevel));
 
-		Logger.writeError("Created new char with name: " + p.cName);
+		Logger.writeLog("Created new char with name: " + p.cName, LogType.VERBOSE);
 	}
 
 	/* delete the specified character */
@@ -153,10 +154,10 @@ public class WorldSession {
         boolean charDeletion = connection.getClient().removeCharacter(guid);
         
         if (charDeletion) {
-        	Logger.writeError("Deleted character with GUID = " + guid);
+        	Logger.writeLog("Deleted character with GUID = " + guid, LogType.VERBOSE);
         }
         else {
-        	Logger.writeError("Failed to delete character with GUID = " + guid);
+        	Logger.writeLog("Failed to delete character with GUID = " + guid, LogType.WARNING);
         }
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
@@ -173,7 +174,7 @@ public class WorldSession {
 		final Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
-			Logger.writeError("\nPROBLEM: Character is null at login to world..\n");
+			Logger.writeLog("\nPROBLEM: Character is null at login to world..\n", LogType.WARNING);
 		}
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -261,7 +262,7 @@ public class WorldSession {
 	 */
 	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		Logger.writeError("msg: " + p.getMessage());
+		Logger.writeLog("msg: " + p.getMessage(), LogType.VERBOSE);
         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {

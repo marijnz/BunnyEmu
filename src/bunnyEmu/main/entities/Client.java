@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
@@ -154,7 +155,7 @@ public class Client {
 			}
     	}
     	
-    	Logger.writeError(this.name + " disconnected!");
+    	Logger.writeLog(this.name + " disconnected!", LogType.VERBOSE);
     }
     
     public void disconnectFromRealm(){
@@ -171,7 +172,7 @@ public class Client {
     }
     
     public int addCharacter(Char c){
-    	Logger.writeError("adding char with GUID " + c.getGUID());
+    	Logger.writeLog("adding char with GUID " + c.getGUID(), LogType.VERBOSE);
     	if(characters.size() >= 10)
     		return -1;
     	characters.add(c);
@@ -208,7 +209,7 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	Logger.writeError("setting cur char with GUID " + GUID);
+    	Logger.writeLog("setting cur char with GUID " + GUID, LogType.VERBOSE);
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {

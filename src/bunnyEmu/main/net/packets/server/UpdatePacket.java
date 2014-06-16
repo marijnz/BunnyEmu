@@ -2,6 +2,7 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.types.MovementSpeed;
@@ -174,18 +175,18 @@ public class UpdatePacket extends ServerPacket {
 		this.putShort((short) 0x71);  // update flags              
 		MovementValues values = new MovementValues(updateFlags);
 		
-		Logger.writeError("VALUES: ");
-		Logger.writeError("test: " + values.IsSelf);
-		Logger.writeError("test: " + values.IsAlive);
-		Logger.writeError("test: " + values.HasRotation);
-		Logger.writeError("test: " + values.HasStationaryPosition);
-		Logger.writeError("test: " + values.HasTarget);
-		Logger.writeError("test: " + values.IsTransport);
-		Logger.writeError("test: " + values.HasGoTransportPosition);
-		Logger.writeError("test: " + values.HasAnimKits);
-		Logger.writeError("test: " + values.HasUnknown);
-		Logger.writeError("test: " + values.HasUnknown2);
-		Logger.writeError("test: " + values.HasUnknown4);
+		Logger.writeLog("VALUES: ", LogType.VERBOSE);
+		Logger.writeLog("test: " + values.IsSelf, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.IsAlive, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasRotation, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasStationaryPosition, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasTarget, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.IsTransport, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasGoTransportPosition, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasAnimKits, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown2, LogType.VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown4, LogType.VERBOSE);
 	    if (values.IsAlive){
 	    	// Build Movement
 	    	this.putInt(0); // flags2

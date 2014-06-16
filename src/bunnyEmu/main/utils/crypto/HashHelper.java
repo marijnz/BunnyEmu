@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 
 public class HashHelper {
@@ -19,7 +20,7 @@ public class HashHelper {
 		md.update(user.getBytes());
 
 		String accountHash = DatatypeConverter.printHexBinary(md.digest());
-		Logger.writeError("AccountHash: " + accountHash);
+		Logger.writeLog("AccountHash: " + accountHash, LogType.VERBOSE);
 		return accountHash;
 	}
 }

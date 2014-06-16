@@ -11,7 +11,5 @@ import bunnyEmu.main.entities.Client;
  * @author Marijn
  */
 public abstract class Auth{
-    
     protected Client client;
-    
 }

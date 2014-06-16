@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import bunnyEmu.main.Server;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 
 import com.jolbox.bonecp.BoneCP;
@@ -35,7 +36,7 @@ public class DatabaseConnection {
 			// config.setLazyInit(true); // depends on the application usage
 			connectionPool = new BoneCP(config); // setup the connection pool
 
-			System.out.println("Database connection succeeded!");
+			Logger.writeLog("Database connection succeeded!", LogType.VERBOSE);
 
 			// Log.log("This many active physical connections: " + connectionPool.getTotalCreatedConnections());
 			DatabaseConnection.setConnectionPool(connectionPool);
@@ -45,7 +46,7 @@ public class DatabaseConnection {
 															prop.getProperty("worldDB").toLowerCase());
 			
 			if (!exists) {
-				Logger.writeError("One or more databases (authDB, charactersDB, or worldDB) do not exist.");
+				Logger.writeLog("One or more databases (authDB, charactersDB, or worldDB) do not exist.", LogType.ERROR);
 				System.exit(0);
 			}
 
@@ -59,10 +60,10 @@ public class DatabaseConnection {
 	public static void shutdownConnectionPool() {
 		try {
 			BoneCP connectionPool = DatabaseConnection.getConnectionPool();
-			System.out.println("Shutting down connection pool.");
+			Logger.writeLog("Shutting down connection pool.", LogType.VERBOSE);
 			if (connectionPool != null) {
 				connectionPool.shutdown();
-				System.out.println("Connection pooling is destroyed successfully.");
+				Logger.writeLog("Connection pooling is destroyed successfully.", LogType.VERBOSE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import bunnyEmu.main.db.DatabaseHandler;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.crypto.HashHelper;
 
@@ -14,7 +15,7 @@ public class ConsoleLoggerCMD implements Runnable {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			while (true) {
-				Logger.writeError(">>> ");
+				Logger.writeLog(">>> ", LogType.VERBOSE);
 
 				// not ready to read anything yet
 				while (!br.ready()) {
@@ -25,21 +26,18 @@ public class ConsoleLoggerCMD implements Runnable {
 
 				if (command.equals("commands") || command.equals("help")) {
 					System.out.println("Available commands are: {'create', 'online', 'shutdown', 'help', 'commands'}.");
-				}
-				else if (command.equals("shutdown")) {
+				} else if(command.equals("shutdown")) {
 					System.out.println("\n!!!Console shutdown imminent!!!");
 					System.exit(0);
-				}
-				else if (command.equals("online")) {
+				} else if(command.equals("online")) {
 					System.out.println("This command is not completely implemented yet.");
 					//System.out.print("These accounts are online: ");
 					//DatabaseHandler.queryOnline();
 					//System.out.print("\n");
-				}
-				else if (command.contains("create")) {
+				} else if(command.contains("create")) {
 					String[] accountInfo = command.split(" ");
 					
-					if (accountInfo.length != 3) {
+					if(accountInfo.length != 3) {
 						System.out.println("Usage for this command is: create account password");
 						continue;
 					}
@@ -47,8 +45,8 @@ public class ConsoleLoggerCMD implements Runnable {
 					/* get userName and hashPW here and then insert into database */
 					String userName = accountInfo[1];
 					
-					if (userName.isEmpty()) {
-						Logger.writeError("Username cannot be empty!");
+					if(userName.isEmpty()) {
+						Logger.writeLog("Username cannot be empty!", LogType.WARNING);
 						continue;
 					}
 					
@@ -56,18 +54,15 @@ public class ConsoleLoggerCMD implements Runnable {
 					
 					Boolean result = DatabaseHandler.createAccount(userName, hashPW);
 					
-					if (result) {
-						System.out.println("Account: " + userName + " created successfully!");
+					if(result) {
+						Logger.writeLog("Account: " + userName + " created successfully!", LogType.VERBOSE);
+					} else {
+						Logger.writeLog("Failed to create: " + userName + ". Name is probably already taken", LogType.VERBOSE);
 					}
-					else {
-						System.out.println("Failed to create: " + userName + ". Name is probably already taken");
-					}
-				}
-				else if (command.isEmpty()) {
+				} else if (command.isEmpty()) {
 					continue;
-				}
-				else {
-					System.out.println("Unrecognized command. Try typing 'help'.");
+				} else {
+					Logger.writeLog("Unrecognized command. Try typing 'help'.", LogType.VERBOSE);
 				}
 			}
 		}

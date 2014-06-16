@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import bunnyEmu.main.Server;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 
 public class DatabaseHandler {
@@ -58,8 +59,9 @@ public class DatabaseHandler {
 			st.executeUpdate("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
 														"'" + userName + "', '" + hashPW + "');");
 			
-			Logger.writeError("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
-														"'" + userName + "', '" + hashPW + "');");
+			Logger.writeLog("INSERT INTO `account` (`username`, `hashPW`) VALUES (" + 
+														"'" + userName + "', '" + hashPW + "');"
+														, LogType.VERBOSE);
 
 			// cleanup
 			DatabaseConnection.closeStatement(st);
@@ -83,17 +85,17 @@ public class DatabaseHandler {
 
 		ResultSet rst = st.executeQuery("Select * from players where online = 1;");
 
-		System.out.print("{ ");
+		Logger.writeLog("{ ", LogType.VERBOSE);
 
 		/* id, name, level, class, x-pos, y-pos, online */
 		while (rst.next()) {
-			System.out.print(rst.getString(2) + " ");
+			Logger.writeLog(rst.getString(2) + " ", LogType.VERBOSE);
 			counter++;
 		}
 
 		// no online players
 		if (counter == 0) {
-			System.out.print("NONE ");
+			Logger.writeLog("NONE ", LogType.VERBOSE);
 		}
 
 		System.out.print("}");
@@ -190,7 +192,7 @@ public class DatabaseHandler {
 			DatabaseConnection.closeConnection(conn);
 		} 
 		catch (Exception e) {
-			System.out.println("Acount " + accountID + "could not be set to offline.");
+			Logger.writeLog("Acount " + accountID + "could not be set to offline.", LogType.WARNING);
 			e.printStackTrace();
 		}
 	}

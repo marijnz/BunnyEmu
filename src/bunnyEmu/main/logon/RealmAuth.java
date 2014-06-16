@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
@@ -73,7 +74,7 @@ public class RealmAuth extends Auth {
     }
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
-        Logger.writeError("authSession");
+        Logger.writeLog("authSession", LogType.VERBOSE);
 
         client = TempClientHandler.removeTempClient(authProof.getAccountName());
 
@@ -93,12 +94,12 @@ public class RealmAuth extends Auth {
             md.update(connection.getClient().getSessionKey());
             byte[] digest = md.digest();	
             
-            Logger.writeError("authSession " + client.getName());
+            Logger.writeLog("authSession " + client.getName(), LogType.VERBOSE);
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
             if (realm.getVersion() == ClientVersion.VERSION_MOP || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
-            	Logger.writeError("Valid client connected: " + client.getName());
+            	Logger.writeLog("Valid client connected: " + client.getName(), LogType.VERBOSE);
                 if (realm.getVersion() != ClientVersion.VERSION_CATA && realm.getVersion() != ClientVersion.VERSION_MOP){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
@@ -114,10 +115,13 @@ public class RealmAuth extends Auth {
                     connection.send(new ServerPacket(Opcodes.SMSG_TUTORIAL_FLAGS, 8*4));
                 }
                 return;
-            } else
+            } else {
                 client.disconnect();
-        } else
+            }
+        } else {
         	connection.close();
-        Logger.writeError("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.");
+    	}
+    
+        Logger.writeLog("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.", LogType.WARNING);
     }
 }

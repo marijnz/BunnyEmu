@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
@@ -68,7 +69,7 @@ public class Realm extends Thread {
 			packets = Opcodes.formMoP();
 		start();
 		
-		System.out.println("Created new realm: " + this.name);
+		Logger.writeLog("Created new realm: " + this.name, LogType.VERBOSE);
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class Realm extends Thread {
 		try {
 			listenSocket();
 		} catch (IOException ex) {
-			Logger.writeError("Couldn't create a listening socket for realm " + id);
+			Logger.writeLog("Couldn't create a listening socket for realm " + id, LogType.WARNING);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			System.out.println("Connection made to realm " + id);
+			Logger.writeLog("Connection made to realm " + id, LogType.VERBOSE);
 		}
 	}
 
@@ -135,10 +136,10 @@ public class Realm extends Thread {
 	 * Send a packet to all connected clients except for passed client
 	 */
 	public void sendAllClients(ServerPacket p, Client ignoreClient){
-		Logger.writeError("Ignore client: " + ignoreClient.getName());
+		Logger.writeLog("Ignore client: " + ignoreClient.getName(), LogType.VERBOSE);
 		for(Client client : clients)
 			if(!client.equals(ignoreClient)){
-				System.out.println("Sending packet " + p.sOpcode + " to client: " + client.getName());
+				Logger.writeLog("Sending packet " + p.sOpcode + " to client: " + client.getName(), LogType.VERBOSE);
 				client.getWorldConnection().send(p);
 			}
 	}
@@ -180,7 +181,7 @@ public class Realm extends Thread {
 	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
-    	Logger.writeError("loading packet");
+    	Logger.writeLog("loading packet", LogType.VERBOSE);
     	String opcode = null;
     	ByteBuffer data = ByteBuffer.allocate(capacity);
     	try {
@@ -210,7 +211,7 @@ public class Realm extends Thread {
             e.printStackTrace();
         }
     	
-    	Logger.writeError(data.toString());
+    	Logger.writeLog(data.toString(), LogType.VERBOSE);
     	ServerPacket p;
     	try{
     		p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);

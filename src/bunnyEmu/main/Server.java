@@ -13,6 +13,7 @@ import java.util.Properties;
 import javax.swing.UIManager;
 
 import bunnyEmu.main.db.DatabaseConnection;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.ConfigHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
@@ -41,7 +42,7 @@ public class Server {
 			realmlist = prop.getProperty("realmlistAddress");
 
 			if (realmlist.isEmpty()) {
-				Logger.writeError("No realmlist set in server.conf, unable to start.");
+				Logger.writeLog("No realmlist set in server.conf, unable to start.", LogType.ERROR);
 				System.exit(0);
 			}
 			
@@ -69,7 +70,7 @@ public class Server {
 
 	private void listenSocket() {
 		try {
-			System.out.println("Launched BunnyEmu - listening on " + realmlist);
+			Logger.writeLog("Launched BunnyEmu - listening on " + realmlist, LogType.VERBOSE);
 			
 			InetAddress address = InetAddress.getByName(realmlist);
 			serverSocket = new ServerSocket(3724, 0, address);
@@ -77,8 +78,8 @@ public class Server {
 			/* load database connection */
 			DatabaseConnection.initConnectionPool(prop);
 			
-			System.out.println("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu");
-			System.out.println("Remember to create an account before logging in.");
+			Logger.writeLog("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu", LogType.VERBOSE);
+			Logger.writeLog("Remember to create an account before logging in.", LogType.VERBOSE);
 			
 			/* console commands are handled by this thread if no GUI */
 			if (Integer.parseInt(prop.getProperty("enableGUI")) == 0) {
@@ -88,21 +89,21 @@ public class Server {
 			}
 
 		} catch (IOException e) {
-			Logger.writeError("ERROR: port 3724 is not available!");
+			Logger.writeLog("ERROR: port 3724 is not available!", LogType.WARNING);
 		}
 		
 		try {
 			while (true) {
 				try {
 					LogonConnection connection = new LogonConnection(serverSocket.accept());
-					System.out.println("Client connected to logon server.");
+					Logger.writeLog("Client connected to logon server.", LogType.VERBOSE);
 					connections.add(connection);
 				} catch(NullPointerException e) {
 					continue;
 				}
 			}
 		} catch (IOException e) {
-			Logger.writeError("Accept failed: 3724");
+			Logger.writeLog("Accept failed: 3724", LogType.WARNING);
 		}
 	}
 }

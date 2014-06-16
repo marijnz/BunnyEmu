@@ -11,6 +11,7 @@ import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
@@ -49,12 +50,12 @@ import bunnyEmu.main.utils.Logger;
             try {
                 md = MessageDigest.getInstance("SHA1");
             } catch (NoSuchAlgorithmException ex) {
-                Logger.writeError("Couldn't load algorithm");
+                Logger.writeLog("Couldn't load algorithm", LogType.WARNING);
             }
         }
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
-        	System.out.println("serverLogonChallenge");
+        	Logger.writeLog("serverLogonChallenge", LogType.VERBOSE);
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
@@ -86,7 +87,7 @@ import bunnyEmu.main.utils.Logger;
             
             String ip = octet[3] + "." + octet[2] + "." + octet[1] + "." + octet[0];
             
-            System.out.println("Client connecting from address: " + ip);
+            Logger.writeLog("Client connecting from address: " + ip, LogType.VERBOSE);
  
             byte username_len = in.get();                 			// length of username
             I = new byte[username_len];
@@ -97,14 +98,14 @@ import bunnyEmu.main.utils.Logger;
             String[] userInfo = DatabaseHandler.queryAuth(username);
 
             // need to return auth failed here
-            if (userInfo == null) {
+            if(userInfo == null) {
             	AuthPacket authWrongPass = new AuthPacket((short) 3);
             	authWrongPass.put((byte) 0); // opcode
             	authWrongPass.put((byte) 0);
             	authWrongPass.put((byte) AuthCodes.AUTH_UNKNOWN_ACCOUNT);
             	connection.send(authWrongPass);
 
-            	System.out.println("Wrong password sent. (" + username + ")");
+            	Logger.writeLog("Wrong password sent. (" + username + ")", LogType.VERBOSE);
 
             	return;
             }
@@ -116,7 +117,7 @@ import bunnyEmu.main.utils.Logger;
             try {
             	client = new Client(username, ClientVersion.versionStringToEnum(version));
             } catch (IllegalArgumentException e) {
-        		Logger.writeError(e.getMessage());
+        		Logger.writeLog(e.getMessage(), LogType.WARNING);
             }
             client.attachLogon(connection);
             
@@ -161,7 +162,7 @@ import bunnyEmu.main.utils.Logger;
 
             connection.send(serverLogonChallenge);
             
-            System.out.println("send challenge");
+            Logger.writeLog("send challenge", LogType.VERBOSE);
         }
 
         public void serverLogonProof(ClientPacket in) throws IOException {
@@ -169,7 +170,7 @@ import bunnyEmu.main.utils.Logger;
             byte[] _M1 = new byte[20];
             byte[] crc_hash = new byte[20];
             
-            System.out.println("serverLogonProof");
+            Logger.writeLog("serverLogonProof", LogType.VERBOSE);
 
             in.get(_A);
             in.get(_M1);
@@ -244,8 +245,8 @@ import bunnyEmu.main.utils.Logger;
             BigNumber M = new BigNumber(m);
             BigNumber M1 = new BigNumber(_M1);
             
-            Logger.writeError("M = " + M.toHexString());
-            Logger.writeError("M1 = " + M1.toHexString());
+            Logger.writeLog("M = " + M.toHexString(), LogType.VERBOSE);
+            Logger.writeLog("M1 = " + M1.toHexString(), LogType.VERBOSE);
             
             if(!M.equals(M1)) {
             	TempClientHandler.removeTempClient(client.getName());
@@ -268,9 +269,9 @@ import bunnyEmu.main.utils.Logger;
 	        serverLogonAuth.put((byte) 0); // error
 	        serverLogonAuth.put(md.digest());
 	        // Acount flags
-	        if(client.getVersion() == ClientVersion.VERSION_VANILLA)
+	        if(client.getVersion() == ClientVersion.VERSION_VANILLA){
 	        	serverLogonAuth.putInt(0);     
-	        else{
+        	} else {
 	        	serverLogonAuth.putInt(0x00800000);
 	  	        //  survey ID
 	  	        serverLogonAuth.putInt(0); 
@@ -283,9 +284,7 @@ import bunnyEmu.main.utils.Logger;
         
         
         public void serverRealmList() throws IOException {
-        	System.out.println("Sending realmlist");
+        	Logger.writeLog("Sending realmlist", LogType.VERBOSE);
             connection.send(RealmHandler.getRealmList()); 
-        }
-      
-        
+        }  
     }
