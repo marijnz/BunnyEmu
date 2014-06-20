@@ -3,6 +3,7 @@ package bunnyEmu.main.handlers;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 
 /**
@@ -21,7 +22,7 @@ public class ConfigHandler {
 			return prop;
 		}
 		catch (Exception e) {
-			Logger.writeError("Unable to load configuration file 'server.conf' from assets folder... terminating.");
+			Logger.writeLog("Unable to load configuration file 'server.conf' from assets folder... terminating.", LogType.ERROR);
 			System.exit(0);
 		}
 

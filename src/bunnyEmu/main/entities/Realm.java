@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
@@ -33,7 +34,7 @@ public class Realm extends Thread {
 	public int flags = 0;
 	public int timezone;
 	public float population = 0;
-	private int version;
+	private ClientVersion version;
 	private PacketMap packets;
 
 	private ArrayList<Client> clients = new ArrayList<Client>(10);
@@ -41,7 +42,7 @@ public class Realm extends Thread {
 	ServerSocket socket = null;
 
 	public Realm() {
-		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersion.VERSION_WOTLK.getNumber());
+		this(1, "Marijnz ultimate server", Server.realmlist, 3456, ClientVersion.VERSION_WOTLK);
 	}
 
 	/**
@@ -53,22 +54,22 @@ public class Realm extends Thread {
 	 * @param port The port of the worldsocket.
 	 * @param version The version of the realm, see Readme for up-to-date version support.
 	 */
-	public Realm(int id, String name, String address, int port, int version) {
+	public Realm(int id, String name, String address, int port, ClientVersion version) {
 		this.id = id;
 		this.name = "[" + version + "]" + name ;
 		this.address = address + ":" + String.valueOf(port);
 		this.port = port;
 		this.version = version;
 		
-		if(version <= ClientVersion.VERSION_WOTLK.getNumber())
+		if(version == ClientVersion.VERSION_WOTLK || version == ClientVersion.VERSION_BC || version == ClientVersion.VERSION_VANILLA)
 			packets = Opcodes.formWotLK();
-		else if(version <= ClientVersion.VERSION_CATA.getNumber())
+		else if(version == ClientVersion.VERSION_CATA)
 			packets = Opcodes.formCata();
-		else if(version <= ClientVersion.VERSION_MOP.getNumber())
+		else if(version == ClientVersion.VERSION_MOP)
 			packets = Opcodes.formMoP();
 		start();
 		
-		System.out.println("Created new realm: " + this.name);
+		Logger.writeLog("Created new realm: " + this.name, LogType.VERBOSE);
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class Realm extends Thread {
 		try {
 			listenSocket();
 		} catch (IOException ex) {
-			Logger.writeError("Couldn't create a listening socket for realm " + id);
+			Logger.writeLog("Couldn't create a listening socket for realm " + id, LogType.WARNING);
 		}
 	}
 
@@ -93,7 +94,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			System.out.println("Connection made to realm " + id);
+			Logger.writeLog("Connection made to realm " + id, LogType.VERBOSE);
 		}
 	}
 
@@ -135,30 +136,30 @@ public class Realm extends Thread {
 	 * Send a packet to all connected clients except for passed client
 	 */
 	public void sendAllClients(ServerPacket p, Client ignoreClient){
-		Logger.writeError("Ignore client: " + ignoreClient.getName());
+		Logger.writeLog("Ignore client: " + ignoreClient.getName(), LogType.VERBOSE);
 		for(Client client : clients)
 			if(!client.equals(ignoreClient)){
-				System.out.println("Sending packet " + p.sOpcode + " to client: " + client.getName());
+				Logger.writeLog("Sending packet " + p.sOpcode + " to client: " + client.getName(), LogType.VERBOSE);
 				client.getWorldConnection().send(p);
 			}
 	}
 	/**
 	 * @return The version of this realm, can be used to build packets for specific versions.
 	 */
-	public int getVersion() {
+	public ClientVersion getVersion() {
 		return version;
 	}
 	
 	public String getVersionName(){
-		if(this.version <= ClientVersion.VERSION_VANILLA.getNumber())
+		if(this.version == ClientVersion.VERSION_VANILLA)
 			return "Vanilla";
-		if(this.version <= ClientVersion.VERSION_BC.getNumber())
+		if(this.version == ClientVersion.VERSION_BC)
 			return "BC";
-		if(this.version <= ClientVersion.VERSION_WOTLK.getNumber())
+		if(this.version == ClientVersion.VERSION_WOTLK)
 			return "WotLK";
-		if(this.version <= ClientVersion.VERSION_CATA.getNumber())
+		if(this.version == ClientVersion.VERSION_CATA)
 			return "Cata";
-		if(this.version <= ClientVersion.VERSION_MOP.getNumber())
+		if(this.version == ClientVersion.VERSION_MOP)
 			return "MoP";
 		else
 			return null;
@@ -180,7 +181,7 @@ public class Realm extends Thread {
 	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
-    	Logger.writeError("loading packet");
+    	Logger.writeLog("loading packet", LogType.VERBOSE);
     	String opcode = null;
     	ByteBuffer data = ByteBuffer.allocate(capacity);
     	try {
@@ -210,7 +211,7 @@ public class Realm extends Thread {
             e.printStackTrace();
         }
     	
-    	Logger.writeError(data.toString());
+    	Logger.writeLog(data.toString(), LogType.VERBOSE);
     	ServerPacket p;
     	try{
     		p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);

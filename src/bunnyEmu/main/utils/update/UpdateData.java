@@ -4,6 +4,7 @@ import java.util.BitSet;
 import java.util.Hashtable;
 
 import bunnyEmu.main.entities.packet.Packet;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 
 /**
@@ -91,14 +92,14 @@ public class UpdateData {
 			updateData.put(index, value.intValue());
 			mask.set(index);
 		} else {
-			Logger.writeError("Datatype for updatefield not supported");
+			Logger.writeLog("Datatype for updatefield not supported", LogType.WARNING);
 		}
 	}
 	
 	private int getIndex(String field, String name) {
 		Integer index = fields.get(field, name);
 		if(index == null) {
-			Logger.writeError("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")");
+			Logger.writeLog("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")", LogType.WARNING);
 			return -1;
 		}
 		return index;

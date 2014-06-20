@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.Packet;
+import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
@@ -40,7 +41,7 @@ public abstract class Connection extends Thread {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new DataInputStream(clientSocket.getInputStream());
 		} catch (IOException e) {
-			Logger.writeError("Couldn't create input and output streams.");
+			Logger.writeLog("Couldn't create input and output streams.", LogType.WARNING);
 		}
 	}
 	
@@ -52,7 +53,7 @@ public abstract class Connection extends Thread {
 			clientSocket.close();
 			interrupt();
 		} catch (IOException e) {
-			Logger.writeError("Couldn't close connection properly");
+			Logger.writeLog("Couldn't close connection properly", LogType.WARNING);
 		}
 	}
 
@@ -67,7 +68,7 @@ public abstract class Connection extends Thread {
 			String errorMessage = "";
 			errorMessage += "Packet Error: The size of the packer (" + p.size;
 			errorMessage += ") is less than the total capacity (" + p.packet.capacity() +").";
-			Logger.writeError(errorMessage);
+			Logger.writeLog(errorMessage, LogType.WARNING);
 			
 			return false;
 		}
@@ -110,5 +111,4 @@ public abstract class Connection extends Thread {
 	public void setClientParent(Client c) {
 		client = c;
 	}
-
 }

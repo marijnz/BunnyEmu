@@ -7,41 +7,46 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import bunnyEmu.main.enums.LogType;
+
 /**
  * Utility methods for logging.
  * @author Valkryst
- * --- Last Edit 15-Mar-2014
+ * --- Last Edit 16-June-2014
  */
 public class Logger {
+	private final static String verboseLog = "log.txt"; // Contains verbose logs.
+	private final static String errorLog = "error_log.txt"; // Contains warnings & errors.
+	
     /**
-     * Appends the specified string to the log file
+     * Appends the specified string to a log file
      * along with a timestamp in yyyy/MMM/dd-HH:mm:ss
-     * format.
+     * format. The log file that it will be appended
+     * to depends on the LogType.
      * @param logIn The string to append to the log file.
      */
-    public static void writeLog(String logIn) {
+    public static void writeLog(final String LOG_MESSAGE, final LogType LOG_TYPE) {
         try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("log.txt", true)));
+        	// Create the printwriter
+        	PrintWriter out;
+        	switch(LOG_TYPE) {
+	        	case VERBOSE: {
+	        		out = new PrintWriter(new BufferedWriter(new FileWriter(verboseLog, true)));
+	        		break;
+	        	}
+	        	default: {
+	        		out = new PrintWriter(new BufferedWriter(new FileWriter(errorLog, true)));
+	        		break;
+	        	}
+        	}
+        	
+        	// Get the timestamp and then append the log to the file.
             String timeStamp = new SimpleDateFormat("yyyy/MMM/dd-HH:mm:ss").format(Calendar.getInstance().getTime());
-            out.println("{"+timeStamp+"}: "+ logIn);
+            out.println("{" + timeStamp + "}--LogType|" + LOG_TYPE.toString() + ": " + LOG_MESSAGE);
             out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Appends the specified string to the error file
-     * along with a timestamp in yyyy/MMM/dd-HH:mm:ss
-     * format.
-     * @param errorIn The string to append to the log file.
-     */
-    public static void writeError(String errorIn) {
-        try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("errorLog.txt", true)));
-            String timeStamp = new SimpleDateFormat("yyyy/MMM/dd-HH:mm:ss").format(Calendar.getInstance().getTime());
-            out.println("{"+timeStamp+"}: " + errorIn);
-            out.close();
+            
+            // Write every error log message to the terminal as well.
+            System.out.println(LOG_MESSAGE);
         } catch (IOException e) {
             e.printStackTrace();
         }
