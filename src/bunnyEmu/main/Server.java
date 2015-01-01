@@ -13,11 +13,10 @@ import java.util.Properties;
 import javax.swing.UIManager;
 
 import bunnyEmu.main.db.DatabaseConnection;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.ConfigHandler;
 import bunnyEmu.main.net.Connection;
 import bunnyEmu.main.net.LogonConnection;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 
 /**
  * 
@@ -42,7 +41,7 @@ public class Server {
 			realmlist = prop.getProperty("realmlistAddress");
 
 			if (realmlist.isEmpty()) {
-				Logger.writeLog("No realmlist set in server.conf, unable to start.", LogType.ERROR);
+				Logger.writeLog("No realmlist set in server.conf, unable to start.", Logger.LOG_TYPE_ERROR);
 				System.exit(0);
 			}
 			
@@ -70,7 +69,7 @@ public class Server {
 
 	private void listenSocket() {
 		try {
-			Logger.writeLog("Launched BunnyEmu - listening on " + realmlist, LogType.VERBOSE);
+			Logger.writeLog("Launched BunnyEmu - listening on " + realmlist, Logger.LOG_TYPE_VERBOSE);
 			
 			InetAddress address = InetAddress.getByName(realmlist);
 			serverSocket = new ServerSocket(3724, 0, address);
@@ -78,8 +77,8 @@ public class Server {
 			/* load database connection */
 			DatabaseConnection.initConnectionPool(prop);
 			
-			Logger.writeLog("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu", LogType.VERBOSE);
-			Logger.writeLog("Remember to create an account before logging in.", LogType.VERBOSE);
+			Logger.writeLog("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu", Logger.LOG_TYPE_VERBOSE);
+			Logger.writeLog("Remember to create an account before logging in.", Logger.LOG_TYPE_VERBOSE);
 			
 			/* console commands are handled by this thread if no GUI */
 			if (Integer.parseInt(prop.getProperty("enableGUI")) == 0) {
@@ -89,21 +88,21 @@ public class Server {
 			}
 
 		} catch (IOException e) {
-			Logger.writeLog("ERROR: port 3724 is not available!", LogType.WARNING);
+			Logger.writeLog("ERROR: port 3724 is not available!", Logger.LOG_TYPE_WARNING);
 		}
 		
 		try {
 			while (true) {
 				try {
 					LogonConnection connection = new LogonConnection(serverSocket.accept());
-					Logger.writeLog("Client connected to logon server.", LogType.VERBOSE);
+					Logger.writeLog("Client connected to logon server.", Logger.LOG_TYPE_VERBOSE);
 					connections.add(connection);
 				} catch(NullPointerException e) {
 					continue;
 				}
 			}
 		} catch (IOException e) {
-			Logger.writeLog("Accept failed: 3724", LogType.WARNING);
+			Logger.writeLog("Accept failed: 3724", Logger.LOG_TYPE_WARNING);
 		}
 	}
 }

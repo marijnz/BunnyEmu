@@ -9,16 +9,15 @@ import java.util.ArrayList;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.crypto.BCCrypt;
 import bunnyEmu.main.utils.crypto.GenericCrypt;
 import bunnyEmu.main.utils.crypto.MoPCrypt;
 import bunnyEmu.main.utils.crypto.VanillaCrypt;
 import bunnyEmu.main.utils.crypto.WotLKCrypt;
+import misc.Logger;
 
 /**
  * A client that is made upon logging in and will be destroyed on disconnecting.
@@ -155,7 +154,7 @@ public class Client {
 			}
     	}
     	
-    	Logger.writeLog(this.name + " disconnected!", LogType.VERBOSE);
+    	Logger.writeLog(this.name + " disconnected!", Logger.LOG_TYPE_VERBOSE);
     }
     
     public void disconnectFromRealm(){
@@ -172,7 +171,7 @@ public class Client {
     }
     
     public int addCharacter(Char c){
-    	Logger.writeLog("adding char with GUID " + c.getGUID(), LogType.VERBOSE);
+    	Logger.writeLog("adding char with GUID " + c.getGUID(), Logger.LOG_TYPE_VERBOSE);
     	if(characters.size() >= 10)
     		return -1;
     	characters.add(c);
@@ -209,7 +208,7 @@ public class Client {
      * @return The character that belongs to the guid, null if doesn't exist.
      */
     public Char setCurrentCharacter(long GUID) {
-    	Logger.writeLog("setting cur char with GUID " + GUID, LogType.VERBOSE);
+    	Logger.writeLog("setting cur char with GUID " + GUID, Logger.LOG_TYPE_VERBOSE);
     	
     	for (Char cChar : characters) {
     		if (cChar.getGUID() == GUID) {

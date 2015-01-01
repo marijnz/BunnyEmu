@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import bunnyEmu.main.Server;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.net.WorldConnection;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketMap;
+import misc.Logger;
 
 /**
  * A realm that has to be added to the RealmHandler.
@@ -69,7 +68,7 @@ public class Realm extends Thread {
 			packets = Opcodes.formMoP();
 		start();
 		
-		Logger.writeLog("Created new realm: " + this.name, LogType.VERBOSE);
+		Logger.writeLog("Created new realm: " + this.name, Logger.LOG_TYPE_VERBOSE);
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class Realm extends Thread {
 		try {
 			listenSocket();
 		} catch (IOException ex) {
-			Logger.writeLog("Couldn't create a listening socket for realm " + id, LogType.WARNING);
+			Logger.writeLog("Couldn't create a listening socket for realm " + id, Logger.LOG_TYPE_WARNING);
 		}
 	}
 
@@ -94,7 +93,7 @@ public class Realm extends Thread {
 		while (true) {
 			// TODO: Keep track on worldconnections in case we want to support multiple clients to interact. 
 			new WorldConnection(socket.accept(), this);
-			Logger.writeLog("Connection made to realm " + id, LogType.VERBOSE);
+			Logger.writeLog("Connection made to realm " + id, Logger.LOG_TYPE_VERBOSE);
 		}
 	}
 
@@ -108,7 +107,7 @@ public class Realm extends Thread {
 
 	/**
 	 * Removes a client from the realm, usually done after the client has been disconnected.
-	 * @param The disconnected client 
+	 * @param client The disconnected client
 	 */
 	public void removeClient(Client client) {
 		clients.remove(client);
@@ -136,10 +135,10 @@ public class Realm extends Thread {
 	 * Send a packet to all connected clients except for passed client
 	 */
 	public void sendAllClients(ServerPacket p, Client ignoreClient){
-		Logger.writeLog("Ignore client: " + ignoreClient.getName(), LogType.VERBOSE);
+		Logger.writeLog("Ignore client: " + ignoreClient.getName(), Logger.LOG_TYPE_VERBOSE);
 		for(Client client : clients)
 			if(!client.equals(ignoreClient)){
-				Logger.writeLog("Sending packet " + p.sOpcode + " to client: " + client.getName(), LogType.VERBOSE);
+				Logger.writeLog("Sending packet " + p.sOpcode + " to client: " + client.getName(), Logger.LOG_TYPE_VERBOSE);
 				client.getWorldConnection().send(p);
 			}
 	}
@@ -181,7 +180,7 @@ public class Realm extends Thread {
 	  * TODO: Make it logging style independent
      */
     public ServerPacket loadPacket(String packetDir, int capacity){
-    	Logger.writeLog("loading packet", LogType.VERBOSE);
+    	Logger.writeLog("loading packet", Logger.LOG_TYPE_VERBOSE);
     	String opcode = null;
     	ByteBuffer data = ByteBuffer.allocate(capacity);
     	try {
@@ -211,7 +210,7 @@ public class Realm extends Thread {
             e.printStackTrace();
         }
     	
-    	Logger.writeLog(data.toString(), LogType.VERBOSE);
+    	Logger.writeLog(data.toString(), Logger.LOG_TYPE_VERBOSE);
     	ServerPacket p;
     	try{
     		p = new ServerPacket(packets.getOpcodeName(Short.parseShort(opcode, 16)), data);

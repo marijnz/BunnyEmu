@@ -4,8 +4,7 @@ import java.util.BitSet;
 import java.util.Hashtable;
 
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 
 /**
  * Update data for WorldObject UpdatePackets
@@ -92,14 +91,14 @@ public class UpdateData {
 			updateData.put(index, value.intValue());
 			mask.set(index);
 		} else {
-			Logger.writeLog("Datatype for updatefield not supported", LogType.WARNING);
+			Logger.writeLog("Datatype for updatefield not supported", Logger.LOG_TYPE_WARNING);
 		}
 	}
 	
 	private int getIndex(String field, String name) {
 		Integer index = fields.get(field, name);
 		if(index == null) {
-			Logger.writeLog("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")", LogType.WARNING);
+			Logger.writeLog("Can't retrieve index for UpdateField: " + field + " - " + name + "  (" + realmVersion + ")", Logger.LOG_TYPE_WARNING);
 			return -1;
 		}
 		return index;

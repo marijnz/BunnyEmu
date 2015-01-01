@@ -8,8 +8,7 @@ import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 
 public class ServerApplet extends Applet implements ActionListener {
 
@@ -23,7 +22,7 @@ public class ServerApplet extends Applet implements ActionListener {
 	Server server;
 
 	public ServerApplet(){
-		Logger.writeLog("Started BunnyEmu", LogType.VERBOSE);
+		Logger.writeLog("Started BunnyEmu", Logger.LOG_TYPE_VERBOSE);
 		this.setLayout(new FlowLayout());
 		this.add(button1);
 		this.add(label1);

@@ -2,12 +2,11 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.math.Vector4;
 import bunnyEmu.main.utils.types.MovementValues;
+import misc.Logger;
 
 /**
  * Instantly teleports the character to a new map.
@@ -41,7 +40,7 @@ public class SMSG_MOVE_UPDATE extends ServerPacket {
          if (movementValues.HasMovementFlags2)
              BitPack.write(movementValues.MovementFlags2, 13);
          
-         Logger.writeLog("MovementFlags: " + movementValues.MovementFlags, LogType.VERBOSE);
+         Logger.writeLog("MovementFlags: " + movementValues.MovementFlags, Logger.LOG_TYPE_VERBOSE);
 
          BitPack.write(!movementValues.HasMovementFlags);
          BitPack.write(0);
@@ -99,7 +98,7 @@ public class SMSG_MOVE_UPDATE extends ServerPacket {
 
          BitPack.writeGuidBytes((byte) 2, (byte) 7, (byte) 5);
 
-         Logger.writeLog("POSITION: " + position.toString(), LogType.VERBOSE);
+         Logger.writeLog("POSITION: " + position.toString(), Logger.LOG_TYPE_VERBOSE);
          putFloat(position.getZ());
 
          BitPack.writeGuidBytes((byte) 0, (byte) 4, (byte) 3);

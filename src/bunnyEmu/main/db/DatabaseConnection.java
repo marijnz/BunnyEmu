@@ -7,11 +7,10 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import bunnyEmu.main.Server;
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
+import misc.Logger;
 
 public class DatabaseConnection {
 
@@ -36,7 +35,7 @@ public class DatabaseConnection {
 			// config.setLazyInit(true); // depends on the application usage
 			connectionPool = new BoneCP(config); // setup the connection pool
 
-			Logger.writeLog("Database connection succeeded!", LogType.VERBOSE);
+			Logger.writeLog("Database connection succeeded!", Logger.LOG_TYPE_VERBOSE);
 
 			// Log.log("This many active physical connections: " + connectionPool.getTotalCreatedConnections());
 			DatabaseConnection.setConnectionPool(connectionPool);
@@ -46,7 +45,7 @@ public class DatabaseConnection {
 															prop.getProperty("worldDB").toLowerCase());
 			
 			if (!exists) {
-				Logger.writeLog("One or more databases (authDB, charactersDB, or worldDB) do not exist.", LogType.ERROR);
+				Logger.writeLog("One or more databases (authDB, charactersDB, or worldDB) do not exist.", Logger.LOG_TYPE_ERROR);
 				System.exit(0);
 			}
 
@@ -60,10 +59,10 @@ public class DatabaseConnection {
 	public static void shutdownConnectionPool() {
 		try {
 			BoneCP connectionPool = DatabaseConnection.getConnectionPool();
-			Logger.writeLog("Shutting down connection pool.", LogType.VERBOSE);
+			Logger.writeLog("Shutting down connection pool.", Logger.LOG_TYPE_VERBOSE);
 			if (connectionPool != null) {
 				connectionPool.shutdown();
-				Logger.writeLog("Connection pooling is destroyed successfully.", LogType.VERBOSE);
+				Logger.writeLog("Connection pooling is destroyed successfully.", Logger.LOG_TYPE_VERBOSE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -8,14 +8,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import misc.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
 
 /**
  * XML Parser for UpdateFields, to support UpdateFields for different patches
@@ -39,11 +37,11 @@ public class FieldParser {
 		try {
 			Document doc = parse("assets/xml/updatefields/" + version + ".xml");
 			NodeList sorts = doc.getElementsByTagName("type");
-			Logger.writeLog("Parsing " + sorts.getLength() + " nodes", LogType.VERBOSE);
+			Logger.writeLog("Parsing " + sorts.getLength() + " nodes", Logger.LOG_TYPE_VERBOSE);
 			for (int i = 0; i < sorts.getLength(); i++) {
 				Node typeNode = sorts.item(i);
 				String type = ((Element) typeNode).getAttribute("name");
-				Logger.writeLog("Parsing node: " + type, LogType.VERBOSE);
+				Logger.writeLog("Parsing node: " + type, Logger.LOG_TYPE_VERBOSE);
 				NodeList fields = typeNode.getChildNodes();
 				for (int i2 = 0; i2 < fields.getLength(); i2++) {
 					NodeList nodes =  fields.item(i2).getChildNodes();
@@ -55,7 +53,7 @@ public class FieldParser {
 				}
 			}
 		} catch (IOException e) {
-			Logger.writeLog("Parsing went wrong!", LogType.WARNING);
+			Logger.writeLog("Parsing went wrong!", Logger.LOG_TYPE_WARNING);
 			e.printStackTrace();
 		}
 	}
@@ -67,7 +65,7 @@ public class FieldParser {
 			typeField = typeFields.get(type);
 		}
 		typeField.put(name, value);
-		Logger.writeLog("Added new field: " + type + " " + name + " " + value, LogType.VERBOSE);
+		Logger.writeLog("Added new field: " + type + " " + name + " " + value, Logger.LOG_TYPE_VERBOSE);
 	}
 	
 	public Integer get(String type, String name){

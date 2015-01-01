@@ -10,11 +10,10 @@ import java.nio.ByteBuffer;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.logon.LogonAuth;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
+import misc.Logger;
 
 /**
  * Establish the first connection between server and client, handles client
@@ -48,8 +47,7 @@ public class LogonConnection extends Connection {
 				if ((p = readPacket(readByte)) == null)
 					continue;
 
-				Logger.writeLog("Got auth packet: " + p.toString(),
-						LogType.VERBOSE);
+				Logger.writeLog("Got auth packet: " + p.toString(), Logger.LOG_TYPE_VERBOSE);
 				PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
 
 				switch (p.nOpcode) {
@@ -67,8 +65,7 @@ public class LogonConnection extends Connection {
 				}
 			}
 		} catch (Exception e) {
-			Logger.writeLog(LogonConnection.class.getName() + " force closed",
-					LogType.WARNING);
+			Logger.writeLog(LogonConnection.class.getName() + " force closed", Logger.LOG_TYPE_VERBOSE);
 			e.printStackTrace();
 		} finally {
 			close();
@@ -101,7 +98,7 @@ public class LogonConnection extends Connection {
 	}
 
 	public boolean send(Packet p) {
-		Logger.writeLog("Sending packet: (" + p.size + ") " + p.packetAsHex(), LogType.VERBOSE);
+		Logger.writeLog("Sending packet: (" + p.size + ") " + p.packetAsHex(), Logger.LOG_TYPE_VERBOSE);
 		return super.sendPacket(p);
 	}
 

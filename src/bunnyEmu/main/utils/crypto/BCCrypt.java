@@ -1,7 +1,6 @@
 package bunnyEmu.main.utils.crypto;
 
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 
 
 public class BCCrypt extends VanillaCrypt {
@@ -13,7 +12,7 @@ public class BCCrypt extends VanillaCrypt {
 	 */
 	
 	public BCCrypt(){
-		Logger.writeLog("Created new Burning Crusade crypt", LogType.VERBOSE);
+		Logger.writeLog("Created new Burning Crusade crypt", Logger.LOG_TYPE_VERBOSE);
 	}
 	
 	@Override
