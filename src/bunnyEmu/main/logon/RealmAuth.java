@@ -11,14 +11,13 @@ import java.security.SecureRandom;
 import bunnyEmu.main.entities.Realm;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.WorldConnection;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.server.SMSG_AUTH_RESPONSE;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
+import misc.Logger;
 
 /**
  *
@@ -74,7 +73,7 @@ public class RealmAuth extends Auth {
     }
     
     public void authSession(CMSG_AUTH_PROOF authProof) {
-        Logger.writeLog("authSession", LogType.VERBOSE);
+        Logger.writeLog("authSession", Logger.LOG_TYPE_VERBOSE);
 
         client = TempClientHandler.removeTempClient(authProof.getAccountName());
 
@@ -94,12 +93,12 @@ public class RealmAuth extends Auth {
             md.update(connection.getClient().getSessionKey());
             byte[] digest = md.digest();	
             
-            Logger.writeLog("authSession " + client.getName(), LogType.VERBOSE);
+            Logger.writeLog("authSession " + client.getName(), Logger.LOG_TYPE_VERBOSE);
            // Log.log( new BigNumber(authProof.getDigest()).toHexString() + " and " +  new BigNumber(digest).toHexString());
             // The cataclysm and MoP digest calculation is unknown, simply allowing it..
             if (realm.getVersion() == ClientVersion.VERSION_MOP || new BigNumber(authProof.getDigest()).equals(new BigNumber(digest))) {
             	connection.getClient().initCrypt(connection.getClient().getSessionKey()); 
-            	Logger.writeLog("Valid client connected: " + client.getName(), LogType.VERBOSE);
+            	Logger.writeLog("Valid client connected: " + client.getName(), Logger.LOG_TYPE_VERBOSE);
                 if (realm.getVersion() != ClientVersion.VERSION_CATA && realm.getVersion() != ClientVersion.VERSION_MOP){
                 	ServerPacket authResponse = new ServerPacket(Opcodes.SMSG_AUTH_RESPONSE, 80);
 	                authResponse.put((byte) 0x0C);
@@ -122,6 +121,6 @@ public class RealmAuth extends Auth {
         	connection.close();
     	}
     
-        Logger.writeLog("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.", LogType.WARNING);
+        Logger.writeLog("Client " + authProof.getAccountName() + " unknown, probably tried to connect to realm directly.", Logger.LOG_TYPE_WARNING);
     }
 }

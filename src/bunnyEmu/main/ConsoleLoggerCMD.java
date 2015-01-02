@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import bunnyEmu.main.db.DatabaseHandler;
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.crypto.HashHelper;
+import misc.Logger;
 
 /* handle console commands here */
 public class ConsoleLoggerCMD implements Runnable {
@@ -15,7 +14,7 @@ public class ConsoleLoggerCMD implements Runnable {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			while (true) {
-				Logger.writeLog(">>> ", LogType.VERBOSE);
+				Logger.writeLog(">>> ", Logger.LOG_TYPE_VERBOSE);
 
 				// not ready to read anything yet
 				while (!br.ready()) {
@@ -46,7 +45,7 @@ public class ConsoleLoggerCMD implements Runnable {
 					String userName = accountInfo[1];
 					
 					if(userName.isEmpty()) {
-						Logger.writeLog("Username cannot be empty!", LogType.WARNING);
+						Logger.writeLog("Username cannot be empty!", Logger.LOG_TYPE_WARNING);
 						continue;
 					}
 					
@@ -55,14 +54,14 @@ public class ConsoleLoggerCMD implements Runnable {
 					Boolean result = DatabaseHandler.createAccount(userName, hashPW);
 					
 					if(result) {
-						Logger.writeLog("Account: " + userName + " created successfully!", LogType.VERBOSE);
+						Logger.writeLog("Account: " + userName + " created successfully!", Logger.LOG_TYPE_VERBOSE);
 					} else {
-						Logger.writeLog("Failed to create: " + userName + ". Name is probably already taken", LogType.VERBOSE);
+						Logger.writeLog("Failed to create: " + userName + ". Name is probably already taken", Logger.LOG_TYPE_VERBOSE);
 					}
 				} else if (command.isEmpty()) {
 					continue;
 				} else {
-					Logger.writeLog("Unrecognized command. Try typing 'help'.", LogType.VERBOSE);
+					Logger.writeLog("Unrecognized command. Try typing 'help'.", Logger.LOG_TYPE_VERBOSE);
 				}
 			}
 		}

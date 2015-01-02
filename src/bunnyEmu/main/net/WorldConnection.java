@@ -17,17 +17,16 @@ import bunnyEmu.main.entities.packet.IPacketWritable;
 import bunnyEmu.main.entities.packet.Packet;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.logon.RealmAuth;
 import bunnyEmu.main.net.packets.client.CMSG_AUTH_PROOF;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
 import bunnyEmu.main.net.packets.client.CMSG_PLAYER_LOGIN;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
 import bunnyEmu.main.utils.PacketLog;
 import bunnyEmu.main.utils.PacketLog.PacketType;
+import misc.Logger;
 
 /**
  * 
@@ -74,7 +73,7 @@ public class WorldConnection extends Connection{
                     continue;
                 
                 if(p.sOpcode == null){
-                	Logger.writeLog("Received unknown packet: " + p.toString(), LogType.WARNING);
+                	Logger.writeLog("Received unknown packet: " + p.toString(), Logger.LOG_TYPE_WARNING);
                 	PacketLog.logPacket(PacketType.CLIENT_UNKNOWN, p);
                 	continue;
                 }
@@ -91,10 +90,10 @@ public class WorldConnection extends Connection{
 	    			} catch (Exception e){
 	    				e.printStackTrace();
 	    			}
-					Logger.writeLog("Received known packet with implementation: " + p.toString(), LogType.WARNING);
+					Logger.writeLog("Received known packet with implementation: " + p.toString(), Logger.LOG_TYPE_WARNING);
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_IMPLEMENTED, p);
 				} catch (Exception e){
-					Logger.writeLog("Received known packet without implementation: " + p.toString(), LogType.WARNING);
+					Logger.writeLog("Received known packet without implementation: " + p.toString(), Logger.LOG_TYPE_WARNING);
 					PacketLog.logPacket(PacketType.CLIENT_KNOWN_UNIMPLEMENTED, p);
 				}
                 
@@ -119,7 +118,7 @@ public class WorldConnection extends Connection{
 
             System.out.println("World closed connection from " + clientSocket.toString());
         } catch (IOException e) {
-        	Logger.writeLog(WorldConnection.class.getName() + " force closed", LogType.WARNING);
+        	Logger.writeLog(WorldConnection.class.getName() + " force closed", Logger.LOG_TYPE_WARNING);
         	e.printStackTrace();
         } finally {
         	// The client parent might be null if the realm authentication hasn't been completed yet
@@ -139,7 +138,7 @@ public class WorldConnection extends Connection{
             p.sOpcode = realm.getPackets().getOpcodeName(new Short(p.nOpcode));
             		
             if (p.size < 0){
-            	Logger.writeLog(p.size + " is < 0, RETURNING " + p.headerAsHex(), LogType.VERBOSE);
+            	Logger.writeLog(p.size + " is < 0, RETURNING " + p.headerAsHex(), Logger.LOG_TYPE_VERBOSE);
             	return null;
             } else if (p.size == 0){
             	p.packet = ByteBuffer.wrap(new byte[1]); // just put an empty byte in it to avoid null errors on logging
@@ -151,7 +150,7 @@ public class WorldConnection extends Connection{
 	            p.packet.put(b);
             }
         } catch (IOException e) {
-            Logger.writeLog("Couldn't read client packet", LogType.WARNING);
+            Logger.writeLog("Couldn't read client packet", Logger.LOG_TYPE_WARNING);
         }
         return p;
     }
@@ -167,13 +166,13 @@ public class WorldConnection extends Connection{
 			}
     		p.nOpcode = realm.getPackets().getOpcodeValue(p.sOpcode);
     	} catch(NullPointerException e){
-    		Logger.writeLog(p.sOpcode + " can't be send, it has no opcode linked", LogType.ERROR);
-    		Logger.writeLog(p.toString(), LogType.ERROR);
+    		Logger.writeLog(p.sOpcode + " can't be send, it has no opcode linked", Logger.LOG_TYPE_ERROR);
+    		Logger.writeLog(p.toString(), Logger.LOG_TYPE_ERROR);
     		return false;
     	}
     	p.setHeader(encode(p.size, p.nOpcode));
 
-    	Logger.writeLog("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex(), LogType.VERBOSE);
+    	Logger.writeLog("Sending packet: " + p.sOpcode + "  0x" + Integer.toHexString(p.nOpcode).toUpperCase() + "(" + p.size + ") " + p.packetAsHex(), Logger.LOG_TYPE_VERBOSE);
 
     	p.position(0);
         return super.sendPacket(p);

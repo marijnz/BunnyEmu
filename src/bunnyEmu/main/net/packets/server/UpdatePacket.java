@@ -2,11 +2,10 @@ package bunnyEmu.main.net.packets.server;
 
 import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ServerPacket;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.BitPack;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.types.MovementSpeed;
 import bunnyEmu.main.utils.types.MovementValues;
+import misc.Logger;
 
 /**
  * Adapted from Arctium, currently only used in the initial update packet.
@@ -85,13 +84,13 @@ public class UpdatePacket extends ServerPacket {
 			packet.putInt(0);
 			bitPack.writeGuidBytes(new byte[] { 2, 1 });
 			
-			packet.putFloat((float) movementSpeed.WalkSpeed);
-			packet.putFloat((float) movementSpeed.RunSpeed);
+			packet.putFloat(movementSpeed.WalkSpeed);
+			packet.putFloat(movementSpeed.RunSpeed);
 			
 			bitPack.writeGuidBytes(new byte[] { 0, 3 });
 			
-			packet.putFloat((float) movementSpeed.SwimBackSpeed);
-			packet.putFloat((float) movementSpeed.TurnSpeed);
+			packet.putFloat(movementSpeed.SwimBackSpeed);
+			packet.putFloat(movementSpeed.TurnSpeed);
 			
 			bitPack.writeGuidBytes(new byte[] { 5 });
 			
@@ -100,17 +99,17 @@ public class UpdatePacket extends ServerPacket {
 
 			bitPack.writeGuidBytes(new byte[] { 6 });
 
-			packet.putFloat((float) movementSpeed.PitchSpeed);
-			packet.putFloat((float) movementSpeed.RunBackSpeed);
+			packet.putFloat(movementSpeed.PitchSpeed);
+			packet.putFloat(movementSpeed.RunBackSpeed);
 			
 			packet.putFloat(character.getPosition().getY());
 			
-			packet.putFloat((float) movementSpeed.SwimSpeed);
-			packet.putFloat((float) movementSpeed.FlyBackSpeed);
+			packet.putFloat(movementSpeed.SwimSpeed);
+			packet.putFloat(movementSpeed.FlyBackSpeed);
 			
 			bitPack.writeGuidBytes(new byte[] { 7 });
 
-			packet.putFloat((float) movementSpeed.FlySpeed);
+			packet.putFloat(movementSpeed.FlySpeed);
 			packet.putFloat(character.getPosition().getX());
 
 			bitPack.writeGuidBytes(new byte[] { 4 });
@@ -146,7 +145,7 @@ public class UpdatePacket extends ServerPacket {
 	    	// Build Movement
 	    	this.putInt(0); // flags2
 	        this.putShort(moveFlags);      		// movement flags
-	        this.putInt((int) 0);				// time (in milliseconds)
+	        this.putInt(0);				// time (in milliseconds)
 	        
 	        packet.putFloat(character.getPosition().getX());
 	        packet.putFloat(character.getPosition().getY());
@@ -154,15 +153,15 @@ public class UpdatePacket extends ServerPacket {
 	        packet.putFloat(0); // orientation
 	        
 	        // Movement 2
-			packet.putFloat((float) movementSpeed.WalkSpeed);
-			packet.putFloat((float) movementSpeed.RunSpeed);
-			packet.putFloat((float) movementSpeed.RunBackSpeed); // walk/run back ?
-			packet.putFloat((float) movementSpeed.SwimSpeed);
-			packet.putFloat((float) movementSpeed.SwimBackSpeed);
-			packet.putFloat((float) movementSpeed.FlySpeed);
-			packet.putFloat((float) movementSpeed.FlyBackSpeed);
-	        packet.putFloat((float) movementSpeed.TurnSpeed);
-	        packet.putFloat((float) movementSpeed.PitchSpeed);
+			packet.putFloat(movementSpeed.WalkSpeed);
+			packet.putFloat(movementSpeed.RunSpeed);
+			packet.putFloat(movementSpeed.RunBackSpeed); // walk/run back ?
+			packet.putFloat(movementSpeed.SwimSpeed);
+			packet.putFloat(movementSpeed.SwimBackSpeed);
+			packet.putFloat(movementSpeed.FlySpeed);
+			packet.putFloat(movementSpeed.FlyBackSpeed);
+	        packet.putFloat(movementSpeed.TurnSpeed);
+	        packet.putFloat(movementSpeed.PitchSpeed);
 	    }
 		
 	}
@@ -175,23 +174,23 @@ public class UpdatePacket extends ServerPacket {
 		this.putShort((short) 0x71);  // update flags              
 		MovementValues values = new MovementValues(updateFlags);
 		
-		Logger.writeLog("VALUES: ", LogType.VERBOSE);
-		Logger.writeLog("test: " + values.IsSelf, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.IsAlive, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasRotation, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasStationaryPosition, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasTarget, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.IsTransport, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasGoTransportPosition, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasAnimKits, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasUnknown, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasUnknown2, LogType.VERBOSE);
-		Logger.writeLog("test: " + values.HasUnknown4, LogType.VERBOSE);
+		Logger.writeLog("VALUES: ", Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.IsSelf, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.IsAlive, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasRotation, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasStationaryPosition, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasTarget, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.IsTransport, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasGoTransportPosition, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasAnimKits, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown2, Logger.LOG_TYPE_VERBOSE);
+		Logger.writeLog("test: " + values.HasUnknown4, Logger.LOG_TYPE_VERBOSE);
 	    if (values.IsAlive){
 	    	// Build Movement
 	    	this.putInt(0); // flags2
 	        this.putShort((short) 0);      		// movement flags
-	        this.putInt((int) 0);				// time (in milliseconds) TODO: actual time?
+	        this.putInt(0);				// time (in milliseconds) TODO: actual time?
 	        
 	        packet.putFloat(character.getPosition().getX());
 	        packet.putFloat(character.getPosition().getY());
@@ -202,15 +201,15 @@ public class UpdatePacket extends ServerPacket {
 	        /* 32 bytes so far */
 	        // Movement 2
 	        
-			packet.putFloat((float) movementSpeed.WalkSpeed);
-			packet.putFloat((float) movementSpeed.RunSpeed);
-			packet.putFloat((float) movementSpeed.RunBackSpeed); // walk/run back ?
-			packet.putFloat((float) movementSpeed.SwimSpeed);
-			packet.putFloat((float) movementSpeed.SwimBackSpeed);
-			packet.putFloat((float) movementSpeed.FlySpeed);
-			packet.putFloat((float) movementSpeed.FlyBackSpeed);
-	        packet.putFloat((float) movementSpeed.TurnSpeed);
-	        packet.putFloat((float) movementSpeed.PitchSpeed);
+			packet.putFloat(movementSpeed.WalkSpeed);
+			packet.putFloat(movementSpeed.RunSpeed);
+			packet.putFloat(movementSpeed.RunBackSpeed); // walk/run back ?
+			packet.putFloat(movementSpeed.SwimSpeed);
+			packet.putFloat(movementSpeed.SwimBackSpeed);
+			packet.putFloat(movementSpeed.FlySpeed);
+			packet.putFloat(movementSpeed.FlyBackSpeed);
+	        packet.putFloat(movementSpeed.TurnSpeed);
+	        packet.putFloat(movementSpeed.PitchSpeed);
 	        
 	        /* 32+36 = 68 bytes so far */
 	    }

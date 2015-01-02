@@ -3,9 +3,8 @@ package bunnyEmu.main.net.packets.client;
 import java.nio.ByteOrder;
 
 import bunnyEmu.main.entities.packet.ClientPacket;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 
 /**
  * Received upon world login
@@ -43,7 +42,7 @@ public class CMSG_PLAYER_LOGIN extends ClientPacket {
 		
 		this.getInt(); // Unknown
 		guid = GuidUnpacker.getGuid(guidMask, guidBytes);
-		Logger.writeLog(String.valueOf(guid), LogType.VERBOSE);
+		Logger.writeLog(String.valueOf(guid), Logger.LOG_TYPE_VERBOSE);
 		return true;
 	}
 

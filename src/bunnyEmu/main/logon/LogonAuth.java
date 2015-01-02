@@ -11,13 +11,12 @@ import bunnyEmu.main.entities.Client;
 import bunnyEmu.main.entities.packet.AuthPacket;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.handlers.RealmHandler;
 import bunnyEmu.main.handlers.TempClientHandler;
 import bunnyEmu.main.net.LogonConnection;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BigNumber;
-import bunnyEmu.main.utils.Logger;
+import misc.Logger;
 //import bunnyEmu.main.utils.AuthCodes;
 
     /**
@@ -50,12 +49,12 @@ import bunnyEmu.main.utils.Logger;
             try {
                 md = MessageDigest.getInstance("SHA1");
             } catch (NoSuchAlgorithmException ex) {
-                Logger.writeLog("Couldn't load algorithm", LogType.WARNING);
+                Logger.writeLog("Couldn't load algorithm", Logger.LOG_TYPE_WARNING);
             }
         }
         
         public void serverLogonChallenge(ClientPacket in) throws IOException {
-        	Logger.writeLog("serverLogonChallenge", LogType.VERBOSE);
+        	Logger.writeLog("serverLogonChallenge", Logger.LOG_TYPE_VERBOSE);
             
             byte[]  gamename = new byte[4];	// 'WoW'
             String version = "";
@@ -87,7 +86,7 @@ import bunnyEmu.main.utils.Logger;
             
             String ip = octet[3] + "." + octet[2] + "." + octet[1] + "." + octet[0];
             
-            Logger.writeLog("Client connecting from address: " + ip, LogType.VERBOSE);
+            Logger.writeLog("Client connecting from address: " + ip, Logger.LOG_TYPE_VERBOSE);
  
             byte username_len = in.get();                 			// length of username
             I = new byte[username_len];
@@ -105,7 +104,7 @@ import bunnyEmu.main.utils.Logger;
             	authWrongPass.put((byte) AuthCodes.AUTH_UNKNOWN_ACCOUNT);
             	connection.send(authWrongPass);
 
-            	Logger.writeLog("Wrong password sent. (" + username + ")", LogType.VERBOSE);
+            	Logger.writeLog("Wrong password sent. (" + username + ")", Logger.LOG_TYPE_VERBOSE);
 
             	return;
             }
@@ -117,7 +116,7 @@ import bunnyEmu.main.utils.Logger;
             try {
             	client = new Client(username, ClientVersion.versionStringToEnum(version));
             } catch (IllegalArgumentException e) {
-        		Logger.writeLog(e.getMessage(), LogType.WARNING);
+        		Logger.writeLog(e.getMessage(), Logger.LOG_TYPE_WARNING);
             }
             client.attachLogon(connection);
             
@@ -162,7 +161,7 @@ import bunnyEmu.main.utils.Logger;
 
             connection.send(serverLogonChallenge);
             
-            Logger.writeLog("send challenge", LogType.VERBOSE);
+            Logger.writeLog("send challenge", Logger.LOG_TYPE_VERBOSE);
         }
 
         public void serverLogonProof(ClientPacket in) throws IOException {
@@ -170,7 +169,7 @@ import bunnyEmu.main.utils.Logger;
             byte[] _M1 = new byte[20];
             byte[] crc_hash = new byte[20];
             
-            Logger.writeLog("serverLogonProof", LogType.VERBOSE);
+            Logger.writeLog("serverLogonProof", Logger.LOG_TYPE_VERBOSE);
 
             in.get(_A);
             in.get(_M1);
@@ -245,8 +244,8 @@ import bunnyEmu.main.utils.Logger;
             BigNumber M = new BigNumber(m);
             BigNumber M1 = new BigNumber(_M1);
             
-            Logger.writeLog("M = " + M.toHexString(), LogType.VERBOSE);
-            Logger.writeLog("M1 = " + M1.toHexString(), LogType.VERBOSE);
+            Logger.writeLog("M = " + M.toHexString(), Logger.LOG_TYPE_VERBOSE);
+            Logger.writeLog("M1 = " + M1.toHexString(), Logger.LOG_TYPE_VERBOSE);
             
             if(!M.equals(M1)) {
             	TempClientHandler.removeTempClient(client.getName());
@@ -284,7 +283,7 @@ import bunnyEmu.main.utils.Logger;
         
         
         public void serverRealmList() throws IOException {
-        	Logger.writeLog("Sending realmlist", LogType.VERBOSE);
+        	Logger.writeLog("Sending realmlist", Logger.LOG_TYPE_VERBOSE);
             connection.send(RealmHandler.getRealmList()); 
         }  
     }

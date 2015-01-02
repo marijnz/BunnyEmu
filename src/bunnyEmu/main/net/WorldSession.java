@@ -10,7 +10,6 @@ import bunnyEmu.main.entities.character.Char;
 import bunnyEmu.main.entities.packet.ClientPacket;
 import bunnyEmu.main.entities.packet.ServerPacket;
 import bunnyEmu.main.enums.ClientVersion;
-import bunnyEmu.main.enums.LogType;
 import bunnyEmu.main.net.packets.client.CMSG_CHAR_CREATE;
 import bunnyEmu.main.net.packets.client.CMSG_MESSAGECHAT;
 import bunnyEmu.main.net.packets.client.CMSG_MOVEMENT;
@@ -32,8 +31,8 @@ import bunnyEmu.main.net.packets.server.SMSG_UPDATE_OBJECT_CREATE;
 import bunnyEmu.main.utils.AuthCodes;
 import bunnyEmu.main.utils.BitPack;
 import bunnyEmu.main.utils.BitUnpack;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.Opcodes;
+import misc.Logger;
 
 /**
  * Used after world authentication, handles incoming packets.
@@ -59,7 +58,7 @@ public class WorldSession {
 	 * Send the character list to the client.
 	 */
 	public void sendCharacters() {
-		Logger.writeLog("sending chars", LogType.VERBOSE);
+		Logger.writeLog("sending chars", Logger.LOG_TYPE_VERBOSE);
 		connection.send(new SMSG_CHAR_ENUM(connection.getClient()));
 	}
 
@@ -97,7 +96,7 @@ public class WorldSession {
 														p.cSkinColor, p.cRace, p.cClass, p.cGender,
 														cStartLevel));
 
-		Logger.writeLog("Created new char with name: " + p.cName, LogType.VERBOSE);
+		Logger.writeLog("Created new char with name: " + p.cName, Logger.LOG_TYPE_VERBOSE);
 	}
 
 	/* delete the specified character */
@@ -154,10 +153,10 @@ public class WorldSession {
         boolean charDeletion = connection.getClient().removeCharacter(guid);
         
         if (charDeletion) {
-        	Logger.writeLog("Deleted character with GUID = " + guid, LogType.VERBOSE);
+        	Logger.writeLog("Deleted character with GUID = " + guid, Logger.LOG_TYPE_VERBOSE);
         }
         else {
-        	Logger.writeLog("Failed to delete character with GUID = " + guid, LogType.WARNING);
+        	Logger.writeLog("Failed to delete character with GUID = " + guid, Logger.LOG_TYPE_WARNING);
         }
         
         ServerPacket charDeleteOkay = new ServerPacket(Opcodes.SMSG_CHAR_DELETE, 1);
@@ -174,7 +173,7 @@ public class WorldSession {
 		final Char character = connection.getClient().setCurrentCharacter(p.getGuid());
 		
 		if (character == null) { 
-			Logger.writeLog("\nPROBLEM: Character is null at login to world..\n", LogType.WARNING);
+			Logger.writeLog("\nPROBLEM: Character is null at login to world..\n", Logger.LOG_TYPE_WARNING);
 		}
 		
 		connection.send(new SMSG_LOGIN_VERIFY_WORLD(character));
@@ -262,7 +261,7 @@ public class WorldSession {
 	 */
 	public void handleChatMessage(CMSG_MESSAGECHAT p) {
 		Char character = connection.client.getCurrentCharacter();
-		Logger.writeLog("msg: " + p.getMessage(), LogType.VERBOSE);
+		Logger.writeLog("msg: " + p.getMessage(), Logger.LOG_TYPE_VERBOSE);
         connection.send(new SMSG_MESSAGECHAT(connection.client.getCurrentCharacter(), p.getLanguage(), p.getMessage()));
          
          try {

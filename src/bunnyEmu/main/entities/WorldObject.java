@@ -1,10 +1,9 @@
 package bunnyEmu.main.entities;
 
 import bunnyEmu.main.entities.packet.Packet;
-import bunnyEmu.main.enums.LogType;
-import bunnyEmu.main.utils.Logger;
 import bunnyEmu.main.utils.math.Vector4;
 import bunnyEmu.main.utils.update.UpdateData;
+import misc.Logger;
 
 /**
  * A WorldObject that supports update packets
@@ -23,7 +22,7 @@ public abstract class WorldObject {
 	protected UpdateData data;
 	
 	public WorldObject() {
-		Logger.writeLog("Created worldobject with GUID " + countGUID, LogType.VERBOSE);
+		Logger.writeLog("Created worldobject with GUID " + countGUID, Logger.LOG_TYPE_VERBOSE);
 		this.setGUID(countGUID++);
 		setPosition(1,1,1,1);
 		this.data = new UpdateData();
