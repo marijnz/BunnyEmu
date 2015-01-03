@@ -9,7 +9,7 @@ import bunnyEmu.main.utils.types.MovementValues;
 import misc.Logger;
 
 /**
- * Instantly teleports the character to a new map.
+ * Movement update packet.
  * 
  * @author Marijn
  * 

@@ -10,9 +10,6 @@ import bunnyEmu.main.utils.types.UpdateType;
 /**
  * Initial update object
  * 
- * References:
- * https://sharesource.org/hg/sniffitzt/file/889649f15711/src/processor/opcodehandler/SMSG_UPDATE_OBJECT.java
- * 
  * 
  * @author Marijn
  *
@@ -71,7 +68,6 @@ public class SMSG_UPDATE_OBJECT_CREATE extends UpdatePacket {
 		
 		return true;
 	}
-	
 	
 	@Override
 	public boolean writeWotLK() {

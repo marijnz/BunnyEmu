@@ -36,10 +36,12 @@ public class Server {
 
 	public static void main(String[] args) {
 		try {
+			Logger.printToConsole = true;
+			
 			prop = ConfigHandler.loadProperties();
 			
 			realmlist = prop.getProperty("realmlistAddress");
-
+			Logger.writeLog("OK: " + prop, Logger.LOG_TYPE_VERBOSE);
 			if (realmlist.isEmpty()) {
 				Logger.writeLog("No realmlist set in server.conf, unable to start.", Logger.LOG_TYPE_ERROR);
 				System.exit(0);
@@ -52,6 +54,8 @@ public class Server {
 				Thread.sleep(200);
 			}
 		} catch (Exception e) {
+
+			Logger.writeLog("NOT OK: " + prop, Logger.LOG_TYPE_VERBOSE);
 			e.printStackTrace();
 		}
 
@@ -75,6 +79,7 @@ public class Server {
 			serverSocket = new ServerSocket(3724, 0, address);
 
 			/* load database connection */
+			// TODO: Some explanation how to start up the database when there isn't one?
 			DatabaseConnection.initConnectionPool(prop);
 			
 			Logger.writeLog("BunnyEmu is open-source: https://github.com/marijnz/BunnyEmu", Logger.LOG_TYPE_VERBOSE);

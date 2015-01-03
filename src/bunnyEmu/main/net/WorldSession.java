@@ -183,6 +183,8 @@ public class WorldSession {
 		// Set the update fields, required for update packets
 		character.setUpdateFields(realm);
 
+		// TODO: Make the update packets working for the other versions besides MoP, 
+		// it currently works with dummy packets.
 		// Currently only fully supports MoP
 		if (realm.getVersion() == ClientVersion.VERSION_BC || realm.getVersion() == ClientVersion.VERSION_VANILLA)
 			connection.send(realm.loadPacket("updatepacket_bc", 5000));

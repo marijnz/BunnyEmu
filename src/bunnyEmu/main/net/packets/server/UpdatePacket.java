@@ -9,6 +9,8 @@ import misc.Logger;
 
 /**
  * Adapted from Arctium, currently only used in the initial update packet.
+ * TODO: Make this whole class working, only the initial packet for MoP is currently working, 
+ * update movements aren't.
  * 
  * @author Marijn
  * 
@@ -132,7 +134,7 @@ public class UpdatePacket extends ServerPacket {
 	
 
 	/**
-	 * TODO: Make it working
+	 * TODO: Make this working.
 	 */
 	protected void writeUpdateObjectMovementCata(Char character, short updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
@@ -167,7 +169,7 @@ public class UpdatePacket extends ServerPacket {
 	}
 	
 	/**
-	 * TODO: make it working
+	 * TODO: Make this working.
 	 */
 	protected void writeUpdateObjectMovementWotLK(Char character, short updateFlags) {
 		MovementSpeed movementSpeed = character.getMovement();
